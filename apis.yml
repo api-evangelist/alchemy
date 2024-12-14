@@ -9,6 +9,8 @@ apis:
     properties:
       - url: https://www.alchemy.com/
         type: Documentation
+      - url: https://github.com/alchemyplatform/docs-openapi-specs/tree/ma
+        type: OpenAPI
     description: Powerful APIs, SDKs, and tools to build and scale your web3 app with ease.
 name: Alchemy
 tags:
