@@ -1,17 +1,34 @@
 aid: alchemy
 url: https://raw.githubusercontent.com/api-search/alchemy/refs/heads/main/apis.yml
 apis:
-  - aid: alchemy:alchemy
-    name: Alchemy
-    tags:
-      - API
-    humanURL: https://www.alchemy.com/
-    properties:
-      - url: https://www.alchemy.com/
-        type: Documentation
-      - url: https://github.com/alchemyplatform/docs-openapi-specs/tree/ma
-        type: OpenAPI
-    description: Powerful APIs, SDKs, and tools to build and scale your web3 app with ease.
+  - aid: alchemy:alchemy-gas-manager-api
+    name: Alchemy Gas Manager API
+    description: >-
+      Get users to your magic moment faster by removing the biggest barrier with
+      gas sponsorship.
+    humanURL: https://www.alchemy.com/gas-manager
+    tags: []
+  - aid: alchemy:alchemy-token-api
+    name: Alchemy Token API
+    description: >-
+      The token data your users expect, no token list required. Available on all
+      EVM-supported chains.
+    humanURL: https://www.alchemy.com/token-api
+    tags: []
+  - aid: alchemy:alchemy-bundler-api
+    name: Alchemy Bundler API
+    description: 'null'
+    humanURL: https://www.alchemy.com/bundler
+    tags: []
+    properties: []
+  - aid: alchemy:alchemy-transfers-api
+    name: Alchemy Transfers API
+    description: >-
+      Ergonomic and 100x faster than alternatives. One request to retrieve all
+      historical transaction activity, including internal transfers.
+    humanURL: https://www.alchemy.com/transfers-api
+    tags: []
+    properties: []
 name: Alchemy
 tags:
   - Cryptocurrency
@@ -19,9 +36,29 @@ tags:
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 created: '2024-11-07T00:00:00.000Z'
-modified: '2024-12-14'
+modified: '2024-12-21'
 description: Powerful APIs, SDKs, and tools to build and scale your web3 app with ease.
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com
 specificationVersion: '0.19'
+common:
+  - name: Pricing - Alchemy Free, Growth, Scale, and Enterprise
+    url: https://www.alchemy.com/pricing
+    type: Pricing
+  - name: Alchemy Sandbox - Troubleshoot & Debug Blockchain Requests
+    description: 'null'
+    url: https://www.alchemy.com/sandbox
+    type: Sandbox
+  - name: Webhooks - Real time blockchain notifications
+    description: 'null'
+    url: https://www.alchemy.com/webhooks
+    type: Webhooks
+  - name: Alchemy SDK - Powerful Javascript SDK for Developers
+    description: 'null'
+    url: https://www.alchemy.com/sdk
+    type: SDKs
+  - name: Alchemy Blog - Announcements, Updates, and News
+    description: 'null'
+    url: https://www.alchemy.com/blog
+    type: Blog
