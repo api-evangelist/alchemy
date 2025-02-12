@@ -17,10 +17,7 @@ apis:
       for consumers to find the best gas prices and locations.
   - aid: alchemy:alchemy-token-api
     name: Alchemy Token API
-    tags:
-      - Tokens
-      - Cryptocurrency
-      - Blockchain
+    tags: []
     humanURL: https://www.alchemy.com/token-api
     description: >-
       Alchemy Token API is a powerful tool that allows developers to easily
@@ -33,9 +30,6 @@ apis:
       Overall, Alchemy Token API streamlines the process of incorporating
       Alchemy Token into applications, making it easier for developers to
       leverage the benefits of this innovative cryptocurrency.
-    properties:
-      - type: OpenAPI
-        url: properties/alchemy-token-api-openapi.yml
   - aid: alchemy:alchemy-bundler-api
     name: Alchemy Bundler API
     tags: []
@@ -52,13 +46,9 @@ apis:
       update their software projects.
   - aid: alchemy:alchemy-transfers-api
     name: Alchemy Transfers API
-    tags:
-      - Cryptocurrencies
-      - Transfers
+    tags: []
     humanURL: https://www.alchemy.com/transfers-api
-    properties:
-      - type: OpenAPI
-        url: properties/alchemy-transfers-api-openapi.yml
+    properties: []
     description: >-
       Alchemy Transfers API is a powerful tool that allows users to securely
       transfer assets and data between different platforms. With cutting-edge
@@ -95,6 +85,9 @@ common:
     name: Alchemy Blog - Announcements, Updates, and News
     type: Blog
     description: 'null'
+  - url: https://www.postman.com/alchemyapi/alchemy-platforms/overview
+    name: Postman Workspace
+    type: PostmanWorkspace
   - name: Postman Workspace
     url: https://www.postman.com/alchemyapi/alchemy-platforms/overview
     type: PostmanWorkspace
