@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Alchemy Token API
+  version: 1.0.0
+  description: >-
+    Alchemy Token API is a powerful tool that allows developers to easily
+    integrate Alchemy Token into their applications. With this API, developers
+    can access real-time data on token prices, trading volume, market trends,
+    and more. This data can be used to create custom charts, analytics, and
+    trading strategies, giving developers a competitive edge in the
+    cryptocurrency market. Additionally, the API provides secure access to
+    Alchemy Token wallets, allowing for seamless transactions and transfers.
+    Overall, Alchemy Token API streamlines the process of incorporating Alchemy
+    Token into applications, making it easier for developers to leverage the
+    benefits of this innovative cryptocurrency.
+servers:
+  - url: https://{{network}}.g.alchemy.com
+paths:
+  /v2/{apiKey}:
+    post:
+      tags:
+        - default
+      summary: Get whale tokens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 1
+                jsonrpc: '2.0'
+                method: alchemy_getTokenBalances
+                params:
+                  - '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+                  - erc20
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: apiKey
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
