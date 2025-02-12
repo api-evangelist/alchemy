@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: Alchemy Transfers API
+  version: 1.0.0
+  description: >-
+    Alchemy Transfers API is a powerful tool that allows users to securely
+    transfer assets and data between different platforms. With cutting-edge
+    encryption technology, users can easily send and receive information without
+    worrying about privacy and security breaches. The API simplifies the process
+    of moving data and assets, providing a seamless and efficient experience for
+    developers and organizations. Whether transferring cryptocurrency, sensitive
+    information, or digital files, Alchemy Transfers API ensures a smooth and
+    reliable transfer process every time.
+servers:
+  - url: https://{{network}}.g.alchemy.com
+paths:
+  /v2/{apiKey}:
+    post:
+      tags:
+        - default
+      summary: Get Asset Transfers (NFT mints)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 1
+                jsonrpc: '2.0'
+                method: alchemy_getAssetTransfers
+                params:
+                  - fromAddress: '0x0000000000000000000000000000000000000000'
+                    fromBlock: '0xfda53c'
+                    toBlock: latest
+                    category:
+                      - erc721
+                      - erc1155
+                    withMetadata: false
+                    excludeZeroValue: true
+                    maxCount: '0x10'
+                    order: desc
+      parameters:
+        - name: apiKey
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
