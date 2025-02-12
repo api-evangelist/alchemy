@@ -17,7 +17,10 @@ apis:
       for consumers to find the best gas prices and locations.
   - aid: alchemy:alchemy-token-api
     name: Alchemy Token API
-    tags: []
+    tags:
+      - Tokens
+      - Cryptocurrency
+      - Blockchain
     humanURL: https://www.alchemy.com/token-api
     description: >-
       Alchemy Token API is a powerful tool that allows developers to easily
@@ -30,6 +33,9 @@ apis:
       Overall, Alchemy Token API streamlines the process of incorporating
       Alchemy Token into applications, making it easier for developers to
       leverage the benefits of this innovative cryptocurrency.
+    properties:
+      - type: OpenAPI
+        url: properties/alchemy-token-api-openapi.yml
   - aid: alchemy:alchemy-bundler-api
     name: Alchemy Bundler API
     tags: []
