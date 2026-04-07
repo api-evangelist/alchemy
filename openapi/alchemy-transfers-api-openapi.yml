@@ -7,8 +7,7 @@ servers:
 paths:
   /v2/{apiKey}:
     post:
-      tags:
-        - default
+      tags: []
       summary: Alchemy Get Asset Transfers (NFT mints)
       requestBody:
         content:
