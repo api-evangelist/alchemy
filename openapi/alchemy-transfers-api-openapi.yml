@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Transfers API
+  title: Alchemy Transfers API
   version: 1.0.0
 servers:
   - url: https://{{network}}.g.alchemy.com
@@ -9,7 +9,7 @@ paths:
     post:
       tags:
         - default
-      summary: Get Asset Transfers (NFT mints)
+      summary: Alchemy Get Asset Transfers (NFT mints)
       requestBody:
         content:
           application/json:

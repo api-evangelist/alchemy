@@ -20,7 +20,7 @@ paths:
     post:
       tags:
         - default
-      summary: Get whale tokens
+      summary: Alchemy Get whale tokens
       requestBody:
         content:
           application/json:
