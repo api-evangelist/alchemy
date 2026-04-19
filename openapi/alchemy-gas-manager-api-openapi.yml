@@ -1,0 +1,404 @@
+openapi: 3.0.3
+info:
+  title: Alchemy Gas Manager API
+  description: >-
+    The Alchemy Gas Manager API enables developers to sponsor gas fees for
+    end users via the ERC-4337 Account Abstraction standard. Using a Gas
+    Manager policy, developers can define rules for which transactions to
+    sponsor, covering ETH gas fees so users never need to hold native tokens
+    to interact with dApps. Supports gasless transactions, ERC-20 gas
+    payments, and policy-based sponsorship controls.
+  version: '1.0'
+  contact:
+    name: Alchemy Support
+    url: https://www.alchemy.com/support
+  x-generated-from: documentation
+servers:
+  - url: https://manage.g.alchemy.com/api
+    description: Alchemy Gas Manager Management API
+  - url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Ethereum Mainnet RPC
+    variables:
+      apiKey:
+        default: your-api-key
+        description: Your Alchemy API key.
+tags:
+  - name: Policies
+    description: Create and manage gas sponsorship policies.
+  - name: Paymaster
+    description: Sponsor user operations via ERC-4337 paymaster endpoints.
+paths:
+  /gasManager/policy:
+    get:
+      operationId: listPolicies
+      summary: Alchemy Gas Manager List Policies
+      description: >-
+        Returns all gas manager sponsorship policies for the authenticated
+        application. Policies define rules for which user operations to
+        sponsor, including allowlists, spend limits, and expiry windows.
+      tags:
+        - Policies
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Policies retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyListResponse'
+              examples:
+                ListPolicies200Example:
+                  summary: Default listPolicies 200 response
+                  x-microcks-default: true
+                  value:
+                    policies:
+                      - policyId: pol-abc123
+                        name: Default Sponsorship Policy
+                        status: active
+                        network: eth-mainnet
+                        maxSpendPerUser: 1.0
+                        maxSpendTotal: 1000.0
+        '401':
+          description: Unauthorized - invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: createPolicy
+      summary: Alchemy Gas Manager Create Policy
+      description: >-
+        Creates a new gas sponsorship policy defining rules for which user
+        operations to sponsor. Policies support per-user spend limits, total
+        spend caps, allowlisted contracts, and time-based expiry.
+      tags:
+        - Policies
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePolicyRequest'
+            examples:
+              CreatePolicyRequestExample:
+                summary: Default createPolicy request
+                x-microcks-default: true
+                value:
+                  name: My Sponsorship Policy
+                  network: eth-mainnet
+                  maxSpendPerUser: 1.0
+                  maxSpendTotal: 500.0
+      responses:
+        '201':
+          description: Policy created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+              examples:
+                CreatePolicy201Example:
+                  summary: Default createPolicy 201 response
+                  x-microcks-default: true
+                  value:
+                    policyId: pol-xyz789
+                    name: My Sponsorship Policy
+                    status: active
+                    network: eth-mainnet
+                    maxSpendPerUser: 1.0
+                    maxSpendTotal: 500.0
+        '400':
+          description: Bad request - invalid policy parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /gasManager/policy/{policyId}:
+    get:
+      operationId: getPolicy
+      summary: Alchemy Gas Manager Get Policy
+      description: >-
+        Retrieves details for a specific gas sponsorship policy by its
+        unique identifier, including spend limits, network, and current status.
+      tags:
+        - Policies
+      parameters:
+        - name: policyId
+          in: path
+          required: true
+          description: Unique identifier of the gas manager policy.
+          schema:
+            type: string
+          example: pol-abc123
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Policy retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+              examples:
+                GetPolicy200Example:
+                  summary: Default getPolicy 200 response
+                  x-microcks-default: true
+                  value:
+                    policyId: pol-abc123
+                    name: Default Sponsorship Policy
+                    status: active
+                    network: eth-mainnet
+                    maxSpendPerUser: 1.0
+                    maxSpendTotal: 1000.0
+        '404':
+          description: Policy not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /sponsorUserOperation:
+    post:
+      operationId: sponsorUserOperation
+      summary: Alchemy Gas Manager Sponsor User Operation
+      description: >-
+        Submits a user operation for gas sponsorship via the ERC-4337 paymaster.
+        Returns a signed paymaster response that the bundler uses to cover gas
+        fees on behalf of the user, enabling gasless transactions.
+      tags:
+        - Paymaster
+      security:
+        - apiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SponsorUserOperationRequest'
+            examples:
+              SponsorUserOperationRequestExample:
+                summary: Default sponsorUserOperation request
+                x-microcks-default: true
+                value:
+                  id: 1
+                  jsonrpc: '2.0'
+                  method: alchemy_requestGasAndPaymasterAndData
+                  params:
+                    - policyId: pol-abc123
+                      entryPoint: '0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789'
+                      userOperation:
+                        sender: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+                        nonce: '0x0'
+                        initCode: '0x'
+                        callData: '0x'
+      responses:
+        '200':
+          description: User operation sponsored successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SponsorUserOperationResponse'
+              examples:
+                SponsorUserOperation200Example:
+                  summary: Default sponsorUserOperation 200 response
+                  x-microcks-default: true
+                  value:
+                    id: 1
+                    jsonrpc: '2.0'
+                    result:
+                      paymasterAndData: '0xabc123paymaster'
+                      preVerificationGas: '0x5208'
+                      verificationGasLimit: '0x15f90'
+                      callGasLimit: '0x9c40'
+        '400':
+          description: Bad request - operation rejected by policy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for Gas Manager Management API authentication.
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Alchemy-Token
+      description: Alchemy API key for RPC endpoint authentication.
+  schemas:
+    Policy:
+      type: object
+      title: Gas Manager Policy
+      description: A gas sponsorship policy defining rules for covering user operation gas fees.
+      properties:
+        policyId:
+          type: string
+          description: Unique identifier for the policy.
+          example: pol-abc123
+        name:
+          type: string
+          description: Display name for the policy.
+          example: Default Sponsorship Policy
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+            - expired
+          description: Current status of the policy.
+          example: active
+        network:
+          type: string
+          description: Blockchain network the policy applies to.
+          example: eth-mainnet
+        maxSpendPerUser:
+          type: number
+          format: double
+          description: Maximum ETH spend per user address covered by this policy.
+          example: 1.0
+        maxSpendTotal:
+          type: number
+          format: double
+          description: Maximum total ETH spend across all users for this policy.
+          example: 1000.0
+    PolicyListResponse:
+      type: object
+      title: Policy List Response
+      description: List of gas manager policies.
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+          description: Array of policy objects.
+    CreatePolicyRequest:
+      type: object
+      title: Create Policy Request
+      description: Request body for creating a new gas manager policy.
+      required:
+        - name
+        - network
+      properties:
+        name:
+          type: string
+          description: Display name for the new policy.
+          example: My Sponsorship Policy
+        network:
+          type: string
+          description: Blockchain network for the policy.
+          example: eth-mainnet
+        maxSpendPerUser:
+          type: number
+          format: double
+          description: Maximum ETH spend per user (optional).
+          example: 1.0
+        maxSpendTotal:
+          type: number
+          format: double
+          description: Maximum total ETH spend across all users (optional).
+          example: 500.0
+    SponsorUserOperationRequest:
+      type: object
+      title: Sponsor User Operation Request
+      description: JSON-RPC request to sponsor a user operation via the Gas Manager paymaster.
+      properties:
+        id:
+          type: integer
+          description: Request ID.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy paymaster method.
+          example: alchemy_requestGasAndPaymasterAndData
+        params:
+          type: array
+          description: Sponsorship parameters array.
+          items: {}
+    SponsorUserOperationResult:
+      type: object
+      title: Sponsor User Operation Result
+      description: Paymaster response data for a sponsored user operation.
+      properties:
+        paymasterAndData:
+          type: string
+          description: Encoded paymaster address and data for the user operation.
+          example: '0xabc123paymaster'
+        preVerificationGas:
+          type: string
+          description: Pre-verification gas estimate in hexadecimal.
+          example: '0x5208'
+        verificationGasLimit:
+          type: string
+          description: Verification gas limit in hexadecimal.
+          example: '0x15f90'
+        callGasLimit:
+          type: string
+          description: Call gas limit in hexadecimal.
+          example: '0x9c40'
+    SponsorUserOperationResponse:
+      type: object
+      title: Sponsor User Operation Response
+      description: JSON-RPC response for sponsored user operation requests.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/SponsorUserOperationResult'
+    ErrorResponse:
+      type: object
+      title: Error Response
+      description: Standard error response.
+      properties:
+        error:
+          type: string
+          description: Error code.
+          example: UNAUTHORIZED
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid API key.
+        statusCode:
+          type: integer
+          description: HTTP status code.
+          example: 401

@@ -1,42 +1,213 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: Alchemy Transfers API
-  version: 1.0.0
+  description: >-
+    The Alchemy Transfers API provides access to historical on-chain transfer
+    data across EVM-compatible networks. Developers can query asset transfers
+    by address, block range, and transfer category (ETH, ERC-20, ERC-721,
+    ERC-1155, and internal transfers), enabling wallet activity tracking,
+    portfolio history, and transaction auditing.
+  version: '1.0'
+  contact:
+    name: Alchemy Support
+    url: https://www.alchemy.com/support
+  x-generated-from: documentation
 servers:
-  - url: https://{{network}}.g.alchemy.com
+  - url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Ethereum Mainnet
+    variables:
+      apiKey:
+        default: your-api-key
+        description: Your Alchemy API key.
+  - url: https://polygon-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Polygon Mainnet
+    variables:
+      apiKey:
+        default: your-api-key
+        description: Your Alchemy API key.
+tags:
+  - name: Transfers
+    description: Query historical asset transfer data across EVM networks.
 paths:
-  /v2/{apiKey}:
+  /:
     post:
-      tags: []
-      summary: Alchemy Get Asset Transfers (NFT mints)
+      operationId: getAssetTransfers
+      summary: Alchemy Get Asset Transfers
+      description: >-
+        Returns an array of asset transfers based on the specified filters.
+        Supports querying ETH transfers, ERC-20 token transfers, ERC-721 NFT
+        transfers, ERC-1155 multi-token transfers, and internal contract
+        transfers across supported EVM networks.
+      tags:
+        - Transfers
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
-              example:
-                id: 1
-                jsonrpc: '2.0'
-                method: alchemy_getAssetTransfers
-                params:
-                  - fromAddress: '0x0000000000000000000000000000000000000000'
-                    fromBlock: '0xfda53c'
-                    toBlock: latest
-                    category:
-                      - erc721
-                      - erc1155
-                    withMetadata: false
-                    excludeZeroValue: true
-                    maxCount: '0x10'
-                    order: desc
-      parameters:
-        - name: apiKey
-          in: path
-          schema:
-            type: string
-          required: true
+              $ref: '#/components/schemas/JsonRpcRequest'
+            examples:
+              GetAssetTransfersRequestExample:
+                summary: Default getAssetTransfers request
+                x-microcks-default: true
+                value:
+                  id: 1
+                  jsonrpc: '2.0'
+                  method: alchemy_getAssetTransfers
+                  params:
+                    - fromAddress: '0x0000000000000000000000000000000000000000'
+                      fromBlock: '0xfda53c'
+                      toBlock: latest
+                      category:
+                        - erc721
+                        - erc1155
+                      withMetadata: true
+                      excludeZeroValue: true
+                      maxCount: '0x10'
+                      order: desc
+      security:
+        - apiKeyPath: []
       responses:
+
         '200':
-          description: Successful response
+          description: Asset transfers retrieved successfully.
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetTransfersResponse'
+              examples:
+                GetAssetTransfers200Example:
+                  summary: Default getAssetTransfers 200 response
+                  x-microcks-default: true
+                  value:
+                    id: 1
+                    jsonrpc: '2.0'
+                    result:
+                      transfers:
+                        - blockNum: '0xfda53c'
+                          hash: '0xabc123def456'
+                          from: '0x0000000000000000000000000000000000000000'
+                          to: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+                          value: 1.0
+                          asset: ETH
+                          category: external
+                          metadata:
+                            blockTimestamp: '2026-04-19T10:00:00Z'
+                      pageKey: abc123nextpage
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  securitySchemes:
+    apiKeyPath:
+      type: apiKey
+      in: header
+      name: X-Alchemy-Token
+      description: Alchemy API key passed as a header. The API key is also embedded in the server URL path.
+  schemas:
+    JsonRpcRequest:
+      type: object
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request format for Alchemy API calls.
+      required:
+        - id
+        - jsonrpc
+        - method
+        - params
+      properties:
+        id:
+          type: integer
+          description: Request identifier for matching responses.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC protocol version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy method name to invoke.
+          example: alchemy_getAssetTransfers
+        params:
+          type: array
+          description: Parameters for the method call.
+          items: {}
+    AssetTransfer:
+      type: object
+      title: Asset Transfer
+      description: Represents a single asset transfer event on the blockchain.
+      properties:
+        blockNum:
+          type: string
+          description: Block number of the transfer in hexadecimal.
+          example: '0xfda53c'
+        hash:
+          type: string
+          description: Transaction hash of the transfer.
+          example: '0xabc123def456abc123def456abc123def456'
+        from:
+          type: string
+          description: Sender wallet address.
+          example: '0x0000000000000000000000000000000000000000'
+        to:
+          type: string
+          description: Recipient wallet address.
+          example: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+        value:
+          type: number
+          description: Transfer value in native units.
+          example: 1.0
+        asset:
+          type: string
+          description: Asset symbol (e.g., ETH, USDC, or NFT collection name).
+          example: ETH
+        category:
+          type: string
+          description: Transfer category (external, internal, erc20, erc721, erc1155).
+          enum:
+            - external
+            - internal
+            - erc20
+            - erc721
+            - erc1155
+          example: external
+        metadata:
+          $ref: '#/components/schemas/TransferMetadata'
+    TransferMetadata:
+      type: object
+      title: Transfer Metadata
+      description: Additional metadata for an asset transfer.
+      properties:
+        blockTimestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the block.
+          example: '2026-04-19T10:00:00Z'
+    AssetTransfersResult:
+      type: object
+      title: Asset Transfers Result
+      description: Result payload containing the list of asset transfers.
+      properties:
+        transfers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetTransfer'
+          description: List of asset transfer events matching the query.
+        pageKey:
+          type: string
+          description: Pagination key for retrieving the next page of results.
+          example: abc123nextpage
+    AssetTransfersResponse:
+      type: object
+      title: Asset Transfers Response
+      description: JSON-RPC response for getAssetTransfers requests.
+      properties:
+        id:
+          type: integer
+          description: Matches the request ID.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC version.
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/AssetTransfersResult'

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/json-structure/alchemy-gas-manager-api-policy-list-response-structure.json",
+  "name": "Policy List Response",
+  "description": "List of gas manager policies.",
+  "type": "object",
+  "properties": {
+    "policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "name": "Gas Manager Policy",
+        "description": "A gas sponsorship policy defining rules for covering user operation gas fees.",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "description": "Unique identifier for the policy.",
+            "example": "pol-abc123"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the policy.",
+            "example": "Default Sponsorship Policy"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "expired"
+            ],
+            "description": "Current status of the policy.",
+            "example": "active"
+          },
+          "network": {
+            "type": "string",
+            "description": "Blockchain network the policy applies to.",
+            "example": "eth-mainnet"
+          },
+          "maxSpendPerUser": {
+            "type": "double",
+            "description": "Maximum ETH spend per user address covered by this policy.",
+            "example": 1.0
+          },
+          "maxSpendTotal": {
+            "type": "double",
+            "description": "Maximum total ETH spend across all users for this policy.",
+            "example": 1000.0
+          }
+        }
+      },
+      "description": "Array of policy objects."
+    }
+  }
+}

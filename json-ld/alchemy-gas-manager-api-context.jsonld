@@ -1,0 +1,78 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "alchemy": "https://alchemy.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "Sponsor User Operation Response": "alchemy:Sponsor User Operation Response",
+    "Sponsor User Operation Result": "alchemy:Sponsor User Operation Result",
+    "Policy List Response": "alchemy:Policy List Response",
+    "Sponsor User Operation Request": "alchemy:Sponsor User Operation Request",
+    "Gas Manager Policy": "alchemy:Gas Manager Policy",
+    "Create Policy Request": "alchemy:Create Policy Request",
+    "callGasLimit": {
+      "@id": "alchemy:callGasLimit",
+      "@type": "xsd:string"
+    },
+    "id": {
+      "@id": "alchemy:id",
+      "@type": "xsd:integer"
+    },
+    "jsonrpc": {
+      "@id": "alchemy:jsonrpc",
+      "@type": "xsd:string"
+    },
+    "maxSpendPerUser": {
+      "@id": "alchemy:maxSpendPerUser",
+      "@type": "xsd:decimal"
+    },
+    "maxSpendTotal": {
+      "@id": "alchemy:maxSpendTotal",
+      "@type": "xsd:decimal"
+    },
+    "method": {
+      "@id": "alchemy:method",
+      "@type": "xsd:string"
+    },
+    "name": "schema:name",
+    "network": {
+      "@id": "alchemy:network",
+      "@type": "xsd:string"
+    },
+    "params": {
+      "@id": "alchemy:params",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "paymasterAndData": {
+      "@id": "alchemy:paymasterAndData",
+      "@type": "xsd:string"
+    },
+    "policies": {
+      "@id": "alchemy:policies",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "policyId": {
+      "@id": "alchemy:policyId",
+      "@type": "xsd:string"
+    },
+    "preVerificationGas": {
+      "@id": "alchemy:preVerificationGas",
+      "@type": "xsd:string"
+    },
+    "result": {
+      "@id": "alchemy:result",
+      "@type": "@id"
+    },
+    "status": {
+      "@id": "alchemy:status",
+      "@type": "xsd:string"
+    },
+    "verificationGasLimit": {
+      "@id": "alchemy:verificationGasLimit",
+      "@type": "xsd:string"
+    }
+  }
+}

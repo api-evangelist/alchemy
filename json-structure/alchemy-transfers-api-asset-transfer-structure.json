@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/json-structure/alchemy-transfers-api-asset-transfer-structure.json",
+  "name": "Asset Transfer",
+  "description": "Represents a single asset transfer event on the blockchain.",
+  "type": "object",
+  "properties": {
+    "blockNum": {
+      "type": "string",
+      "description": "Block number of the transfer in hexadecimal.",
+      "example": "0xfda53c"
+    },
+    "hash": {
+      "type": "string",
+      "description": "Transaction hash of the transfer.",
+      "example": "0xabc123def456abc123def456abc123def456"
+    },
+    "from": {
+      "type": "string",
+      "description": "Sender wallet address.",
+      "example": "0x0000000000000000000000000000000000000000"
+    },
+    "to": {
+      "type": "string",
+      "description": "Recipient wallet address.",
+      "example": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+    },
+    "value": {
+      "type": "double",
+      "description": "Transfer value in native units.",
+      "example": 1.0
+    },
+    "asset": {
+      "type": "string",
+      "description": "Asset symbol (e.g., ETH, USDC, or NFT collection name).",
+      "example": "ETH"
+    },
+    "category": {
+      "type": "string",
+      "description": "Transfer category (external, internal, erc20, erc721, erc1155).",
+      "enum": [
+        "external",
+        "internal",
+        "erc20",
+        "erc721",
+        "erc1155"
+      ],
+      "example": "external"
+    },
+    "metadata": {
+      "type": "object",
+      "name": "Transfer Metadata",
+      "description": "Additional metadata for an asset transfer.",
+      "properties": {
+        "blockTimestamp": {
+          "type": "datetime",
+          "description": "ISO 8601 timestamp of the block.",
+          "example": "2026-04-19T10:00:00Z"
+        }
+      }
+    }
+  }
+}

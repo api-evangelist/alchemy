@@ -1,0 +1,284 @@
+rules:
+  # INFO / METADATA
+  info-title-pattern:
+    description: API title must start with "Alchemy" to follow provider naming convention.
+    message: "Info title must start with 'Alchemy'. Found: {{value}}"
+    severity: warn
+    given: "$.info.title"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^Alchemy "
+
+  info-description-required:
+    description: API info must have a description.
+    severity: error
+    given: "$.info"
+    then:
+      field: description
+      function: truthy
+
+  info-version-required:
+    description: API info must declare a version.
+    severity: error
+    given: "$.info"
+    then:
+      field: version
+      function: truthy
+
+  info-contact-required:
+    description: API info should include contact information.
+    severity: warn
+    given: "$.info"
+    then:
+      field: contact
+      function: truthy
+
+  # OPENAPI VERSION
+  openapi-version-3:
+    description: Specs must use OpenAPI 3.0.x.
+    message: "OpenAPI version must be 3.0.x. Found: {{value}}"
+    severity: error
+    given: "$.openapi"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^3\\.0\\."
+
+  # SERVERS
+  servers-defined:
+    description: At least one server must be defined.
+    severity: error
+    given: "$"
+    then:
+      field: servers
+      function: truthy
+
+  servers-https-only:
+    description: All server URLs must use HTTPS.
+    message: "Server URL must use HTTPS. Found: {{value}}"
+    severity: error
+    given: "$.servers[*].url"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https://"
+
+  servers-description-required:
+    description: Each server must have a description.
+    severity: warn
+    given: "$.servers[*]"
+    then:
+      field: description
+      function: truthy
+
+  # PATHS — NAMING CONVENTIONS
+  paths-no-trailing-slash:
+    description: Paths must not end with a trailing slash.
+    message: "Path must not end with a trailing slash. Found: {{path}}"
+    severity: warn
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "/$"
+
+  paths-no-query-strings:
+    description: Paths must not contain query strings.
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "\\?"
+
+  # OPERATIONS
+  operation-summary-required:
+    description: Every operation must have a summary.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete,options,head]"
+    then:
+      field: summary
+      function: truthy
+
+  operation-summary-title-case:
+    description: Operation summaries must start with "Alchemy" and use Title Case.
+    message: "Summary should start with 'Alchemy'. Found: {{value}}"
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete].summary"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^Alchemy "
+
+  operation-description-required:
+    description: Every operation must have a description.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete,options,head]"
+    then:
+      field: description
+      function: truthy
+
+  operation-id-required:
+    description: Every operation must have an operationId.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete,options,head]"
+    then:
+      field: operationId
+      function: truthy
+
+  operation-id-camel-case:
+    description: operationId must use camelCase.
+    message: "operationId must be camelCase. Found: {{value}}"
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-zA-Z0-9]*$"
+
+  operation-tags-required:
+    description: Every operation must have at least one tag.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete,options,head]"
+    then:
+      field: tags
+      function: truthy
+
+  # TAGS
+  tags-global-defined:
+    description: Global tags array must be defined.
+    severity: warn
+    given: "$"
+    then:
+      field: tags
+      function: truthy
+
+  tags-description-required:
+    description: Each global tag should have a description.
+    severity: warn
+    given: "$.tags[*]"
+    then:
+      field: description
+      function: truthy
+
+  # PARAMETERS
+  parameter-description-required:
+    description: All parameters must have a description.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete].parameters[*]"
+    then:
+      field: description
+      function: truthy
+
+  # REQUEST BODIES
+  request-body-json:
+    description: Request bodies should use application/json content type.
+    severity: info
+    given: "$.paths[*][post,put,patch].requestBody.content"
+    then:
+      function: truthy
+
+  request-body-description:
+    description: Request bodies should have a description.
+    severity: info
+    given: "$.paths[*][post,put,patch].requestBody"
+    then:
+      field: description
+      function: defined
+
+  # RESPONSES
+  response-success-required:
+    description: Every operation must define at least one 2xx response.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete].responses"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          minProperties: 1
+
+  response-description-required:
+    description: Every response must have a description.
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete].responses[*]"
+    then:
+      field: description
+      function: truthy
+
+  response-401-for-secured:
+    description: Operations with security should define a 401 response.
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete][?(@.security)]"
+    then:
+      field: responses
+      function: defined
+
+  # SCHEMAS — PROPERTY NAMING
+  schema-description-on-top-level:
+    description: Top-level component schemas should have a description.
+    severity: warn
+    given: "$.components.schemas[*]"
+    then:
+      field: description
+      function: truthy
+
+  schema-type-defined:
+    description: Schemas should define a type.
+    severity: info
+    given: "$.components.schemas[*]"
+    then:
+      field: type
+      function: defined
+
+  # SECURITY
+  security-schemes-defined:
+    description: Security schemes must be defined in components.
+    severity: error
+    given: "$.components"
+    then:
+      field: securitySchemes
+      function: truthy
+
+  security-scheme-description:
+    description: Security schemes should have a description.
+    severity: warn
+    given: "$.components.securitySchemes[*]"
+    then:
+      field: description
+      function: truthy
+
+  # HTTP METHOD CONVENTIONS
+  http-get-no-body:
+    description: GET operations must not have a request body.
+    severity: error
+    given: "$.paths[*].get"
+    then:
+      field: requestBody
+      function: falsy
+
+  http-delete-no-body:
+    description: DELETE operations should not have a request body.
+    severity: warn
+    given: "$.paths[*].delete"
+    then:
+      field: requestBody
+      function: falsy
+
+  # GENERAL QUALITY
+  no-empty-descriptions:
+    description: Descriptions must not be empty strings.
+    message: "Description must not be an empty string."
+    severity: error
+    given: "$..description"
+    then:
+      function: truthy
+
+  examples-encouraged:
+    description: Operations should include request/response examples.
+    severity: info
+    given: "$.paths[*][post,get].responses[*].content[*]"
+    then:
+      field: examples
+      function: defined

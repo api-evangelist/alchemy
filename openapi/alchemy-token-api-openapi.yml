@@ -1,55 +1,297 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: Alchemy Token API
-  version: 1.0.0
   description: >-
-    Alchemy Token API is a powerful tool that allows developers to easily
-    integrate Alchemy Token into their applications. With this API, developers
-    can access real-time data on token prices, trading volume, market trends,
-    and more. This data can be used to create custom charts, analytics, and
-    trading strategies, giving developers a competitive edge in the
-    cryptocurrency market. Additionally, the API provides secure access to
-    Alchemy Token wallets, allowing for seamless transactions and transfers.
-    Overall, Alchemy Token API streamlines the process of incorporating Alchemy
-    Token into applications, making it easier for developers to leverage the
-    benefits of this innovative cryptocurrency.
+    The Alchemy Token API provides comprehensive access to ERC-20 token data
+    across EVM-compatible networks. Developers can retrieve token balances by
+    wallet address, token metadata (name, symbol, decimals, logo), and
+    real-time pricing data. The API supports multi-chain queries and returns
+    standardized responses for easy integration into wallets, portfolio
+    trackers, and DeFi applications.
+  version: '1.0'
+  contact:
+    name: Alchemy Support
+    url: https://www.alchemy.com/support
+  x-generated-from: documentation
 servers:
-  - url: https://{{network}}.g.alchemy.com
+  - url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Ethereum Mainnet
+    variables:
+      apiKey:
+        default: your-api-key
+        description: Your Alchemy API key.
+  - url: https://polygon-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Polygon Mainnet
+    variables:
+      apiKey:
+        default: your-api-key
+        description: Your Alchemy API key.
+tags:
+  - name: Token Balances
+    description: Retrieve ERC-20 token balances for wallet addresses.
+  - name: Token Metadata
+    description: Retrieve metadata for ERC-20 tokens.
+  - name: Token Prices
+    description: Retrieve real-time and historical token price data.
 paths:
-  /v2/{apiKey}:
+  /getTokenBalances:
     post:
-      tags: []
-      summary: Alchemy Get whale tokens
+      operationId: getTokenBalances
+      summary: Alchemy Get Token Balances
+      description: >-
+        Returns ERC-20 token balances for a specified wallet address across
+        all tokens or a specified list of token contract addresses. Supports
+        both paginated full-portfolio queries and targeted balance lookups.
+      tags:
+        - Token Balances
+      security:
+        - apiKeyHeader: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
-              example:
-                id: 1
-                jsonrpc: '2.0'
-                method: alchemy_getTokenBalances
-                params:
-                  - '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
-                  - erc20
-      parameters:
-        - name: Accept
-          in: header
-          schema:
-            type: string
-          example: application/json
-        - name: Content-Type
-          in: header
-          schema:
-            type: string
-          example: application/json
-        - name: apiKey
-          in: path
-          schema:
-            type: string
-          required: true
+              $ref: '#/components/schemas/JsonRpcRequest'
+            examples:
+              GetTokenBalancesRequestExample:
+                summary: Default getTokenBalances request
+                x-microcks-default: true
+                value:
+                  id: 1
+                  jsonrpc: '2.0'
+                  method: alchemy_getTokenBalances
+                  params:
+                    - address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+                      tokenType: erc20
       responses:
         '200':
-          description: Successful response
+          description: Token balances retrieved successfully.
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenBalancesResponse'
+              examples:
+                GetTokenBalances200Example:
+                  summary: Default getTokenBalances 200 response
+                  x-microcks-default: true
+                  value:
+                    id: 1
+                    jsonrpc: '2.0'
+                    result:
+                      address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+                      tokenBalances:
+                        - contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+                          tokenBalance: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
+                          error: null
+                      pageKey: null
+        '400':
+          description: Bad request - invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonRpcErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /getTokenMetadata:
+    post:
+      operationId: getTokenMetadata
+      summary: Alchemy Get Token Metadata
+      description: >-
+        Returns metadata (name, symbol, decimals, logo) for a given ERC-20
+        token contract address. Useful for displaying token information in
+        wallets and portfolio applications without needing to call the token
+        contract directly.
+      tags:
+        - Token Metadata
+      security:
+        - apiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonRpcRequest'
+            examples:
+              GetTokenMetadataRequestExample:
+                summary: Default getTokenMetadata request
+                x-microcks-default: true
+                value:
+                  id: 1
+                  jsonrpc: '2.0'
+                  method: alchemy_getTokenMetadata
+                  params:
+                    - contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+      responses:
+        '200':
+          description: Token metadata retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenMetadataResponse'
+              examples:
+                GetTokenMetadata200Example:
+                  summary: Default getTokenMetadata 200 response
+                  x-microcks-default: true
+                  value:
+                    id: 1
+                    jsonrpc: '2.0'
+                    result:
+                      name: USD Coin
+                      symbol: USDC
+                      decimals: 6
+                      logo: https://static.alchemyapi.io/images/assets/3408.png
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonRpcErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Alchemy-Token
+      description: Alchemy API key. Also embedded in server URL path variable.
+  schemas:
+    JsonRpcRequest:
+      type: object
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
+      required:
+        - id
+        - jsonrpc
+        - method
+        - params
+      properties:
+        id:
+          type: integer
+          description: Request identifier for response correlation.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC protocol version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy or Ethereum JSON-RPC method name.
+          example: alchemy_getTokenBalances
+        params:
+          type: array
+          description: Method-specific parameters array.
+          items: {}
+    TokenBalance:
+      type: object
+      title: Token Balance
+      description: ERC-20 token balance entry for a wallet address.
+      properties:
+        contractAddress:
+          type: string
+          description: Token contract address.
+          example: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+        tokenBalance:
+          type: string
+          description: Token balance in hexadecimal (raw units, divide by 10^decimals).
+          example: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
+        error:
+          type: string
+          nullable: true
+          description: Error message if the balance could not be retrieved.
+          example: null
+    TokenBalancesResult:
+      type: object
+      title: Token Balances Result
+      description: Result payload for token balance queries.
+      properties:
+        address:
+          type: string
+          description: Wallet address queried.
+          example: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+        tokenBalances:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenBalance'
+          description: List of token balances for the wallet.
+        pageKey:
+          type: string
+          nullable: true
+          description: Pagination key for fetching the next page.
+          example: null
+    TokenBalancesResponse:
+      type: object
+      title: Token Balances Response
+      description: JSON-RPC response containing token balance results.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenBalancesResult'
+    TokenMetadata:
+      type: object
+      title: Token Metadata
+      description: ERC-20 token metadata including name, symbol, decimals, and logo.
+      properties:
+        name:
+          type: string
+          description: Full token name.
+          example: USD Coin
+        symbol:
+          type: string
+          description: Token ticker symbol.
+          example: USDC
+        decimals:
+          type: integer
+          description: Number of decimal places for the token.
+          example: 6
+        logo:
+          type: string
+          format: uri
+          description: URL of the token logo image.
+          example: https://static.alchemyapi.io/images/assets/3408.png
+    TokenMetadataResponse:
+      type: object
+      title: Token Metadata Response
+      description: JSON-RPC response containing token metadata.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenMetadata'
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
+    JsonRpcErrorResponse:
+      type: object
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        error:
+          $ref: '#/components/schemas/JsonRpcError'

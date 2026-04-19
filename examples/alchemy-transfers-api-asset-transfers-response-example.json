@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "transfers": [
+      {
+        "blockNum": "0xfda53c",
+        "hash": "0xabc123def456abc123def456abc123def456",
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+        "value": 1.0,
+        "asset": "ETH",
+        "category": "external",
+        "metadata": {}
+      }
+    ],
+    "pageKey": "abc123nextpage"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "My Sponsorship Policy",
+  "network": "eth-mainnet",
+  "maxSpendPerUser": 1.0,
+  "maxSpendTotal": 500.0
+}

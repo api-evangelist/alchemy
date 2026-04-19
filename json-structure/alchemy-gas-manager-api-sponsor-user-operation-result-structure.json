@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/json-structure/alchemy-gas-manager-api-sponsor-user-operation-result-structure.json",
+  "name": "Sponsor User Operation Result",
+  "description": "Paymaster response data for a sponsored user operation.",
+  "type": "object",
+  "properties": {
+    "paymasterAndData": {
+      "type": "string",
+      "description": "Encoded paymaster address and data for the user operation.",
+      "example": "0xabc123paymaster"
+    },
+    "preVerificationGas": {
+      "type": "string",
+      "description": "Pre-verification gas estimate in hexadecimal.",
+      "example": "0x5208"
+    },
+    "verificationGasLimit": {
+      "type": "string",
+      "description": "Verification gas limit in hexadecimal.",
+      "example": "0x15f90"
+    },
+    "callGasLimit": {
+      "type": "string",
+      "description": "Call gas limit in hexadecimal.",
+      "example": "0x9c40"
+    }
+  }
+}

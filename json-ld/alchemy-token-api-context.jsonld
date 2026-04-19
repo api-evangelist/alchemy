@@ -1,0 +1,64 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "alchemy": "https://alchemy.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "Token Balance": "alchemy:Token Balance",
+    "Token Balances Result": "alchemy:Token Balances Result",
+    "Token Metadata Response": "alchemy:Token Metadata Response",
+    "Token Balances Response": "alchemy:Token Balances Response",
+    "Token Metadata": "alchemy:Token Metadata",
+    "address": {
+      "@id": "alchemy:address",
+      "@type": "xsd:string"
+    },
+    "contractAddress": {
+      "@id": "alchemy:contractAddress",
+      "@type": "xsd:string"
+    },
+    "decimals": {
+      "@id": "alchemy:decimals",
+      "@type": "xsd:integer"
+    },
+    "error": {
+      "@id": "alchemy:error",
+      "@type": "xsd:string"
+    },
+    "id": {
+      "@id": "alchemy:id",
+      "@type": "xsd:integer"
+    },
+    "jsonrpc": {
+      "@id": "alchemy:jsonrpc",
+      "@type": "xsd:string"
+    },
+    "logo": {
+      "@id": "alchemy:logo",
+      "@type": "@id"
+    },
+    "name": "schema:name",
+    "pageKey": {
+      "@id": "alchemy:pageKey",
+      "@type": "xsd:string"
+    },
+    "result": {
+      "@id": "alchemy:result",
+      "@type": "@id"
+    },
+    "symbol": {
+      "@id": "alchemy:symbol",
+      "@type": "xsd:string"
+    },
+    "tokenBalance": {
+      "@id": "alchemy:tokenBalance",
+      "@type": "xsd:string"
+    },
+    "tokenBalances": {
+      "@id": "alchemy:tokenBalances",
+      "@container": "@set",
+      "@type": "@id"
+    }
+  }
+}

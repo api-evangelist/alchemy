@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/json-schema/alchemy-token-api-token-metadata-response-schema.json",
+  "title": "Token Metadata Response",
+  "description": "JSON-RPC response containing token metadata.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "example": 1
+    },
+    "jsonrpc": {
+      "type": "string",
+      "example": "2.0"
+    },
+    "result": {
+      "type": "object",
+      "title": "Token Metadata",
+      "description": "ERC-20 token metadata including name, symbol, decimals, and logo.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full token name.",
+          "example": "USD Coin"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Token ticker symbol.",
+          "example": "USDC"
+        },
+        "decimals": {
+          "type": "integer",
+          "description": "Number of decimal places for the token.",
+          "example": 6
+        },
+        "logo": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the token logo image.",
+          "example": "https://static.alchemyapi.io/images/assets/3408.png"
+        }
+      }
+    }
+  }
+}

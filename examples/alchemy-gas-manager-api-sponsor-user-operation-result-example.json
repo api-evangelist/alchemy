@@ -1,0 +1,6 @@
+{
+  "paymasterAndData": "0xabc123paymaster",
+  "preVerificationGas": "0x5208",
+  "verificationGasLimit": "0x15f90",
+  "callGasLimit": "0x9c40"
+}

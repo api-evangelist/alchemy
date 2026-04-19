@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/json-structure/alchemy-gas-manager-api-create-policy-request-structure.json",
+  "name": "Create Policy Request",
+  "description": "Request body for creating a new gas manager policy.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Display name for the new policy.",
+      "example": "My Sponsorship Policy"
+    },
+    "network": {
+      "type": "string",
+      "description": "Blockchain network for the policy.",
+      "example": "eth-mainnet"
+    },
+    "maxSpendPerUser": {
+      "type": "double",
+      "description": "Maximum ETH spend per user (optional).",
+      "example": 1.0
+    },
+    "maxSpendTotal": {
+      "type": "double",
+      "description": "Maximum total ETH spend across all users (optional).",
+      "example": 500.0
+    }
+  },
+  "required": [
+    "name",
+    "network"
+  ]
+}

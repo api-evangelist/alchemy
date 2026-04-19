@@ -1,0 +1,299 @@
+vocabulary: "1.0.0"
+
+info:
+  provider: "Alchemy"
+  description: >-
+    Unified taxonomy mapping operational (OpenAPI) and capability (Naftiko) dimensions
+    for the Alchemy Web3 developer platform, covering Gas Manager, Token, and Transfers APIs.
+  created: "2026-04-19"
+  modified: "2026-04-19"
+
+operational:
+  apis:
+    - namespace: gas-manager
+      name: "Alchemy Gas Manager API"
+      version: "1.0"
+      baseUrl: "https://manage.g.alchemy.com/api"
+      status: active
+    - namespace: token-api
+      name: "Alchemy Token API"
+      version: "1.0"
+      baseUrl: "https://eth-mainnet.g.alchemy.com/v2/{apiKey}"
+      status: active
+    - namespace: transfers-api
+      name: "Alchemy Transfers API"
+      version: "1.0"
+      baseUrl: "https://eth-mainnet.g.alchemy.com/v2/{apiKey}"
+      status: active
+
+  resources:
+    - name: policies
+      description: "Gas sponsorship policies for ERC-4337 Account Abstraction."
+      api: gas-manager
+      actions:
+        - list
+        - create
+        - get
+    - name: sponsor
+      description: "Paymaster endpoint for sponsoring user operations."
+      api: gas-manager
+      actions:
+        - sponsor
+    - name: token-balances
+      description: "ERC-20 token balances for wallet addresses."
+      api: token-api
+      actions:
+        - get
+    - name: token-metadata
+      description: "ERC-20 token metadata including name, symbol, decimals, and logo."
+      api: token-api
+      actions:
+        - get
+    - name: transfers
+      description: "Historical on-chain asset transfers across EVM networks."
+      api: transfers-api
+      actions:
+        - get
+
+  actions:
+    - name: list
+      httpMethod: GET
+      pattern: read
+      description: "Retrieve a collection of resources."
+    - name: get
+      httpMethod: GET
+      pattern: read
+      description: "Retrieve a single resource by identifier."
+    - name: create
+      httpMethod: POST
+      pattern: write
+      description: "Create a new resource."
+    - name: sponsor
+      httpMethod: POST
+      pattern: write
+      description: "Submit a user operation for gas sponsorship."
+
+  schemas:
+    core:
+      - name: "Policy"
+        description: "Gas sponsorship policy with spend limits and network configuration."
+        properties:
+          - policyId
+          - name
+          - status
+          - network
+          - maxSpendPerUser
+          - maxSpendTotal
+      - name: "Token Balance"
+        description: "ERC-20 token balance for a wallet address."
+        properties:
+          - contractAddress
+          - tokenBalance
+          - error
+      - name: "Token Metadata"
+        description: "ERC-20 token metadata."
+        properties:
+          - name
+          - symbol
+          - decimals
+          - logo
+      - name: "Asset Transfer"
+        description: "Single asset transfer event on the blockchain."
+        properties:
+          - blockNum
+          - hash
+          - from
+          - to
+          - value
+          - asset
+          - category
+          - metadata
+
+  parameters:
+    identifiers:
+      - name: policyId
+        type: string
+        description: "Unique identifier for a gas manager policy."
+    pagination:
+      - name: pageKey
+        type: string
+        description: "Cursor for paginating token balance and transfer results."
+    filters:
+      - name: fromAddress
+        type: string
+        description: "Filter transfers by sender address."
+      - name: fromBlock
+        type: string
+        description: "Starting block number for transfer queries (hex)."
+      - name: toBlock
+        type: string
+        description: "Ending block number for transfer queries (hex or 'latest')."
+      - name: category
+        type: array
+        description: "Transfer categories to include (erc20, erc721, erc1155, external, internal)."
+
+  enums:
+    policy-status:
+      - active
+      - inactive
+      - expired
+    transfer-category:
+      - external
+      - internal
+      - erc20
+      - erc721
+      - erc1155
+
+  authentication:
+    schemes:
+      - name: bearerAuth
+        type: bearer
+        apis:
+          - gas-manager
+        description: "Bearer token for Gas Manager Management API."
+      - name: apiKeyHeader
+        type: apikey
+        header: X-Alchemy-Token
+        apis:
+          - token-api
+          - transfers-api
+        description: "API key passed as X-Alchemy-Token header; also embedded in server URL."
+
+capability:
+  workflows:
+    - name: "Web3 Wallet Portfolio"
+      file: "capabilities/web3-wallet-portfolio.yaml"
+      description: >-
+        Combines Token API and Transfers API for wallet portfolio applications.
+      apis:
+        - token-api
+        - transfers-api
+      toolCount: 3
+      personas:
+        - wallet-developer
+        - defi-builder
+      domains:
+        - Portfolio
+        - Tokens
+        - Transfers
+    - name: "Gasless Transaction Management"
+      file: "capabilities/gasless-transaction-management.yaml"
+      description: >-
+        Manages gasless transaction sponsorship using ERC-4337 Account Abstraction via Gas Manager API.
+      apis:
+        - gas-manager
+      toolCount: 4
+      personas:
+        - dapp-developer
+        - web3-platform-engineer
+      domains:
+        - Gas Management
+        - Account Abstraction
+
+  personas:
+    - id: wallet-developer
+      name: "Wallet Developer"
+      description: "Builds EVM wallet applications needing token balances and transaction history."
+      workflows:
+        - Web3 Wallet Portfolio
+    - id: defi-builder
+      name: "DeFi Builder"
+      description: "Develops DeFi applications requiring portfolio tracking and token data."
+      workflows:
+        - Web3 Wallet Portfolio
+    - id: dapp-developer
+      name: "dApp Developer"
+      description: "Creates decentralized applications with gasless UX for end users."
+      workflows:
+        - Gasless Transaction Management
+    - id: web3-platform-engineer
+      name: "Web3 Platform Engineer"
+      description: "Manages gas sponsorship infrastructure and ERC-4337 policies."
+      workflows:
+        - Gasless Transaction Management
+
+  domains:
+    - name: "Portfolio"
+      description: "Wallet balance and asset portfolio management."
+      resources:
+        - token-balances
+        - token-metadata
+        - transfers
+    - name: "Gas Management"
+      description: "Gas fee sponsorship and ERC-4337 Account Abstraction."
+      resources:
+        - policies
+        - sponsor
+    - name: "Tokens"
+      description: "ERC-20 token data and metadata."
+      resources:
+        - token-balances
+        - token-metadata
+    - name: "Transfers"
+      description: "On-chain asset transfer history."
+      resources:
+        - transfers
+
+  namespaces:
+    consumed:
+      - gas-manager
+      - token-api
+      - transfers-api
+    rest:
+      - wallet-portfolio-api
+      - gasless-tx-api
+    mcp:
+      - wallet-portfolio-mcp
+      - gasless-tx-mcp
+
+  binds:
+    - name: ALCHEMY_BEARER_TOKEN
+      workflows:
+        - Gasless Transaction Management
+    - name: ALCHEMY_API_KEY
+      workflows:
+        - Web3 Wallet Portfolio
+        - Gasless Transaction Management
+
+crossReference:
+  - resource: policies
+    operations:
+      - list-policies
+      - create-policy
+      - get-policy
+    workflows:
+      - Gasless Transaction Management
+    personas:
+      - dapp-developer
+      - web3-platform-engineer
+  - resource: sponsor
+    operations:
+      - sponsor-user-operation
+    workflows:
+      - Gasless Transaction Management
+    personas:
+      - dapp-developer
+  - resource: token-balances
+    operations:
+      - get-token-balances
+    workflows:
+      - Web3 Wallet Portfolio
+    personas:
+      - wallet-developer
+      - defi-builder
+  - resource: token-metadata
+    operations:
+      - get-token-metadata
+    workflows:
+      - Web3 Wallet Portfolio
+    personas:
+      - wallet-developer
+      - defi-builder
+  - resource: transfers
+    operations:
+      - get-asset-transfers
+    workflows:
+      - Web3 Wallet Portfolio
+    personas:
+      - wallet-developer
+      - defi-builder

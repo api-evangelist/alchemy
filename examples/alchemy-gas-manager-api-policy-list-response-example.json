@@ -1,0 +1,12 @@
+{
+  "policies": [
+    {
+      "policyId": "pol-abc123",
+      "name": "Default Sponsorship Policy",
+      "status": "active",
+      "network": "eth-mainnet",
+      "maxSpendPerUser": 1.0,
+      "maxSpendTotal": 1000.0
+    }
+  ]
+}

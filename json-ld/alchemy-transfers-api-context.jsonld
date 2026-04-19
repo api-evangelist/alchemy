@@ -1,0 +1,70 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "alchemy": "https://alchemy.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "Asset Transfer": "alchemy:Asset Transfer",
+    "Asset Transfers Response": "alchemy:Asset Transfers Response",
+    "Asset Transfers Result": "alchemy:Asset Transfers Result",
+    "Transfer Metadata": "alchemy:Transfer Metadata",
+    "asset": {
+      "@id": "alchemy:asset",
+      "@type": "xsd:string"
+    },
+    "blockNum": {
+      "@id": "alchemy:blockNum",
+      "@type": "xsd:string"
+    },
+    "blockTimestamp": {
+      "@id": "alchemy:blockTimestamp",
+      "@type": "xsd:dateTime"
+    },
+    "category": {
+      "@id": "alchemy:category",
+      "@type": "xsd:string"
+    },
+    "from": {
+      "@id": "alchemy:from",
+      "@type": "xsd:string"
+    },
+    "hash": {
+      "@id": "alchemy:hash",
+      "@type": "xsd:string"
+    },
+    "id": {
+      "@id": "alchemy:id",
+      "@type": "xsd:integer"
+    },
+    "jsonrpc": {
+      "@id": "alchemy:jsonrpc",
+      "@type": "xsd:string"
+    },
+    "metadata": {
+      "@id": "alchemy:metadata",
+      "@type": "@id"
+    },
+    "pageKey": {
+      "@id": "alchemy:pageKey",
+      "@type": "xsd:string"
+    },
+    "result": {
+      "@id": "alchemy:result",
+      "@type": "@id"
+    },
+    "to": {
+      "@id": "alchemy:to",
+      "@type": "xsd:string"
+    },
+    "transfers": {
+      "@id": "alchemy:transfers",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "value": {
+      "@id": "alchemy:value",
+      "@type": "xsd:decimal"
+    }
+  }
+}
