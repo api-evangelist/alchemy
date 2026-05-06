@@ -1,138 +1,201 @@
-naftiko: "1.0.0-alpha1"
-
+naftiko: 1.0.0-alpha2
 info:
-  label: "Alchemy Gasless Transaction Management"
-  description: >-
-    Capability for managing gasless transaction sponsorship using ERC-4337
-    Account Abstraction. Combines the Gas Manager API for policy creation and
-    management with paymaster sponsorship. Designed for dApp developers and
-    Web3 platform teams who want to abstract gas fees from end users.
+  label: Alchemy Gasless Transaction Management
+  description: Capability for managing gasless transaction sponsorship using ERC-4337 Account Abstraction. Combines the Gas
+    Manager API for policy creation and management with paymaster sponsorship. Designed for dApp developers and Web3 platform
+    teams who want to abstract gas fees from end users.
   tags:
-    - Alchemy
-    - Blockchain
-    - Gas Manager
-    - Account Abstraction
-    - Web3
-  created: "2026-04-19"
-  modified: "2026-04-19"
-
+  - Alchemy
+  - Blockchain
+  - Gas Manager
+  - Account Abstraction
+  - Web3
+  created: '2026-04-19'
+  modified: '2026-05-06'
 binds:
-  - namespace: env
-    keys:
-      ALCHEMY_BEARER_TOKEN: ALCHEMY_BEARER_TOKEN
-      ALCHEMY_API_KEY: ALCHEMY_API_KEY
-
+- namespace: env
+  keys:
+    ALCHEMY_BEARER_TOKEN: ALCHEMY_BEARER_TOKEN
+    ALCHEMY_API_KEY: ALCHEMY_API_KEY
 capability:
   consumes:
-    - import: gas-manager
-      location: ./shared/gas-manager-api.yaml
-
+  - type: http
+    namespace: gas-manager
+    baseUri: https://manage.g.alchemy.com/api
+    description: Alchemy Gas Manager Management API for policy administration.
+    authentication:
+      type: bearer
+      token: '{{ALCHEMY_BEARER_TOKEN}}'
+    resources:
+    - name: policies
+      path: /gasManager/policy
+      description: Gas sponsorship policies.
+      operations:
+      - name: list-policies
+        method: GET
+        description: Returns all gas manager sponsorship policies.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-policy
+        method: POST
+        description: Creates a new gas sponsorship policy.
+        body:
+          type: json
+          data:
+            name: '{{tools.name}}'
+            network: '{{tools.network}}'
+            maxSpendPerUser: '{{tools.maxSpendPerUser}}'
+            maxSpendTotal: '{{tools.maxSpendTotal}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: policy
+      path: /gasManager/policy/{policyId}
+      description: Individual gas sponsorship policy.
+      operations:
+      - name: get-policy
+        method: GET
+        description: Retrieves details for a specific gas sponsorship policy.
+        inputParameters:
+        - name: policyId
+          in: path
+          type: string
+          required: true
+          description: Unique identifier of the gas manager policy.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: sponsor
+      path: /sponsorUserOperation
+      description: Paymaster endpoint for sponsoring user operations.
+      operations:
+      - name: sponsor-user-operation
+        method: POST
+        description: Submits a user operation for gas sponsorship via ERC-4337 paymaster.
+        body:
+          type: json
+          data:
+            id: '{{tools.id}}'
+            jsonrpc: '2.0'
+            method: alchemy_requestGasAndPaymasterAndData
+            params: '{{tools.params}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
   exposes:
-    - type: rest
-      port: 8081
-      namespace: gasless-tx-api
-      description: "Unified REST API for gasless transaction management."
-      resources:
-        - path: /v1/policies
-          name: policies
-          description: "Gas sponsorship policies."
-          operations:
-            - method: GET
-              name: list-policies
-              description: "List all gas sponsorship policies."
-              call: "gas-manager.list-policies"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: POST
-              name: create-policy
-              description: "Create a new gas sponsorship policy."
-              call: "gas-manager.create-policy"
-              with:
-                name: "rest.name"
-                network: "rest.network"
-                maxSpendPerUser: "rest.maxSpendPerUser"
-                maxSpendTotal: "rest.maxSpendTotal"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/policies/{policyId}
-          name: policy
-          description: "Individual gas policy."
-          operations:
-            - method: GET
-              name: get-policy
-              description: "Get a specific gas sponsorship policy."
-              call: "gas-manager.get-policy"
-              with:
-                policyId: "rest.policyId"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/sponsor
-          name: sponsor
-          description: "Gas sponsorship for user operations."
-          operations:
-            - method: POST
-              name: sponsor-user-operation
-              description: "Sponsor a user operation for gasless transactions."
-              call: "gas-manager.sponsor-user-operation"
-              with:
-                id: "rest.id"
-                params: "rest.params"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-    - type: mcp
-      port: 9091
-      namespace: gasless-tx-mcp
-      transport: http
-      description: "MCP server for AI-assisted gasless transaction management."
-      tools:
-        - name: list-policies
-          description: "List all gas manager sponsorship policies for the Alchemy application."
-          hints:
-            readOnly: true
-            idempotent: true
-          call: "gas-manager.list-policies"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: create-policy
-          description: "Create a new gas sponsorship policy with spend limits and network settings."
-          hints:
-            readOnly: false
-            idempotent: false
-          call: "gas-manager.create-policy"
-          with:
-            name: "tools.name"
-            network: "tools.network"
-            maxSpendPerUser: "tools.maxSpendPerUser"
-            maxSpendTotal: "tools.maxSpendTotal"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: get-policy
-          description: "Get details for a specific gas sponsorship policy by ID."
-          hints:
-            readOnly: true
-            idempotent: true
-          call: "gas-manager.get-policy"
-          with:
-            policyId: "tools.policyId"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: sponsor-user-operation
-          description: "Submit a user operation for ERC-4337 gas sponsorship, enabling gasless transactions."
-          hints:
-            readOnly: false
-            idempotent: false
-          call: "gas-manager.sponsor-user-operation"
-          with:
-            id: "tools.id"
-            params: "tools.params"
-          outputParameters:
-            - type: object
-              mapping: "$."
+  - type: rest
+    port: 8081
+    namespace: gasless-tx-api
+    description: Unified REST API for gasless transaction management.
+    resources:
+    - path: /v1/policies
+      name: policies
+      description: Gas sponsorship policies.
+      operations:
+      - method: GET
+        name: list-policies
+        description: List all gas sponsorship policies.
+        call: gas-manager.list-policies
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: create-policy
+        description: Create a new gas sponsorship policy.
+        call: gas-manager.create-policy
+        with:
+          name: rest.name
+          network: rest.network
+          maxSpendPerUser: rest.maxSpendPerUser
+          maxSpendTotal: rest.maxSpendTotal
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/policies/{policyId}
+      name: policy
+      description: Individual gas policy.
+      operations:
+      - method: GET
+        name: get-policy
+        description: Get a specific gas sponsorship policy.
+        call: gas-manager.get-policy
+        with:
+          policyId: rest.policyId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/sponsor
+      name: sponsor
+      description: Gas sponsorship for user operations.
+      operations:
+      - method: POST
+        name: sponsor-user-operation
+        description: Sponsor a user operation for gasless transactions.
+        call: gas-manager.sponsor-user-operation
+        with:
+          id: rest.id
+          params: rest.params
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9091
+    namespace: gasless-tx-mcp
+    transport: http
+    description: MCP server for AI-assisted gasless transaction management.
+    tools:
+    - name: list-policies
+      description: List all gas manager sponsorship policies for the Alchemy application.
+      hints:
+        readOnly: true
+        idempotent: true
+      call: gas-manager.list-policies
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-policy
+      description: Create a new gas sponsorship policy with spend limits and network settings.
+      hints:
+        readOnly: false
+        idempotent: false
+      call: gas-manager.create-policy
+      with:
+        name: tools.name
+        network: tools.network
+        maxSpendPerUser: tools.maxSpendPerUser
+        maxSpendTotal: tools.maxSpendTotal
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-policy
+      description: Get details for a specific gas sponsorship policy by ID.
+      hints:
+        readOnly: true
+        idempotent: true
+      call: gas-manager.get-policy
+      with:
+        policyId: tools.policyId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sponsor-user-operation
+      description: Submit a user operation for ERC-4337 gas sponsorship, enabling gasless transactions.
+      hints:
+        readOnly: false
+        idempotent: false
+      call: gas-manager.sponsor-user-operation
+      with:
+        id: tools.id
+        params: tools.params
+      outputParameters:
+      - type: object
+        mapping: $.

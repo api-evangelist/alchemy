@@ -1,117 +1,182 @@
-naftiko: "1.0.0-alpha1"
-
+naftiko: 1.0.0-alpha2
 info:
-  label: "Alchemy Web3 Wallet Portfolio"
-  description: >-
-    Unified capability for building Web3 wallet and portfolio applications.
-    Combines the Token API for balance and metadata queries with the Transfers
-    API for transaction history. Designed for wallet developers, DeFi app
-    builders, and portfolio tracker teams who need comprehensive on-chain
-    data for any EVM-compatible wallet address.
+  label: Alchemy Web3 Wallet Portfolio
+  description: Unified capability for building Web3 wallet and portfolio applications. Combines the Token API for balance
+    and metadata queries with the Transfers API for transaction history. Designed for wallet developers, DeFi app builders,
+    and portfolio tracker teams who need comprehensive on-chain data for any EVM-compatible wallet address.
   tags:
-    - Alchemy
-    - Blockchain
-    - Portfolio
-    - Tokens
-    - Transfers
-    - Web3
-  created: "2026-04-19"
-  modified: "2026-04-19"
-
+  - Alchemy
+  - Blockchain
+  - Portfolio
+  - Tokens
+  - Transfers
+  - Web3
+  created: '2026-04-19'
+  modified: '2026-05-06'
 binds:
-  - namespace: env
-    keys:
-      ALCHEMY_API_KEY: ALCHEMY_API_KEY
-
+- namespace: env
+  keys:
+    ALCHEMY_API_KEY: ALCHEMY_API_KEY
 capability:
   consumes:
-    - import: token-api
-      location: ./shared/token-api.yaml
-    - import: transfers-api
-      location: ./shared/transfers-api.yaml
-
+  - type: http
+    namespace: token-api
+    baseUri: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Alchemy Token API for ERC-20 token data.
+    authentication:
+      type: apikey
+      key: X-Alchemy-Token
+      value: '{{ALCHEMY_API_KEY}}'
+      placement: header
+    resources:
+    - name: token-balances
+      path: /getTokenBalances
+      description: ERC-20 token balances by wallet address.
+      operations:
+      - name: get-token-balances
+        method: POST
+        description: Returns ERC-20 token balances for a specified wallet address.
+        body:
+          type: json
+          data:
+            id: 1
+            jsonrpc: '2.0'
+            method: alchemy_getTokenBalances
+            params: '{{tools.params}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: token-metadata
+      path: /getTokenMetadata
+      description: ERC-20 token metadata.
+      operations:
+      - name: get-token-metadata
+        method: POST
+        description: Returns metadata for a given ERC-20 token contract address.
+        body:
+          type: json
+          data:
+            id: 1
+            jsonrpc: '2.0'
+            method: alchemy_getTokenMetadata
+            params: '{{tools.params}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  - type: http
+    namespace: transfers-api
+    baseUri: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Alchemy Transfers API for historical on-chain transfer data.
+    authentication:
+      type: apikey
+      key: X-Alchemy-Token
+      value: '{{ALCHEMY_API_KEY}}'
+      placement: header
+    resources:
+    - name: transfers
+      path: /
+      description: Historical asset transfer data.
+      operations:
+      - name: get-asset-transfers
+        method: POST
+        description: Returns asset transfers based on specified filters (ETH, ERC-20, ERC-721, ERC-1155).
+        body:
+          type: json
+          data:
+            id: 1
+            jsonrpc: '2.0'
+            method: alchemy_getAssetTransfers
+            params: '{{tools.params}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
   exposes:
-    - type: rest
-      port: 8080
-      namespace: wallet-portfolio-api
-      description: "Unified REST API for Web3 wallet portfolio data."
-      resources:
-        - path: /v1/token-balances
-          name: token-balances
-          description: "ERC-20 token balances for a wallet."
-          operations:
-            - method: POST
-              name: get-token-balances
-              description: "Get ERC-20 token balances for a wallet address."
-              call: "token-api.get-token-balances"
-              with:
-                params: "rest.params"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/token-metadata
-          name: token-metadata
-          description: "ERC-20 token metadata."
-          operations:
-            - method: POST
-              name: get-token-metadata
-              description: "Get metadata for an ERC-20 token contract."
-              call: "token-api.get-token-metadata"
-              with:
-                params: "rest.params"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/transfers
-          name: transfers
-          description: "Historical on-chain asset transfers."
-          operations:
-            - method: POST
-              name: get-asset-transfers
-              description: "Query historical asset transfers for a wallet address."
-              call: "transfers-api.get-asset-transfers"
-              with:
-                params: "rest.params"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-    - type: mcp
-      port: 9090
-      namespace: wallet-portfolio-mcp
-      transport: http
-      description: "MCP server for AI-assisted Web3 wallet portfolio analysis."
-      tools:
-        - name: get-token-balances
-          description: "Get ERC-20 token balances for a wallet address across EVM networks."
-          hints:
-            readOnly: true
-            idempotent: true
-          call: "token-api.get-token-balances"
-          with:
-            params: "tools.params"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: get-token-metadata
-          description: "Get metadata (name, symbol, decimals, logo) for an ERC-20 token contract."
-          hints:
-            readOnly: true
-            idempotent: true
-          call: "token-api.get-token-metadata"
-          with:
-            params: "tools.params"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: get-asset-transfers
-          description: "Query historical on-chain asset transfers for a wallet by address, block range, and category."
-          hints:
-            readOnly: true
-            idempotent: true
-          call: "transfers-api.get-asset-transfers"
-          with:
-            params: "tools.params"
-          outputParameters:
-            - type: object
-              mapping: "$."
+  - type: rest
+    port: 8080
+    namespace: wallet-portfolio-api
+    description: Unified REST API for Web3 wallet portfolio data.
+    resources:
+    - path: /v1/token-balances
+      name: token-balances
+      description: ERC-20 token balances for a wallet.
+      operations:
+      - method: POST
+        name: get-token-balances
+        description: Get ERC-20 token balances for a wallet address.
+        call: token-api.get-token-balances
+        with:
+          params: rest.params
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/token-metadata
+      name: token-metadata
+      description: ERC-20 token metadata.
+      operations:
+      - method: POST
+        name: get-token-metadata
+        description: Get metadata for an ERC-20 token contract.
+        call: token-api.get-token-metadata
+        with:
+          params: rest.params
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/transfers
+      name: transfers
+      description: Historical on-chain asset transfers.
+      operations:
+      - method: POST
+        name: get-asset-transfers
+        description: Query historical asset transfers for a wallet address.
+        call: transfers-api.get-asset-transfers
+        with:
+          params: rest.params
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: wallet-portfolio-mcp
+    transport: http
+    description: MCP server for AI-assisted Web3 wallet portfolio analysis.
+    tools:
+    - name: get-token-balances
+      description: Get ERC-20 token balances for a wallet address across EVM networks.
+      hints:
+        readOnly: true
+        idempotent: true
+      call: token-api.get-token-balances
+      with:
+        params: tools.params
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-token-metadata
+      description: Get metadata (name, symbol, decimals, logo) for an ERC-20 token contract.
+      hints:
+        readOnly: true
+        idempotent: true
+      call: token-api.get-token-metadata
+      with:
+        params: tools.params
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-asset-transfers
+      description: Query historical on-chain asset transfers for a wallet by address, block range, and category.
+      hints:
+        readOnly: true
+        idempotent: true
+      call: transfers-api.get-asset-transfers
+      with:
+        params: tools.params
+      outputParameters:
+      - type: object
+        mapping: $.
