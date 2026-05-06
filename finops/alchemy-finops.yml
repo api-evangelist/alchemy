@@ -1,5 +1,6 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
 alignedWith:
   framework: FinOps Foundation Framework
   frameworkUrl: https://www.finops.org/framework/
@@ -8,10 +9,11 @@ alignedWith:
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
 provider: Alchemy
 providerId: alchemy
-publisherName: Alchemy
-serviceCategory: API
+publisherName: Alchemy Insights, Inc.
+serviceCategory: Web3 / Blockchain Infrastructure
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
   - Blockchain
   - Cryptocurrency
@@ -19,52 +21,16 @@ tags:
   - Account Abstraction
   - Ethereum
   - FinOps
-  - Cost Management
   - FOCUS
-description: FinOps framework definition for the Alchemy API surface. Provides a FOCUS-aligned mapping
-  for cost allocation, usage measurement, and unit-economics reporting across the provider's APIs.
-principles:
-  - name: Visibility
-    description: Make API consumption costs visible to engineering, product, and finance teams in near
-      real-time.
-  - name: Allocation
-    description: Tag every chargeable API call with the consuming team, environment, application, and
-      feature so cost can be allocated.
-  - name: Optimization
-    description: Continuously evaluate request patterns, caching, batching, and tier selection to reduce
-      cost per useful unit of work.
-  - name: Accountability
-    description: Establish budget owners and chargeback or showback flows for each consuming team.
-domains:
-  - name: Understand Usage and Cost
-    capabilities:
-      - Data Ingestion
-      - Allocation
-      - Reporting and Analytics
-      - Anomaly Management
-  - name: Quantify Business Value
-    capabilities:
-      - Planning and Estimating
-      - Forecasting
-      - Budgeting
-      - Benchmarking
-      - Unit Economics
-  - name: Optimize Usage and Cost
-    capabilities:
-      - Architecting for Cloud
-      - Rate Optimization
-      - Workload Optimization
-      - Cloud Sustainability
-      - Licensing and SaaS
-  - name: Manage the FinOps Practice
-    capabilities:
-      - FinOps Practice Operations
-      - FinOps Education and Enablement
-      - Invoicing and Chargeback
-      - Onboarding Workloads
-      - Intersecting Disciplines
+description: 'FOCUS-aligned FinOps for Alchemy: Compute-Unit-based metered usage with a free quota, tiered
+  per-1M-CU pricing on Pay-as-you-go ($0.45/1M up to 300M, $0.40/1M after), and custom-quoted Enterprise
+  with volume discounts. Throughput is provisioned in CU/s and RPS.'
+sources:
+  - https://www.alchemy.com/pricing
+  - https://www.alchemy.com/docs/reference/throughput
+  - https://focus.finops.org/focus-specification/v1-3/
 billingModel:
-  pricingCategory: Usage-Based
+  pricingCategory: Pay-As-You-Go + Tiered + Custom Enterprise
   billingFrequency: Monthly
   billingCurrency: USD
   chargeCategories:
@@ -73,84 +39,66 @@ billingModel:
     - Tax
     - Credit
     - Adjustment
-  chargeFrequency: Recurring
 focusColumns:
   ServiceName: Alchemy
-  ServiceCategory: Developer Tools / API
+  ServiceCategory: Web3 / Blockchain Infrastructure
   ProviderName: Alchemy
-  PublisherName: Alchemy
-  InvoiceIssuerName: Alchemy
-  PricingCategory: Usage-Based
-  PricingUnit: request
+  PublisherName: Alchemy Insights, Inc.
+  InvoiceIssuerName: Alchemy Insights, Inc.
   BillingCurrency: USD
   ChargeCategory: Usage
+  PricingUnit: 1M Compute Units
 meters:
-  - name: api_requests
-    description: Count of billable API requests
+  - name: compute_units
+    description: Compute Units consumed across all Alchemy APIs
+    unit: compute-unit
+    aggregation: sum
+    dimensions:
+      - chain
+      - method
+      - app
+      - environment
+  - name: requests
+    description: Raw API requests (averages ~27 CUs per request)
     unit: request
     aggregation: sum
     dimensions:
-      - api
-      - endpoint
-      - tier
-      - region
-      - consumer
-  - name: data_egress
-    description: Bytes returned over the network in API responses
-    unit: GB
-    aggregation: sum
+      - chain
+      - method
+      - app
+  - name: throughput_addons
+    description: Purchased CU/s throughput add-ons beyond the plan's included throughput
+    unit: CU/s-month
+    aggregation: max
     dimensions:
-      - api
-      - region
-      - consumer
-  - name: compute_seconds
-    description: Server-side compute consumed by the request, where applicable
-    unit: second
-    aggregation: sum
+      - app
+  - name: apps
+    description: Configured Alchemy apps in the account
+    unit: app
+    aggregation: max
     dimensions:
-      - api
-      - endpoint
-      - tier
-apis:
-  - name: Alchemy Gas Manager API
-    baseURL: ''
-    tags:
-      - Gas Manager
-      - Account Abstraction
-      - ERC-4337
-    serviceName: Alchemy Gas Manager API
-    serviceCategory: API
-  - name: Alchemy Token API
-    baseURL: ''
-    tags:
-      - Tokens
-      - ERC-20
-      - DeFi
-    serviceName: Alchemy Token API
-    serviceCategory: API
-  - name: Alchemy Transfers API
-    baseURL: ''
-    tags:
-      - Transfers
-      - NFTs
-      - Transaction History
-    serviceName: Alchemy Transfers API
-    serviceCategory: API
-  - name: Alchemy Bundler API
-    baseURL: ''
-    tags:
-      - Bundler
-      - Account Abstraction
-      - ERC-4337
-    serviceName: Alchemy Bundler API
-    serviceCategory: API
-unitEconomics:
-  - name: Cost per 1K Requests
-    metric: billed_cost / (api_requests / 1000)
-    target: TBD
-  - name: Cost per Active Consumer
-    metric: billed_cost / active_consumers
-    target: TBD
+      - chain
+  - name: webhooks
+    description: Configured webhooks
+    unit: webhook
+    aggregation: max
+    dimensions:
+      - app
+principles:
+  - name: Visibility
+    description: Use the Alchemy dashboard's compute-unit, request-volume, and throughput-utilization views
+      per app to see consumption in near-real-time. Export usage via the Alchemy account API for ingestion
+      into FOCUS-formatted billing pipelines.
+  - name: Allocation
+    description: Allocate cost by app and team using Alchemy's per-app reporting; tag environments (dev/staging/prod)
+      via separate apps to keep prod CU spend isolated.
+  - name: Optimization
+    description: Reduce CU spend by batching JSON-RPC calls, caching read-heavy methods, choosing CU-cheaper
+      methods (e.g. eth_getLogs over alchemy_getAssetTransfers when applicable), and using free-tier mainnets
+      for prototyping. Consider Pay-as-you-go's $0.40/1M CU tier kicking in after 300M CUs.
+  - name: Accountability
+    description: Assign budget owners per app; configure usage alerts in the Alchemy dashboard; review
+      CU and throughput trends monthly against feature roadmap and on-chain volume.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

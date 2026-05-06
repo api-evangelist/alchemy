@@ -4,102 +4,147 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Alchemy
 providerId: alchemy
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
   - Blockchain
   - Cryptocurrency
   - Web3
   - Account Abstraction
   - Ethereum
-description: Machine-readable plans and pricing scaffold for this API provider. Conforms to the API Commons
-  Plans schema. Tier limits and prices are scaffold defaults; replace with provider-published values.
+description: Alchemy prices its blockchain APIs via tiered usage-based plans denominated in Compute Units
+  (CUs). The Free tier includes 30M CU/month and 25 RPS; Pay-As-You-Go starts at $0.45 per 1M CU for the
+  first 300M and $0.40 per 1M CU thereafter, with throughput starting at 300 RPS; Enterprise is custom-quoted
+  with 1,000+ RPS, signed SLAs, volume discounts, and premium support packages. Average request consumption
+  is ~27 CUs.
+sources:
+  - https://www.alchemy.com/pricing
+  - https://www.alchemy.com/docs/reference/throughput
 plans:
   - id: alchemy-free
     name: Free
     type: freemium
-    description: Free entry tier for the Alchemy API surface. Intended for evaluation, prototyping, and
-      low-volume integrations. Real limits and pricing must be reconciled with the provider's published
-      plan documentation.
+    description: Free developer tier with 30M Compute Units per month, 25 requests/second throughput,
+      access to all mainnets and testnets, full developer platform, and standard email/ticket support.
     entries:
-      - label: API Requests
-        description: Monthly API request quota across all included endpoints
-        name: api_requests
+      - label: Compute Units
+        description: Monthly included Compute Units (CUs)
+        name: compute_units
         type: quota
-        metric: requests
-        limit: 1000
+        metric: compute-unit
+        limit: 30000000
         timeFrame: month
         geo: global
-        domains: []
         unit: 1
         price: '0.00'
         userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the free tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 10
-        timeFrame: minute
+      - label: Throughput
+        description: Maximum requests per second
+        name: throughput
+        type: tiered
+        metric: requests_per_second
+        limit: 25
+        timeFrame: second
         geo: global
-        domains: []
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+      - label: Apps
+        description: Maximum number of apps
+        name: apps
+        type: quota
+        metric: app
+        limit: 5
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+      - label: Webhooks
+        description: Maximum number of webhooks
+        name: webhooks
+        type: quota
+        metric: webhook
+        limit: 5
+        timeFrame: month
+        geo: global
         unit: 1
         price: '0.00'
         userMultiplied: false
     elements:
-      - name: Public Documentation
-      - name: Community Support
-      - name: Sandbox Access
+      - name: Full Developer Platform
+      - name: All Mainnets and Testnets
+      - name: Standard Email / Ticket Support
       - name: Alchemy Gas Manager API
       - name: Alchemy Token API
       - name: Alchemy Transfers API
       - name: Alchemy Bundler API
-  - id: alchemy-pro
-    name: Professional
-    type: paid
-    description: Production tier for Alchemy. Provides higher quotas, priority support, and access to
-      the broader API portfolio. Pricing placeholder; align with the provider's pricing page.
+  - id: alchemy-pay-as-you-go
+    name: Pay as You Go
+    type: usage-based
+    description: Variable-cost plan billed monthly on Compute Unit consumption, premium endpoints, enterprise-grade
+      latency/uptime, and throughput add-ons.
     entries:
-      - label: API Requests
-        description: Monthly API request quota
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 100000
+      - label: Compute Units (first 300M)
+        description: Per-million CU price for the first 300M CUs in a billing period
+        name: compute_units_first_tier
+        type: metered
+        metric: compute-unit
+        limit: 300000000
         timeFrame: month
         geo: global
-        domains: []
-        unit: 1
-        price: TBD
+        unit: 1000000
+        price: '$0.45'
         userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the professional tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 100
-        timeFrame: minute
-        geo: global
-        domains: []
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Overage
-        description: Per-request price after monthly quota is exceeded
-        name: overage
+      - label: Compute Units (above 300M)
+        description: Per-million CU price beyond the first 300M CUs in a billing period
+        name: compute_units_overage
         type: metered
-        metric: requests
+        metric: compute-unit
         limit: -1
         timeFrame: month
         geo: global
-        domains: []
-        unit: 1000
-        price: TBD
+        unit: 1000000
+        price: '$0.40'
+        userMultiplied: false
+      - label: Throughput
+        description: Starting requests-per-second allotment (additional throughput available as add-on)
+        name: throughput
+        type: tiered
+        metric: requests_per_second
+        limit: 300
+        timeFrame: second
+        geo: global
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Apps
+        description: Maximum number of apps
+        name: apps
+        type: quota
+        metric: app
+        limit: 30
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Webhooks
+        description: Maximum number of webhooks
+        name: webhooks
+        type: quota
+        metric: webhook
+        limit: 100
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: included
         userMultiplied: false
     elements:
-      - name: All Production Endpoints
-      - name: Email Support
-      - name: SLA Targets
-      - name: Webhook Subscriptions
+      - name: Premium Endpoints
+      - name: Enterprise-Grade Latency & Uptime
+      - name: Throughput Add-Ons
+      - name: Premium Support Tiers (Bronze / Silver / Gold)
       - name: Alchemy Gas Manager API
       - name: Alchemy Token API
       - name: Alchemy Transfers API
@@ -107,40 +152,59 @@ plans:
   - id: alchemy-enterprise
     name: Enterprise
     type: enterprise
-    description: Custom-negotiated tier for Alchemy. Includes dedicated capacity, contractual SLAs, security
-      review, data residency options, and named technical account management.
+    description: Custom-quoted enterprise plan with 1,000+ requests-per-second throughput, advanced security,
+      signed SLAs, volume discounts, priority product roadmap access, and premium support packages.
     entries:
-      - label: API Requests
-        description: Negotiated request volume; -1 indicates uncapped subject to fair use
-        name: api_requests
-        type: quota
-        metric: requests
+      - label: Compute Units
+        description: Negotiated CU volume with volume discounts
+        name: compute_units
+        type: metered
+        metric: compute-unit
         limit: -1
         timeFrame: month
         geo: configurable
-        domains: []
-        unit: 1
+        unit: 1000000
         price: custom
         userMultiplied: false
-      - label: Rate Limit
-        description: Negotiated burst and steady-state rate
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
+      - label: Throughput
+        description: Starting requests-per-second allotment
+        name: throughput
+        type: tiered
+        metric: requests_per_second
         limit: 1000
-        timeFrame: minute
+        timeFrame: second
         geo: configurable
-        domains: []
         unit: 1
-        price: custom
+        price: included
+        userMultiplied: false
+      - label: Apps
+        description: Maximum number of apps
+        name: apps
+        type: quota
+        metric: app
+        limit: 200
+        timeFrame: month
+        geo: configurable
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Webhooks
+        description: Maximum number of webhooks
+        name: webhooks
+        type: quota
+        metric: webhook
+        limit: 500
+        timeFrame: month
+        geo: configurable
+        unit: 1
+        price: included
         userMultiplied: false
     elements:
-      - name: Unlimited / Negotiated Volume
-      - name: 24/7 Dedicated Support
-      - name: Contractual SLA
-      - name: Security & Compliance Review
-      - name: Dedicated Account Manager
-      - name: Custom Data Residency
+      - name: Advanced Security
+      - name: Signed SLAs
+      - name: Volume Discounts
+      - name: Priority Product Roadmap Access
+      - name: Premium Support Packages
       - name: Alchemy Gas Manager API
       - name: Alchemy Token API
       - name: Alchemy Transfers API
