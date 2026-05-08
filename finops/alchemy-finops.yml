@@ -1,104 +1,66 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
 schema: https://www.finops.org/framework/
+provider: Alchemy
+providerId: alchemy
+created: '2026-05-08'
+modified: '2026-05-08'
+reconciled: false
+tags:
+- Web3
+- Blockchain
+- RPC
+- NFT
+- Indexing
+- FinOps
+- Cost Management
+- FOCUS
+description: FOCUS-aligned FinOps placeholder for Alchemy. Pipeline will replace with real billing details.
+notes: Initial scaffold — billing model has not yet been reconciled.
+sources:
+- https://www.alchemy.com/
+- https://focus.finops.org/focus-specification/v1-3/
 alignedWith:
   framework: FinOps Foundation Framework
   frameworkUrl: https://www.finops.org/framework/
   dataSpec: FOCUS
   dataSpecVersion: '1.3'
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
-provider: Alchemy
-providerId: alchemy
-publisherName: Alchemy Insights, Inc.
-serviceCategory: Web3 / Blockchain Infrastructure
-created: '2026-05-04'
-modified: '2026-05-05'
-reconciled: true
-tags:
-  - Blockchain
-  - Cryptocurrency
-  - Web3
-  - Account Abstraction
-  - Ethereum
-  - FinOps
-  - FOCUS
-description: 'FOCUS-aligned FinOps for Alchemy: Compute-Unit-based metered usage with a free quota, tiered
-  per-1M-CU pricing on Pay-as-you-go ($0.45/1M up to 300M, $0.40/1M after), and custom-quoted Enterprise
-  with volume discounts. Throughput is provisioned in CU/s and RPS.'
-sources:
-  - https://www.alchemy.com/pricing
-  - https://www.alchemy.com/docs/reference/throughput
-  - https://focus.finops.org/focus-specification/v1-3/
+publisherName: Alchemy
+serviceCategory: Web3
 billingModel:
-  pricingCategory: Pay-As-You-Go + Tiered + Custom Enterprise
+  pricingCategory: To Be Reconciled
   billingFrequency: Monthly
   billingCurrency: USD
   chargeCategories:
-    - Usage
-    - Purchase
-    - Tax
-    - Credit
-    - Adjustment
+  - Usage
+  - Purchase
+  - Adjustment
 focusColumns:
   ServiceName: Alchemy
-  ServiceCategory: Web3 / Blockchain Infrastructure
+  ServiceCategory: Web3
   ProviderName: Alchemy
-  PublisherName: Alchemy Insights, Inc.
-  InvoiceIssuerName: Alchemy Insights, Inc.
+  PublisherName: Alchemy
+  InvoiceIssuerName: Alchemy
   BillingCurrency: USD
   ChargeCategory: Usage
-  PricingUnit: 1M Compute Units
 meters:
-  - name: compute_units
-    description: Compute Units consumed across all Alchemy APIs
-    unit: compute-unit
-    aggregation: sum
-    dimensions:
-      - chain
-      - method
-      - app
-      - environment
-  - name: requests
-    description: Raw API requests (averages ~27 CUs per request)
-    unit: request
-    aggregation: sum
-    dimensions:
-      - chain
-      - method
-      - app
-  - name: throughput_addons
-    description: Purchased CU/s throughput add-ons beyond the plan's included throughput
-    unit: CU/s-month
-    aggregation: max
-    dimensions:
-      - app
-  - name: apps
-    description: Configured Alchemy apps in the account
-    unit: app
-    aggregation: max
-    dimensions:
-      - chain
-  - name: webhooks
-    description: Configured webhooks
-    unit: webhook
-    aggregation: max
-    dimensions:
-      - app
+- name: api_usage
+  description: Catch-all meter pending reconciliation.
+  unit: varies
+  aggregation: sum
+  dimensions:
+  - account
+  - resource
 principles:
-  - name: Visibility
-    description: Use the Alchemy dashboard's compute-unit, request-volume, and throughput-utilization views
-      per app to see consumption in near-real-time. Export usage via the Alchemy account API for ingestion
-      into FOCUS-formatted billing pipelines.
-  - name: Allocation
-    description: Allocate cost by app and team using Alchemy's per-app reporting; tag environments (dev/staging/prod)
-      via separate apps to keep prod CU spend isolated.
-  - name: Optimization
-    description: Reduce CU spend by batching JSON-RPC calls, caching read-heavy methods, choosing CU-cheaper
-      methods (e.g. eth_getLogs over alchemy_getAssetTransfers when applicable), and using free-tier mainnets
-      for prototyping. Consider Pay-as-you-go's $0.40/1M CU tier kicking in after 300M CUs.
-  - name: Accountability
-    description: Assign budget owners per app; configure usage alerts in the Alchemy dashboard; review
-      CU and throughput trends monthly against feature roadmap and on-chain volume.
+- name: Visibility
+  description: Pull provider invoices or usage exports until a self-serve usage feed is documented.
+- name: Allocation
+  description: Tag invoice line items to consuming business units in your FinOps store.
+- name: Optimization
+  description: Levers depend on the provider's billing model; review at renewal once reconciled.
+- name: Accountability
+  description: Assign a contract owner to review billing against negotiated terms.
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com

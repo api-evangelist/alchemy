@@ -3,212 +3,39 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
 provider: Alchemy
 providerId: alchemy
-created: '2026-05-04'
-modified: '2026-05-05'
-reconciled: true
+created: '2026-05-08'
+modified: '2026-05-08'
+reconciled: false
 tags:
-  - Blockchain
-  - Cryptocurrency
-  - Web3
-  - Account Abstraction
-  - Ethereum
-description: Alchemy prices its blockchain APIs via tiered usage-based plans denominated in Compute Units
-  (CUs). The Free tier includes 30M CU/month and 25 RPS; Pay-As-You-Go starts at $0.45 per 1M CU for the
-  first 300M and $0.40 per 1M CU thereafter, with throughput starting at 300 RPS; Enterprise is custom-quoted
-  with 1,000+ RPS, signed SLAs, volume discounts, and premium support packages. Average request consumption
-  is ~27 CUs.
+- Web3
+- Blockchain
+- RPC
+- NFT
+- Indexing
+- Plans
+description: Placeholder plans/pricing artifact for Alchemy. Replace with real published pricing once
+  the pipeline researches the provider's plans page.
+notes: Initial scaffold — plans/pricing have not yet been reconciled against the provider's documentation.
 sources:
-  - https://www.alchemy.com/pricing
-  - https://www.alchemy.com/docs/reference/throughput
+- https://www.alchemy.com/
 plans:
-  - id: alchemy-free
-    name: Free
-    type: freemium
-    description: Free developer tier with 30M Compute Units per month, 25 requests/second throughput,
-      access to all mainnets and testnets, full developer platform, and standard email/ticket support.
-    entries:
-      - label: Compute Units
-        description: Monthly included Compute Units (CUs)
-        name: compute_units
-        type: quota
-        metric: compute-unit
-        limit: 30000000
-        timeFrame: month
-        geo: global
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Throughput
-        description: Maximum requests per second
-        name: throughput
-        type: tiered
-        metric: requests_per_second
-        limit: 25
-        timeFrame: second
-        geo: global
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Apps
-        description: Maximum number of apps
-        name: apps
-        type: quota
-        metric: app
-        limit: 5
-        timeFrame: month
-        geo: global
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Webhooks
-        description: Maximum number of webhooks
-        name: webhooks
-        type: quota
-        metric: webhook
-        limit: 5
-        timeFrame: month
-        geo: global
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-    elements:
-      - name: Full Developer Platform
-      - name: All Mainnets and Testnets
-      - name: Standard Email / Ticket Support
-      - name: Alchemy Gas Manager API
-      - name: Alchemy Token API
-      - name: Alchemy Transfers API
-      - name: Alchemy Bundler API
-  - id: alchemy-pay-as-you-go
-    name: Pay as You Go
-    type: usage-based
-    description: Variable-cost plan billed monthly on Compute Unit consumption, premium endpoints, enterprise-grade
-      latency/uptime, and throughput add-ons.
-    entries:
-      - label: Compute Units (first 300M)
-        description: Per-million CU price for the first 300M CUs in a billing period
-        name: compute_units_first_tier
-        type: metered
-        metric: compute-unit
-        limit: 300000000
-        timeFrame: month
-        geo: global
-        unit: 1000000
-        price: '$0.45'
-        userMultiplied: false
-      - label: Compute Units (above 300M)
-        description: Per-million CU price beyond the first 300M CUs in a billing period
-        name: compute_units_overage
-        type: metered
-        metric: compute-unit
-        limit: -1
-        timeFrame: month
-        geo: global
-        unit: 1000000
-        price: '$0.40'
-        userMultiplied: false
-      - label: Throughput
-        description: Starting requests-per-second allotment (additional throughput available as add-on)
-        name: throughput
-        type: tiered
-        metric: requests_per_second
-        limit: 300
-        timeFrame: second
-        geo: global
-        unit: 1
-        price: included
-        userMultiplied: false
-      - label: Apps
-        description: Maximum number of apps
-        name: apps
-        type: quota
-        metric: app
-        limit: 30
-        timeFrame: month
-        geo: global
-        unit: 1
-        price: included
-        userMultiplied: false
-      - label: Webhooks
-        description: Maximum number of webhooks
-        name: webhooks
-        type: quota
-        metric: webhook
-        limit: 100
-        timeFrame: month
-        geo: global
-        unit: 1
-        price: included
-        userMultiplied: false
-    elements:
-      - name: Premium Endpoints
-      - name: Enterprise-Grade Latency & Uptime
-      - name: Throughput Add-Ons
-      - name: Premium Support Tiers (Bronze / Silver / Gold)
-      - name: Alchemy Gas Manager API
-      - name: Alchemy Token API
-      - name: Alchemy Transfers API
-      - name: Alchemy Bundler API
-  - id: alchemy-enterprise
-    name: Enterprise
-    type: enterprise
-    description: Custom-quoted enterprise plan with 1,000+ requests-per-second throughput, advanced security,
-      signed SLAs, volume discounts, priority product roadmap access, and premium support packages.
-    entries:
-      - label: Compute Units
-        description: Negotiated CU volume with volume discounts
-        name: compute_units
-        type: metered
-        metric: compute-unit
-        limit: -1
-        timeFrame: month
-        geo: configurable
-        unit: 1000000
-        price: custom
-        userMultiplied: false
-      - label: Throughput
-        description: Starting requests-per-second allotment
-        name: throughput
-        type: tiered
-        metric: requests_per_second
-        limit: 1000
-        timeFrame: second
-        geo: configurable
-        unit: 1
-        price: included
-        userMultiplied: false
-      - label: Apps
-        description: Maximum number of apps
-        name: apps
-        type: quota
-        metric: app
-        limit: 200
-        timeFrame: month
-        geo: configurable
-        unit: 1
-        price: included
-        userMultiplied: false
-      - label: Webhooks
-        description: Maximum number of webhooks
-        name: webhooks
-        type: quota
-        metric: webhook
-        limit: 500
-        timeFrame: month
-        geo: configurable
-        unit: 1
-        price: included
-        userMultiplied: false
-    elements:
-      - name: Advanced Security
-      - name: Signed SLAs
-      - name: Volume Discounts
-      - name: Priority Product Roadmap Access
-      - name: Premium Support Packages
-      - name: Alchemy Gas Manager API
-      - name: Alchemy Token API
-      - name: Alchemy Transfers API
-      - name: Alchemy Bundler API
+- id: alchemy-default
+  name: To Be Reconciled
+  type: enterprise
+  description: Initial scaffold; replace with provider plan tiers once pricing is reconciled.
+  entries:
+  - label: API Access
+    name: api_access
+    type: flat
+    metric: varies
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1
+    price: see https://www.alchemy.com/
+    userMultiplied: false
+  elements:
+  - name: Pending Reconciliation
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -3,72 +3,33 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Alchemy
 providerId: alchemy
-created: '2026-05-04'
-modified: '2026-05-05'
-reconciled: true
+created: '2026-05-08'
+modified: '2026-05-08'
+reconciled: false
 tags:
-  - Blockchain
-  - Cryptocurrency
-  - Web3
-  - Account Abstraction
-  - Ethereum
-  - Rate Limiting
-description: Alchemy enforces throughput in Compute Units Per Second (CU/s) using a token-bucket algorithm
-  evaluated over a 10-second rolling window. The Free tier is capped at 25 RPS / 500 CU/s. Pay-as-you-go
-  starts at 300 RPS, Enterprise at 1,000+ RPS. Limits scale with plan tier. The average request consumes
-  ~27 CUs. Throttling returns HTTP 429 (or JSON-RPC error 429 over WebSocket) with a Retry-After header.
+- Web3
+- Blockchain
+- RPC
+- NFT
+- Indexing
+- Rate Limiting
+- Quotas
+- Throttling
+description: Placeholder rate-limit artifact for Alchemy. Replace with real limits once researched.
+notes: Initial scaffold — limits have not yet been reconciled.
 sources:
-  - https://www.alchemy.com/docs/reference/throughput
-  - https://www.alchemy.com/pricing
-headers:
-  retryAfter: Retry-After
+- https://www.alchemy.com/
 responseCodes:
   throttled: 429
-  jsonRpcThrottled: 429
 limits:
-  - name: Free Tier Throughput (CU/s)
-    scope: api-key
-    metric: compute_units_per_second
-    limit: 500
-    timeFrame: second
-    notes: Token bucket with 10-second rolling window allows short bursts up to 5,000 CUs in any 10s period.
-  - name: Free Tier Throughput (RPS)
-    scope: api-key
-    metric: requests_per_second
-    limit: 25
-    timeFrame: second
-    notes: Approx. equivalent to 500 CU/s at average ~27 CU/request. Hard cap at HTTP layer.
-  - name: Free Tier Monthly Quota
-    scope: account
-    metric: compute_units_per_month
-    limit: 30000000
-    timeFrame: month
-    notes: 30M Compute Units included monthly on the Free tier.
-  - name: Pay-as-you-go Throughput
-    scope: api-key
-    metric: requests_per_second
-    limit: 300
-    timeFrame: second
-    notes: Starting throughput; additional capacity available via throughput add-ons.
-  - name: Enterprise Throughput
-    scope: contract
-    metric: requests_per_second
-    limit: 1000
-    timeFrame: second
-    notes: Starting throughput; scaled per signed SLA.
+- name: Default
+  scope: account
+  metric: varies
+  limit: see provider documentation
+  notes: Pending reconciliation.
 policies:
-  - name: Token-Bucket Evaluation
-    description: Limits are enforced with a token-bucket algorithm and strict refill rates evaluated over
-      a 10-second rolling window, allowing short bursts above the steady-state CU/s rate.
-  - name: Backoff Strategy
-    description: On 429 responses (HTTP or JSON-RPC), retry using exponential backoff with jitter, simple
-      retries, or by honoring the Retry-After header.
-  - name: WebSocket Throttling
-    description: WebSocket calls that exceed capacity receive a JSON-RPC error with code 429 plus an explanatory
-      message rather than an HTTP status.
-  - name: Throughput Add-Ons
-    description: Pay-as-you-go and Enterprise plans can purchase additional CU/s throughput beyond the
-      starting allotment.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
