@@ -2,28 +2,160 @@ aid: alchemy
 url: https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/apis.yml
 name: Alchemy
 x-type: company
-description: >-
-  Alchemy is a Web3 developer platform offering blockchain RPC, NFT API, Token API, transaction notifications, and account abstraction across Ethereum, Polygon, Arbitrum, Optimism, Base, Solana, and more.
+description: Alchemy is a Web3 developer platform offering blockchain JSON-RPC, Data
+  APIs (NFT, Token, Transfers, Portfolio, Prices, Webhooks/Notify, Simulation), Smart
+  Wallets / Account Abstraction (Bundler, Gas Manager), and dedicated Rollup infrastructure
+  across 50+ chains including Ethereum, Polygon, Arbitrum, Optimism, Base, and Solana.
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Web3
-  - Blockchain
-  - RPC
-  - NFT
-  - Indexing
+- Web3
+- Blockchain
+- RPC
+- NFT
+- Indexing
+- Account Abstraction
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.19'
-apis: []
+apis:
+- aid: alchemy:node-rpc
+  name: Alchemy Node API (JSON-RPC)
+  description: Multi-chain JSON-RPC over HTTPS and WebSockets covering standard eth_*,
+    solana, and other chain methods, plus Alchemy-enhanced subscriptions (alchemy_minedTransactions,
+    alchemy_pendingTransactions).
+  humanURL: https://www.alchemy.com/docs/reference/api-overview
+  baseURL: https://{network}.g.alchemy.com/v2/{apiKey}
+  tags:
+  - JSON-RPC
+  - WebSocket
+  - Multi-chain
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/api-overview
+- aid: alchemy:nft-api
+  name: Alchemy NFT API
+  description: REST endpoints for NFT ownership, metadata, floor price, sales, contract
+    metadata, and transfers across EVM chains and Solana.
+  humanURL: https://www.alchemy.com/docs/reference/nft-api-quickstart
+  baseURL: https://{network}.g.alchemy.com/nft/v3/{apiKey}
+  tags:
+  - REST
+  - NFT
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/nft-api-quickstart
+- aid: alchemy:token-api
+  name: Alchemy Token API
+  description: REST endpoints for ERC-20 token balances, metadata, allowances, prices,
+    and historical transfers.
+  humanURL: https://www.alchemy.com/docs/reference/token-api-quickstart
+  baseURL: https://{network}.g.alchemy.com/v2/{apiKey}
+  tags:
+  - REST
+  - Token
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/token-api-quickstart
+  - type: OpenAPI
+    url: openapi/alchemy-token-api-openapi.yml
+- aid: alchemy:transfers-api
+  name: Alchemy Transfers API
+  description: REST endpoints for paginated address-level transfer history (external,
+    internal, ERC-20, ERC-721, ERC-1155).
+  humanURL: https://www.alchemy.com/docs/reference/transfers-api-quickstart
+  baseURL: https://{network}.g.alchemy.com/v2/{apiKey}
+  tags:
+  - REST
+  - Transfers
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/transfers-api-quickstart
+  - type: OpenAPI
+    url: openapi/alchemy-transfers-api-openapi.yml
+- aid: alchemy:portfolio-api
+  name: Alchemy Portfolio API
+  description: REST endpoints aggregating multi-chain wallet balances, NFTs, and tokens
+    in a single call.
+  humanURL: https://www.alchemy.com/docs/reference/portfolio-api-quickstart
+  baseURL: https://api.g.alchemy.com/data/v1/{apiKey}
+  tags:
+  - REST
+  - Portfolio
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/portfolio-api-quickstart
+- aid: alchemy:prices-api
+  name: Alchemy Prices API
+  description: REST endpoints for token spot and historical pricing.
+  humanURL: https://www.alchemy.com/docs/reference/prices-api-quickstart
+  baseURL: https://api.g.alchemy.com/prices/v1/{apiKey}
+  tags:
+  - REST
+  - Prices
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/prices-api-quickstart
+- aid: alchemy:webhooks-notify
+  name: Alchemy Webhooks (Notify)
+  description: REST API for managing webhook subscriptions (mined / dropped transactions,
+    address activity, NFT activity, custom).
+  humanURL: https://www.alchemy.com/docs/reference/notify-api-quickstart
+  baseURL: https://dashboard.alchemy.com/api
+  tags:
+  - REST
+  - Webhooks
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/notify-api-quickstart
+- aid: alchemy:bundler
+  name: Alchemy Bundler API (ERC-4337)
+  description: JSON-RPC bundler endpoints for ERC-4337 user operations (eth_sendUserOperation,
+    eth_estimateUserOperationGas, alchemy_*).
+  humanURL: https://www.alchemy.com/docs/reference/bundler-api-quickstart
+  baseURL: https://{network}.g.alchemy.com/v2/{apiKey}
+  tags:
+  - JSON-RPC
+  - ERC-4337
+  - Account Abstraction
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/bundler-api-quickstart
+- aid: alchemy:gas-manager
+  name: Alchemy Gas Manager API
+  description: JSON-RPC paymaster API for sponsoring ERC-4337 user operations with
+    policy-based gas funding.
+  humanURL: https://www.alchemy.com/docs/reference/gas-manager-api-quickstart
+  baseURL: https://manage.g.alchemy.com/api/gasManager/policy
+  tags:
+  - JSON-RPC
+  - Paymaster
+  - Account Abstraction
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/gas-manager-api-quickstart
+  - type: OpenAPI
+    url: openapi/alchemy-gas-manager-api-openapi.yml
+- aid: alchemy:simulation-api
+  name: Alchemy Simulation API
+  description: REST/JSON-RPC API for simulating transactions and asset changes before
+    broadcasting.
+  humanURL: https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart
+  baseURL: https://{network}.g.alchemy.com/v2/{apiKey}
+  tags:
+  - JSON-RPC
+  - Simulation
+  properties:
+  - type: Documentation
+    url: https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart
 common:
-  - type: Website
-    url: https://www.alchemy.com/
-  - type: Plans
-    url: plans/alchemy-plans-pricing.yml
-  - type: RateLimits
-    url: rate-limits/alchemy-rate-limits.yml
-  - type: FinOps
-    url: finops/alchemy-finops.yml
+- type: Website
+  url: https://www.alchemy.com/
+- type: Plans
+  url: plans/alchemy-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/alchemy-rate-limits.yml
+- type: FinOps
+  url: finops/alchemy-finops.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com

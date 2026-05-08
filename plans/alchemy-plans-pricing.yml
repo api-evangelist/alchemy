@@ -5,37 +5,133 @@ provider: Alchemy
 providerId: alchemy
 created: '2026-05-08'
 modified: '2026-05-08'
-reconciled: false
+reconciled: true
 tags:
 - Web3
 - Blockchain
 - RPC
 - NFT
 - Indexing
+- Account Abstraction
 - Plans
-description: Placeholder plans/pricing artifact for Alchemy. Replace with real published pricing once
-  the pipeline researches the provider's plans page.
-notes: Initial scaffold — plans/pricing have not yet been reconciled against the provider's documentation.
+description: Alchemy uses a tiered Compute Unit (CU) model. Each plan includes a monthly
+  CU allowance plus per-second CU throughput. Overages are billed at published per-CU
+  rates on paid plans.
+notes: CU costs vary per RPC method; Data APIs have separate per-call pricing. Verify
+  against alchemy.com/pricing.
 sources:
-- https://www.alchemy.com/
+- https://www.alchemy.com/pricing
+- https://www.alchemy.com/docs/reference/throughput
+- https://www.alchemy.com/docs/reference/compute-units
 plans:
-- id: alchemy-default
-  name: To Be Reconciled
-  type: enterprise
-  description: Initial scaffold; replace with provider plan tiers once pricing is reconciled.
+- id: alchemy-free
+  name: Free
+  type: free
+  description: Free plan with monthly compute unit allotment for individuals and prototyping.
   entries:
-  - label: API Access
-    name: api_access
-    type: flat
-    metric: varies
-    limit: -1
-    timeFrame: usage
+  - label: Monthly Compute Units
+    name: monthly_cus
+    type: included
+    metric: compute_units
+    limit: 100000000
+    timeFrame: month
     geo: global
     unit: 1
-    price: see https://www.alchemy.com/
+    price: 0
     userMultiplied: false
   elements:
-  - name: Pending Reconciliation
+  - name: All public chains
+  - name: Community support
+- id: alchemy-growth
+  name: Growth
+  type: paid
+  description: Paid tier for production with higher CU allotment, archive node access,
+    debug tracing, and overages.
+  entries:
+  - label: Monthly Subscription
+    name: monthly_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 49
+    userMultiplied: false
+  - label: Monthly Compute Units
+    name: monthly_cus
+    type: included
+    metric: compute_units
+    limit: 1500000000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 0
+    userMultiplied: false
+  - label: Overage
+    name: overage_per_million_cu
+    type: overage
+    metric: compute_units
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1000000
+    price: see pricing page
+    userMultiplied: false
+  elements:
+  - name: Archive Data
+  - name: Debug & Trace APIs
+  - name: Email Support
+- id: alchemy-scale
+  name: Scale
+  type: paid
+  description: Higher-volume tier with more throughput, dedicated capacity, and priority
+    support.
+  entries:
+  - label: Monthly Subscription
+    name: monthly_subscription
+    type: flat
+    metric: subscription
+    limit: 1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 289
+    userMultiplied: false
+  - label: Monthly Compute Units
+    name: monthly_cus
+    type: included
+    metric: compute_units
+    limit: 4000000000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 0
+    userMultiplied: false
+  elements:
+  - name: Higher CU/sec
+  - name: Priority Support
+  - name: Reserved capacity
+- id: alchemy-enterprise
+  name: Enterprise
+  type: enterprise
+  description: Custom pricing with dedicated infrastructure, SLAs, and SOC 2 Type
+    II.
+  entries:
+  - label: Custom
+    name: custom
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Dedicated Nodes
+  - name: Custom SLAs
+  - name: SOC 2 Type II
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

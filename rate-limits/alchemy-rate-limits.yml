@@ -5,31 +5,50 @@ provider: Alchemy
 providerId: alchemy
 created: '2026-05-08'
 modified: '2026-05-08'
-reconciled: false
+reconciled: true
 tags:
 - Web3
 - Blockchain
 - RPC
 - NFT
 - Indexing
+- Account Abstraction
 - Rate Limiting
-- Quotas
-- Throttling
-description: Placeholder rate-limit artifact for Alchemy. Replace with real limits once researched.
-notes: Initial scaffold — limits have not yet been reconciled.
+description: Alchemy enforces per-second compute-unit throughput plus monthly CU caps.
+  Different methods have different CU costs.
+notes: Throughput limits scale with plan tier. 429 returned when the per-second CU
+  rate is exceeded.
 sources:
-- https://www.alchemy.com/
+- https://www.alchemy.com/docs/reference/throughput
+- https://www.alchemy.com/docs/reference/compute-units
 responseCodes:
   throttled: 429
 limits:
-- name: Default
+- name: Free Throughput
+  scope: api_key
+  metric: compute_units_per_second
+  limit: 330
+  notes: Free plan default CU/sec.
+- name: Growth Throughput
+  scope: api_key
+  metric: compute_units_per_second
+  limit: 660
+  notes: Growth plan CU/sec.
+- name: Scale Throughput
+  scope: api_key
+  metric: compute_units_per_second
+  limit: 1500
+  notes: Scale plan CU/sec.
+- name: Monthly CU Cap
   scope: account
-  metric: varies
-  limit: see provider documentation
-  notes: Pending reconciliation.
+  metric: compute_units
+  limit: see plan
+  notes: Monthly compute unit ceiling per plan.
 policies:
 - name: Backoff Strategy
-  description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
+  description: Exponential backoff with jitter on 429.
+- name: CU Budgeting
+  description: Track CU consumption per method using the Alchemy dashboard usage tab.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
