@@ -156,6 +156,35 @@ common:
   url: rate-limits/alchemy-rate-limits.yml
 - type: FinOps
   url: finops/alchemy-finops.yml
+- type: Integrations
+  url: https://www.alchemy.com/integrations
+integrations:
+  - name: Alchemy
+  - name: Blockaid
+  - name: Blockscout
+  - name: Boost
+  - name: Coinflow
+  - name: Decent
+  - name: DIA
+  - name: Halliday
+  - name: Hexagate
+  - name: Hyperlane
+  - name: Hypernative
+  - name: Noves
+  - name: Palmera
+  - name: Parsec
+  - name: Predicate
+  - name: Succinct
+  - name: Spearbit
+  - name: Superbridge
+  - name: Tally
+  - name: Thirdweb
+  - name: Webacy
+  - name: Zapper
+  - name: Rollup background
+  - name: LinkedIn
+  - name: YouTube
+  - name: Discord
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
