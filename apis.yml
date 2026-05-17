@@ -1,7 +1,7 @@
 aid: alchemy
 url: https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/apis.yml
 name: Alchemy
-x-type: company
+kind: company
 description: Alchemy is a Web3 developer platform offering blockchain JSON-RPC, Data
   APIs (NFT, Token, Transfers, Portfolio, Prices, Webhooks/Notify, Simulation), Smart
   Wallets / Account Abstraction (Bundler, Gas Manager), and dedicated Rollup infrastructure
