@@ -148,6 +148,8 @@ apis:
   - type: Documentation
     url: https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/alchemyinc
 - type: Website
   url: https://www.alchemy.com/
 - type: Plans

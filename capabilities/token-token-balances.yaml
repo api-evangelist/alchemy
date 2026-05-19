@@ -1,0 +1,82 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Alchemy Token API — Token Balances
+  description: 'Alchemy Token API — Token Balances. 1 operations. Lead operation: Alchemy Get Token Balances. Self-contained
+    Naftiko capability covering one Alchemy business surface.'
+  tags:
+  - Alchemy
+  - Token Balances
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ALCHEMY_API_KEY: ALCHEMY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: token-token-balances
+    baseUri: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+    description: Alchemy Token API — Token Balances business capability. Self-contained, no shared references.
+    resources:
+    - name: getTokenBalances
+      path: /getTokenBalances
+      operations:
+      - name: gettokenbalances
+        method: POST
+        description: Alchemy Get Token Balances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: X-Alchemy-Token
+      value: '{{env.ALCHEMY_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: token-token-balances-rest
+    port: 8080
+    description: REST adapter for Alchemy Token API — Token Balances. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/gettokenbalances
+      name: gettokenbalances
+      description: REST surface for getTokenBalances.
+      operations:
+      - method: POST
+        name: gettokenbalances
+        description: Alchemy Get Token Balances
+        call: token-token-balances.gettokenbalances
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: token-token-balances-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Alchemy Token API — Token Balances. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: alchemy-get-token-balances
+      description: Alchemy Get Token Balances
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: token-token-balances.gettokenbalances
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

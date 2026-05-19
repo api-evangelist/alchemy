@@ -1,0 +1,147 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Alchemy Gas Manager API — Policies
+  description: 'Alchemy Gas Manager API — Policies. 3 operations. Lead operation: Alchemy Gas Manager List Policies. Self-contained
+    Naftiko capability covering one Alchemy business surface.'
+  tags:
+  - Alchemy
+  - Policies
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ALCHEMY_API_KEY: ALCHEMY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: gas-manager-policies
+    baseUri: https://manage.g.alchemy.com/api
+    description: Alchemy Gas Manager API — Policies business capability. Self-contained, no shared references.
+    resources:
+    - name: gasManager-policy
+      path: /gasManager/policy
+      operations:
+      - name: listpolicies
+        method: GET
+        description: Alchemy Gas Manager List Policies
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createpolicy
+        method: POST
+        description: Alchemy Gas Manager Create Policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: gasManager-policy-policyId
+      path: /gasManager/policy/{policyId}
+      operations:
+      - name: getpolicy
+        method: GET
+        description: Alchemy Gas Manager Get Policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: policyId
+          in: path
+          type: string
+          description: Unique identifier of the gas manager policy.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.ALCHEMY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: gas-manager-policies-rest
+    port: 8080
+    description: REST adapter for Alchemy Gas Manager API — Policies. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/gasmanager/policy
+      name: gasmanager-policy
+      description: REST surface for gasManager-policy.
+      operations:
+      - method: GET
+        name: listpolicies
+        description: Alchemy Gas Manager List Policies
+        call: gas-manager-policies.listpolicies
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createpolicy
+        description: Alchemy Gas Manager Create Policy
+        call: gas-manager-policies.createpolicy
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/gasmanager/policy/{policyid}
+      name: gasmanager-policy-policyid
+      description: REST surface for gasManager-policy-policyId.
+      operations:
+      - method: GET
+        name: getpolicy
+        description: Alchemy Gas Manager Get Policy
+        call: gas-manager-policies.getpolicy
+        with:
+          policyId: rest.policyId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: gas-manager-policies-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Alchemy Gas Manager API — Policies. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: alchemy-gas-manager-list-policies
+      description: Alchemy Gas Manager List Policies
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: gas-manager-policies.listpolicies
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: alchemy-gas-manager-create-policy
+      description: Alchemy Gas Manager Create Policy
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: gas-manager-policies.createpolicy
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: alchemy-gas-manager-get-policy
+      description: Alchemy Gas Manager Get Policy
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: gas-manager-policies.getpolicy
+      with:
+        policyId: tools.policyId
+      outputParameters:
+      - type: object
+        mapping: $.
