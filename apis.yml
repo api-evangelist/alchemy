@@ -162,6 +162,8 @@ common:
     url: finops/alchemy-finops.yml
   - type: Integrations
     url: https://www.alchemy.com/integrations
+  - type: LLMsTxt
+    url: https://alchemy.com/llms.txt
 integrations:
   - name: Alchemy
   - name: Blockaid
