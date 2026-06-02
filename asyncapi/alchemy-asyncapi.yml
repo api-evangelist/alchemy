@@ -1,0 +1,831 @@
+asyncapi: '2.6.0'
+info:
+  title: Alchemy WebSocket Subscription API
+  version: '1.0.0'
+  description: |
+    AsyncAPI definition for Alchemy's JSON-RPC WebSocket subscription API. Clients
+    open a `wss://` connection to a per-network Alchemy endpoint and use the
+    standard Ethereum `eth_subscribe` / `eth_unsubscribe` methods to receive
+    asynchronous `eth_subscription` notifications.
+
+    Alchemy supports the four standard subscription types defined by Geth
+    (`newHeads`, `logs`, `newPendingTransactions`, `syncing`) plus two
+    Alchemy-enhanced subscription types:
+
+      * `alchemy_minedTransactions` (formerly `alchemy_filteredNewFullPendingTransactions`)
+      * `alchemy_pendingTransactions` (formerly `alchemy_filteredFullPendingTransactions`)
+
+    All messages travel inside the JSON-RPC 2.0 envelope. Subscription
+    notifications use `method = "eth_subscription"` with a `params` object that
+    carries the `subscription` id and the per-type `result` payload.
+
+    Source documentation:
+      * https://www.alchemy.com/docs/reference/eth-subscribe
+      * https://www.alchemy.com/docs/reference/eth-unsubscribe
+      * https://www.alchemy.com/docs/reference/newheads
+      * https://www.alchemy.com/docs/reference/logs
+      * https://www.alchemy.com/docs/reference/newpendingtransactions
+      * https://www.alchemy.com/docs/reference/alchemy-minedtransactions
+      * https://www.alchemy.com/docs/reference/alchemy-pendingtransactions
+  contact:
+    name: Alchemy Support
+    url: https://www.alchemy.com/support
+  license:
+    name: Proprietary
+    url: https://www.alchemy.com/policies/terms
+
+defaultContentType: application/json
+
+servers:
+  production:
+    url: wss://{network}.g.alchemy.com/v2/{apiKey}
+    protocol: wss
+    description: |
+      Alchemy WebSocket endpoint. `network` selects the chain (for example
+      `eth-mainnet`, `eth-sepolia`, `polygon-mainnet`, `arb-mainnet`,
+      `opt-mainnet`, `base-mainnet`). `apiKey` is the Alchemy app API key.
+    variables:
+      network:
+        default: eth-mainnet
+        description: Alchemy network slug.
+        enum:
+          - eth-mainnet
+          - eth-sepolia
+          - eth-holesky
+          - polygon-mainnet
+          - polygon-amoy
+          - arb-mainnet
+          - arb-sepolia
+          - opt-mainnet
+          - opt-sepolia
+          - base-mainnet
+          - base-sepolia
+      apiKey:
+        default: demo
+        description: Alchemy app API key.
+    security:
+      - apiKeyInUrl: []
+
+channels:
+  /:
+    description: |
+      The single multiplexed JSON-RPC WebSocket channel. Clients publish
+      `eth_subscribe` and `eth_unsubscribe` requests, and the server publishes
+      acknowledgement responses and `eth_subscription` notifications for every
+      active subscription on the same connection.
+    publish:
+      operationId: sendRpcRequest
+      summary: Send a JSON-RPC request (subscribe / unsubscribe).
+      message:
+        oneOf:
+          - $ref: '#/components/messages/EthSubscribeRequest'
+          - $ref: '#/components/messages/EthUnsubscribeRequest'
+    subscribe:
+      operationId: receiveRpcMessage
+      summary: Receive a JSON-RPC response or subscription notification.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/SubscribeResponse'
+          - $ref: '#/components/messages/UnsubscribeResponse'
+          - $ref: '#/components/messages/NewHeadsNotification'
+          - $ref: '#/components/messages/LogsNotification'
+          - $ref: '#/components/messages/NewPendingTransactionsNotification'
+          - $ref: '#/components/messages/SyncingNotification'
+          - $ref: '#/components/messages/AlchemyMinedTransactionsNotification'
+          - $ref: '#/components/messages/AlchemyPendingTransactionsNotification'
+          - $ref: '#/components/messages/RpcErrorResponse'
+
+components:
+  securitySchemes:
+    apiKeyInUrl:
+      type: httpApiKey
+      in: query
+      name: apiKey
+      description: |
+        Alchemy authenticates the WebSocket by embedding the app API key in the
+        connection URL path (`/v2/{apiKey}`). No additional headers or
+        per-message credentials are required.
+
+  messages:
+    EthSubscribeRequest:
+      name: EthSubscribeRequest
+      title: eth_subscribe request
+      summary: Create a new subscription.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EthSubscribeRequest'
+
+    EthUnsubscribeRequest:
+      name: EthUnsubscribeRequest
+      title: eth_unsubscribe request
+      summary: Cancel an existing subscription by id.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EthUnsubscribeRequest'
+
+    SubscribeResponse:
+      name: SubscribeResponse
+      title: eth_subscribe response
+      summary: Acknowledgement of an eth_subscribe call, returning the subscription id.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SubscribeResponse'
+
+    UnsubscribeResponse:
+      name: UnsubscribeResponse
+      title: eth_unsubscribe response
+      summary: Acknowledgement of an eth_unsubscribe call.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UnsubscribeResponse'
+
+    RpcErrorResponse:
+      name: RpcErrorResponse
+      title: JSON-RPC error response
+      summary: JSON-RPC 2.0 error envelope returned for malformed or unauthorized requests.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/RpcErrorResponse'
+
+    NewHeadsNotification:
+      name: NewHeadsNotification
+      title: newHeads notification
+      summary: Emitted when a new block header is added to the chain.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/NewHeadsNotification'
+
+    LogsNotification:
+      name: LogsNotification
+      title: logs notification
+      summary: Emitted for every log entry matching the filter as new blocks are produced.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LogsNotification'
+
+    NewPendingTransactionsNotification:
+      name: NewPendingTransactionsNotification
+      title: newPendingTransactions notification
+      summary: |
+        Emitted with the hash of each transaction newly added to the Alchemy
+        mempool. Note that only transactions seen by Alchemy nodes are
+        delivered.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/NewPendingTransactionsNotification'
+
+    SyncingNotification:
+      name: SyncingNotification
+      title: syncing notification
+      summary: |
+        Emitted when the node starts or stops synchronizing with the network,
+        with progress details while syncing.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SyncingNotification'
+
+    AlchemyMinedTransactionsNotification:
+      name: AlchemyMinedTransactionsNotification
+      title: alchemy_minedTransactions notification
+      summary: |
+        Emitted for every transaction that gets mined matching the configured
+        `addresses` filter. Formerly `alchemy_filteredNewFullPendingTransactions`.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AlchemyMinedTransactionsNotification'
+
+    AlchemyPendingTransactionsNotification:
+      name: AlchemyPendingTransactionsNotification
+      title: alchemy_pendingTransactions notification
+      summary: |
+        Emitted for every pending transaction matching the `fromAddress` /
+        `toAddress` filter. Formerly `alchemy_filteredFullPendingTransactions`.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AlchemyPendingTransactionsNotification'
+
+  schemas:
+    # ---------------------------------------------------------------------
+    # Primitive helpers
+    # ---------------------------------------------------------------------
+    Hex:
+      type: string
+      pattern: '^0x[0-9a-fA-F]*$'
+      description: Hex-encoded value (`0x` prefixed).
+
+    HexQuantity:
+      type: string
+      pattern: '^0x([1-9a-fA-F][0-9a-fA-F]*|0)$'
+      description: Hex-encoded quantity (`0x` prefixed, no leading zeros).
+
+    Address:
+      type: string
+      pattern: '^0x[0-9a-fA-F]{40}$'
+      description: 20-byte Ethereum address (`0x` + 40 hex chars).
+
+    Hash32:
+      type: string
+      pattern: '^0x[0-9a-fA-F]{64}$'
+      description: 32-byte hash (`0x` + 64 hex chars).
+
+    SubscriptionId:
+      type: string
+      pattern: '^0x[0-9a-fA-F]+$'
+      description: Subscription identifier returned by `eth_subscribe`.
+
+    Topic:
+      oneOf:
+        - type: 'null'
+        - $ref: '#/components/schemas/Hash32'
+        - type: array
+          items:
+            $ref: '#/components/schemas/Hash32'
+
+    # ---------------------------------------------------------------------
+    # JSON-RPC envelope
+    # ---------------------------------------------------------------------
+    JsonRpcId:
+      oneOf:
+        - type: integer
+        - type: string
+        - type: 'null'
+      description: JSON-RPC 2.0 request/response id correlator.
+
+    EthSubscribeRequest:
+      type: object
+      required: [jsonrpc, method, params, id]
+      properties:
+        jsonrpc:
+          type: string
+          enum: ['2.0']
+        id:
+          $ref: '#/components/schemas/JsonRpcId'
+        method:
+          type: string
+          enum: [eth_subscribe]
+        params:
+          type: array
+          minItems: 1
+          maxItems: 2
+          description: |
+            Tuple of `[subscriptionType, options?]`. The shape of `options`
+            depends on the subscription type.
+          items:
+            oneOf:
+              - type: string
+                enum:
+                  - newHeads
+                  - logs
+                  - newPendingTransactions
+                  - syncing
+                  - alchemy_minedTransactions
+                  - alchemy_pendingTransactions
+              - oneOf:
+                  - $ref: '#/components/schemas/LogsFilter'
+                  - $ref: '#/components/schemas/AlchemyMinedTransactionsFilter'
+                  - $ref: '#/components/schemas/AlchemyPendingTransactionsFilter'
+      example:
+        jsonrpc: '2.0'
+        id: 1
+        method: eth_subscribe
+        params:
+          - newHeads
+
+    EthUnsubscribeRequest:
+      type: object
+      required: [jsonrpc, method, params, id]
+      properties:
+        jsonrpc:
+          type: string
+          enum: ['2.0']
+        id:
+          $ref: '#/components/schemas/JsonRpcId'
+        method:
+          type: string
+          enum: [eth_unsubscribe]
+        params:
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            $ref: '#/components/schemas/SubscriptionId'
+      example:
+        jsonrpc: '2.0'
+        id: 2
+        method: eth_unsubscribe
+        params:
+          - '0x9cef478923ff08bf67fde6c64013158d'
+
+    SubscribeResponse:
+      type: object
+      required: [jsonrpc, id, result]
+      properties:
+        jsonrpc:
+          type: string
+          enum: ['2.0']
+        id:
+          $ref: '#/components/schemas/JsonRpcId'
+        result:
+          $ref: '#/components/schemas/SubscriptionId'
+      example:
+        jsonrpc: '2.0'
+        id: 1
+        result: '0x9cef478923ff08bf67fde6c64013158d'
+
+    UnsubscribeResponse:
+      type: object
+      required: [jsonrpc, id, result]
+      properties:
+        jsonrpc:
+          type: string
+          enum: ['2.0']
+        id:
+          $ref: '#/components/schemas/JsonRpcId'
+        result:
+          type: boolean
+      example:
+        jsonrpc: '2.0'
+        id: 2
+        result: true
+
+    RpcErrorResponse:
+      type: object
+      required: [jsonrpc, id, error]
+      properties:
+        jsonrpc:
+          type: string
+          enum: ['2.0']
+        id:
+          $ref: '#/components/schemas/JsonRpcId'
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            data:
+              description: Optional error data.
+
+    NotificationEnvelope:
+      type: object
+      required: [jsonrpc, method, params]
+      description: Common shape for every `eth_subscription` notification.
+      properties:
+        jsonrpc:
+          type: string
+          enum: ['2.0']
+        method:
+          type: string
+          enum: [eth_subscription]
+        params:
+          type: object
+          required: [subscription, result]
+          properties:
+            subscription:
+              $ref: '#/components/schemas/SubscriptionId'
+            result:
+              description: Per-subscription-type payload.
+
+    # ---------------------------------------------------------------------
+    # Filter / options objects
+    # ---------------------------------------------------------------------
+    LogsFilter:
+      type: object
+      description: Optional filter for the `logs` subscription.
+      properties:
+        address:
+          oneOf:
+            - $ref: '#/components/schemas/Address'
+            - type: array
+              items:
+                $ref: '#/components/schemas/Address'
+          description: Single address or array of addresses to filter logs by.
+        topics:
+          type: array
+          maxItems: 4
+          description: |
+            Up to four topic specifiers. Each entry can be `null`, a single
+            32-byte topic hash, or an array of hashes (logical OR).
+          items:
+            $ref: '#/components/schemas/Topic'
+
+    AlchemyMinedTransactionsFilter:
+      type: object
+      description: |
+        Options for `alchemy_minedTransactions`. All fields are optional.
+      properties:
+        addresses:
+          type: array
+          maxItems: 1000
+          description: |
+            Filter by `to` and/or `from` addresses. Maximum 1000 total
+            addresses across the filter.
+          items:
+            type: object
+            properties:
+              to:
+                $ref: '#/components/schemas/Address'
+              from:
+                $ref: '#/components/schemas/Address'
+        includeRemoved:
+          type: boolean
+          default: false
+          description: |
+            When `true`, also emit transactions in blocks that have been
+            removed from the canonical chain (reorgs).
+        hashesOnly:
+          type: boolean
+          default: false
+          description: |
+            When `true`, the `transaction` field contains only the transaction
+            hash. When `false`, it contains the full transaction object
+            (matching the payload of `eth_getTransactionByHash`).
+
+    AlchemyPendingTransactionsFilter:
+      type: object
+      description: |
+        Options for `alchemy_pendingTransactions`. All fields are optional.
+        A maximum of 1000 addresses across `fromAddress` and `toAddress`
+        combined is allowed.
+      properties:
+        fromAddress:
+          oneOf:
+            - $ref: '#/components/schemas/Address'
+            - type: array
+              items:
+                $ref: '#/components/schemas/Address'
+          description: One sender address or an array of sender addresses.
+        toAddress:
+          oneOf:
+            - $ref: '#/components/schemas/Address'
+            - type: array
+              items:
+                $ref: '#/components/schemas/Address'
+          description: One recipient address or an array of recipient addresses.
+        hashesOnly:
+          type: boolean
+          default: false
+          description: |
+            When `true`, the notification `result` is a transaction hash
+            string. When `false`, it is the full transaction object.
+
+    # ---------------------------------------------------------------------
+    # Result payloads
+    # ---------------------------------------------------------------------
+    BlockHeader:
+      type: object
+      description: Block header emitted for the `newHeads` subscription.
+      properties:
+        number:
+          oneOf:
+            - $ref: '#/components/schemas/HexQuantity'
+            - type: 'null'
+          description: Block number (null for pending blocks).
+        hash:
+          $ref: '#/components/schemas/Hash32'
+        parentHash:
+          $ref: '#/components/schemas/Hash32'
+        nonce:
+          oneOf:
+            - $ref: '#/components/schemas/Hex'
+            - type: 'null'
+          description: Proof-of-work nonce (null for pending blocks).
+        sha3Uncles:
+          $ref: '#/components/schemas/Hash32'
+        logsBloom:
+          oneOf:
+            - $ref: '#/components/schemas/Hex'
+            - type: 'null'
+          description: 256-byte log bloom filter (null for pending blocks).
+        transactionsRoot:
+          $ref: '#/components/schemas/Hash32'
+        stateRoot:
+          $ref: '#/components/schemas/Hash32'
+        receiptsRoot:
+          $ref: '#/components/schemas/Hash32'
+        miner:
+          $ref: '#/components/schemas/Address'
+        difficulty:
+          $ref: '#/components/schemas/HexQuantity'
+        extraData:
+          $ref: '#/components/schemas/Hex'
+        gasLimit:
+          $ref: '#/components/schemas/HexQuantity'
+        gasUsed:
+          $ref: '#/components/schemas/HexQuantity'
+        timestamp:
+          $ref: '#/components/schemas/HexQuantity'
+
+    LogObject:
+      type: object
+      description: Log entry emitted for the `logs` subscription.
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        blockHash:
+          $ref: '#/components/schemas/Hash32'
+        blockNumber:
+          $ref: '#/components/schemas/HexQuantity'
+        data:
+          $ref: '#/components/schemas/Hex'
+        logIndex:
+          $ref: '#/components/schemas/HexQuantity'
+        topics:
+          type: array
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/Hash32'
+        transactionHash:
+          $ref: '#/components/schemas/Hash32'
+        transactionIndex:
+          $ref: '#/components/schemas/HexQuantity'
+        removed:
+          type: boolean
+          description: |
+            `true` when the log was removed due to a chain reorganization.
+
+    Transaction:
+      type: object
+      description: |
+        Full transaction object matching the response payload of
+        `eth_getTransactionByHash`.
+      properties:
+        blockHash:
+          oneOf:
+            - $ref: '#/components/schemas/Hash32'
+            - type: 'null'
+        blockNumber:
+          oneOf:
+            - $ref: '#/components/schemas/HexQuantity'
+            - type: 'null'
+        from:
+          $ref: '#/components/schemas/Address'
+        gas:
+          $ref: '#/components/schemas/HexQuantity'
+        gasPrice:
+          $ref: '#/components/schemas/HexQuantity'
+        maxFeePerGas:
+          $ref: '#/components/schemas/HexQuantity'
+        maxPriorityFeePerGas:
+          $ref: '#/components/schemas/HexQuantity'
+        hash:
+          $ref: '#/components/schemas/Hash32'
+        input:
+          $ref: '#/components/schemas/Hex'
+        nonce:
+          $ref: '#/components/schemas/HexQuantity'
+        to:
+          oneOf:
+            - $ref: '#/components/schemas/Address'
+            - type: 'null'
+        transactionIndex:
+          oneOf:
+            - $ref: '#/components/schemas/HexQuantity'
+            - type: 'null'
+        value:
+          $ref: '#/components/schemas/HexQuantity'
+        type:
+          $ref: '#/components/schemas/HexQuantity'
+        chainId:
+          $ref: '#/components/schemas/HexQuantity'
+        v:
+          $ref: '#/components/schemas/HexQuantity'
+        r:
+          $ref: '#/components/schemas/Hex'
+        s:
+          $ref: '#/components/schemas/Hex'
+
+    SyncingStatus:
+      type: object
+      description: |
+        Sync progress object returned while the node is syncing. When syncing
+        stops, the result becomes `false`.
+      properties:
+        startingBlock:
+          $ref: '#/components/schemas/HexQuantity'
+        currentBlock:
+          $ref: '#/components/schemas/HexQuantity'
+        highestBlock:
+          $ref: '#/components/schemas/HexQuantity'
+        pulledStates:
+          $ref: '#/components/schemas/HexQuantity'
+        knownStates:
+          $ref: '#/components/schemas/HexQuantity'
+
+    # ---------------------------------------------------------------------
+    # Per-subscription notification payloads
+    # ---------------------------------------------------------------------
+    NewHeadsNotification:
+      allOf:
+        - $ref: '#/components/schemas/NotificationEnvelope'
+        - type: object
+          properties:
+            params:
+              type: object
+              properties:
+                subscription:
+                  $ref: '#/components/schemas/SubscriptionId'
+                result:
+                  $ref: '#/components/schemas/BlockHeader'
+      example:
+        jsonrpc: '2.0'
+        method: eth_subscription
+        params:
+          subscription: '0x9ce59a13059e417087c02d3236a0b1cc'
+          result:
+            number: '0x1b4'
+            hash: '0xdc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae'
+            parentHash: '0x9b39b7e0d8e58a3a3f0d2c8c9e9d8e7b3a8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c'
+            nonce: '0x689056015818adbe'
+            sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347'
+            logsBloom: '0x00...00'
+            transactionsRoot: '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421'
+            stateRoot: '0xddc8b0234c2e0cad087c8b389aa7ef01f7d79b2570bccb77ce48648aa61c904d'
+            receiptsRoot: '0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421'
+            miner: '0xbb7b8287f3f0a933474a79eae42cbca977791171'
+            difficulty: '0x4ea3f27bc'
+            extraData: '0x476574682f4c5649562f76312e302e302f6c696e75782f676f312e342e32'
+            gasLimit: '0x1388'
+            gasUsed: '0x0'
+            timestamp: '0x55ba467c'
+
+    LogsNotification:
+      allOf:
+        - $ref: '#/components/schemas/NotificationEnvelope'
+        - type: object
+          properties:
+            params:
+              type: object
+              properties:
+                subscription:
+                  $ref: '#/components/schemas/SubscriptionId'
+                result:
+                  $ref: '#/components/schemas/LogObject'
+      example:
+        jsonrpc: '2.0'
+        method: eth_subscription
+        params:
+          subscription: '0x4a8a4c0517381924f9838102c5a4dcb7'
+          result:
+            address: '0x8320fe7702b96808f7bbc0d4a888ed1468216cfd'
+            blockHash: '0x61cdb2a09ab99abf791d474f20c2ea89bf8de2923a2d42bb49944c8c993cbf04'
+            blockNumber: '0x29e87'
+            data: '0x0000000000000000000000000000000000000000000000000000000000000003'
+            logIndex: '0x0'
+            topics:
+              - '0xd78a0cb8bb633d06981248b816e7bd33c2a35a6089241d099fa519e361cab902'
+            transactionHash: '0xe044554a0a55067caafd07f8020ab9f2af60bdfe337e395ecd84b4877a3d1ab4'
+            transactionIndex: '0x0'
+
+    NewPendingTransactionsNotification:
+      allOf:
+        - $ref: '#/components/schemas/NotificationEnvelope'
+        - type: object
+          properties:
+            params:
+              type: object
+              properties:
+                subscription:
+                  $ref: '#/components/schemas/SubscriptionId'
+                result:
+                  $ref: '#/components/schemas/Hash32'
+      example:
+        jsonrpc: '2.0'
+        method: eth_subscription
+        params:
+          subscription: '0xc3b33aa549fb9a60e95d21862596617c'
+          result: '0xd6fdc5cc41a9959e922f30cb772a9aef46f4daea279307bc5f7024edc4ccd7fa'
+
+    SyncingNotification:
+      allOf:
+        - $ref: '#/components/schemas/NotificationEnvelope'
+        - type: object
+          properties:
+            params:
+              type: object
+              properties:
+                subscription:
+                  $ref: '#/components/schemas/SubscriptionId'
+                result:
+                  oneOf:
+                    - type: object
+                      required: [syncing, status]
+                      properties:
+                        syncing:
+                          type: boolean
+                          enum: [true]
+                        status:
+                          $ref: '#/components/schemas/SyncingStatus'
+                    - type: object
+                      required: [syncing]
+                      properties:
+                        syncing:
+                          type: boolean
+                          enum: [false]
+      example:
+        jsonrpc: '2.0'
+        method: eth_subscription
+        params:
+          subscription: '0xe2ffeb2703bcf602d42922385829ce96'
+          result:
+            syncing: true
+            status:
+              startingBlock: '0x384'
+              currentBlock: '0x386'
+              highestBlock: '0x454'
+              pulledStates: '0x17266'
+              knownStates: '0x17266'
+
+    AlchemyMinedTransactionsNotification:
+      allOf:
+        - $ref: '#/components/schemas/NotificationEnvelope'
+        - type: object
+          properties:
+            params:
+              type: object
+              properties:
+                subscription:
+                  $ref: '#/components/schemas/SubscriptionId'
+                result:
+                  type: object
+                  required: [removed, transaction]
+                  properties:
+                    removed:
+                      type: boolean
+                      description: |
+                        `true` when the transaction's block was removed during
+                        a chain reorganization. Always present and only ever
+                        `true` when the subscription was created with
+                        `includeRemoved: true`.
+                    transaction:
+                      oneOf:
+                        - $ref: '#/components/schemas/Hash32'
+                        - $ref: '#/components/schemas/Transaction'
+                      description: |
+                        Transaction hash when the subscription was created with
+                        `hashesOnly: true`; otherwise the full transaction
+                        object.
+      example:
+        jsonrpc: '2.0'
+        method: eth_subscription
+        params:
+          subscription: '0x9a52eeddc2b289f4b3a5da57c1f790f7'
+          result:
+            removed: false
+            transaction:
+              blockHash: '0x9b21cd0a90e6f7f6f0bd2b3fda6f96b6b3ca9c5cd9f1f7b3a5e8b1ad0eb4ff8d'
+              blockNumber: '0x10d4f00'
+              from: '0x8f4f6f0a3a3b0d6cf3b4f2c6f8c2c2c0e1c2d3e4'
+              gas: '0x5208'
+              gasPrice: '0x4a817c800'
+              hash: '0xab1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd'
+              input: '0x'
+              nonce: '0x1'
+              to: '0x1234567890abcdef1234567890abcdef12345678'
+              transactionIndex: '0x0'
+              value: '0xde0b6b3a7640000'
+              v: '0x25'
+              r: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+              s: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+
+    AlchemyPendingTransactionsNotification:
+      allOf:
+        - $ref: '#/components/schemas/NotificationEnvelope'
+        - type: object
+          properties:
+            params:
+              type: object
+              properties:
+                subscription:
+                  $ref: '#/components/schemas/SubscriptionId'
+                result:
+                  oneOf:
+                    - $ref: '#/components/schemas/Hash32'
+                    - $ref: '#/components/schemas/Transaction'
+                  description: |
+                    Transaction hash when the subscription was created with
+                    `hashesOnly: true`; otherwise the full transaction object
+                    (with `blockHash`, `blockNumber`, and `transactionIndex`
+                    all `null` because the transaction is still pending).
+      example:
+        jsonrpc: '2.0'
+        method: eth_subscription
+        params:
+          subscription: '0x1a8c33aa5d4f9b80e95d21862596617c'
+          result:
+            blockHash: null
+            blockNumber: null
+            from: '0x8f4f6f0a3a3b0d6cf3b4f2c6f8c2c2c0e1c2d3e4'
+            gas: '0x5208'
+            gasPrice: '0x4a817c800'
+            hash: '0xd6fdc5cc41a9959e922f30cb772a9aef46f4daea279307bc5f7024edc4ccd7fa'
+            input: '0x'
+            nonce: '0x2'
+            to: '0x1234567890abcdef1234567890abcdef12345678'
+            transactionIndex: null
+            value: '0xde0b6b3a7640000'
+            v: '0x25'
+            r: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+            s: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'

@@ -15,7 +15,7 @@ tags:
   - Indexing
   - Account Abstraction
 created: '2026-05-08'
-modified: '2026-05-08'
+modified: '2026-05-29'
 specificationVersion: '0.19'
 apis:
   - aid: alchemy:node-rpc
@@ -32,6 +32,8 @@ apis:
     properties:
     - type: Documentation
       url: https://www.alchemy.com/docs/reference/api-overview
+    - type: AsyncAPI
+      url: asyncapi/alchemy-asyncapi.yml
   - aid: alchemy:nft-api
     name: Alchemy NFT API
     description: REST endpoints for NFT ownership, metadata, floor price, sales, contract
