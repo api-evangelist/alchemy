@@ -1,0 +1,944 @@
+"""
+Alchemy Web3 Developer Platform — Conceptual GraphQL Schema
+Derived from: https://docs.alchemy.com/
+Covers: Node RPC, NFT API, Token API, Transfers API, Portfolio API,
+        Prices API, Webhooks/Notify, Simulation API, Bundler (ERC-4337),
+        Gas Manager.
+"""
+
+# ---------------------------------------------------------------------------
+# Scalars
+# ---------------------------------------------------------------------------
+
+scalar BigInt
+scalar Bytes
+scalar DateTime
+scalar JSON
+
+# ---------------------------------------------------------------------------
+# Enums
+# ---------------------------------------------------------------------------
+
+enum NetworkName {
+  ETH_MAINNET
+  ETH_GOERLI
+  ETH_SEPOLIA
+  POLYGON_MAINNET
+  POLYGON_MUMBAI
+  ARBITRUM_MAINNET
+  ARBITRUM_GOERLI
+  OPTIMISM_MAINNET
+  OPTIMISM_GOERLI
+  BASE_MAINNET
+  BASE_GOERLI
+  SOLANA_MAINNET
+  SOLANA_DEVNET
+}
+
+enum TransactionType {
+  LEGACY
+  EIP2930
+  EIP1559
+}
+
+enum TransactionStatus {
+  PENDING
+  MINED
+  DROPPED
+  FAILED
+  SUCCESS
+}
+
+enum AddressType {
+  EOA
+  CONTRACT
+  PRECOMPILE
+}
+
+enum TokenType {
+  ERC20
+  ERC721
+  ERC1155
+  NATIVE
+  SPL
+}
+
+enum WebhookType {
+  MINED_TRANSACTION
+  DROPPED_TRANSACTION
+  ADDRESS_ACTIVITY
+  NFT_ACTIVITY
+  NFT_METADATA_UPDATE
+  CUSTOM_WEBHOOK
+}
+
+enum FilterType {
+  BLOCK
+  PENDING_TRANSACTION
+  LOG
+}
+
+enum AssetChangeType {
+  NATIVE
+  ERC20
+  ERC721
+  ERC1155
+  SPECIAL_NFT
+}
+
+enum ABIFunctionType {
+  FUNCTION
+  CONSTRUCTOR
+  FALLBACK
+  RECEIVE
+}
+
+enum ABIStateMutability {
+  PURE
+  VIEW
+  NONPAYABLE
+  PAYABLE
+}
+
+# ---------------------------------------------------------------------------
+# Network / Chain
+# ---------------------------------------------------------------------------
+
+"""Details about a supported blockchain network."""
+type Network {
+  name: NetworkName!
+  chainId: ChainId!
+  details: NetworkDetails
+  isTestnet: Boolean!
+}
+
+"""Extended metadata for a network."""
+type NetworkDetails {
+  nativeCurrency: String!
+  blockExplorerUrl: String
+  rpcUrl: String
+  websocketUrl: String
+  isEVM: Boolean!
+}
+
+"""Numeric chain identifier (e.g., 1 for Ethereum Mainnet)."""
+type ChainId {
+  value: Int!
+  hex: String!
+}
+
+# ---------------------------------------------------------------------------
+# Block
+# ---------------------------------------------------------------------------
+
+"""A blockchain block header and body summary."""
+type Block {
+  hash: BlockHash!
+  number: BlockNumber!
+  details: BlockDetails
+  transactions: [BlockTransaction!]
+}
+
+"""Extended block metadata."""
+type BlockDetails {
+  parentHash: String!
+  timestamp: DateTime!
+  gasLimit: BigInt!
+  gasUsed: BigInt!
+  baseFeePerGas: BigInt
+  miner: String!
+  difficulty: BigInt
+  totalDifficulty: BigInt
+  size: Int!
+  extraData: Bytes
+  logsBloom: Bytes
+  receiptsRoot: String!
+  stateRoot: String!
+  transactionsRoot: String!
+  uncles: [String!]
+  withdrawals: [JSON]
+}
+
+"""A 32-byte block hash."""
+type BlockHash {
+  value: String!
+}
+
+"""A block number (height)."""
+type BlockNumber {
+  value: BigInt!
+  hex: String!
+}
+
+"""A transaction reference embedded in a block."""
+type BlockTransaction {
+  hash: String!
+  index: Int!
+  from: String!
+  to: String
+  value: BigInt!
+  gas: BigInt!
+}
+
+# ---------------------------------------------------------------------------
+# Transaction
+# ---------------------------------------------------------------------------
+
+"""A full Ethereum / EVM transaction."""
+type Transaction {
+  hash: String!
+  blockHash: String
+  blockNumber: BigInt
+  details: TransactionDetails
+  receipt: TransactionReceipt
+  status: TransactionStatus
+}
+
+"""Extended transaction fields."""
+type TransactionDetails {
+  nonce: Int!
+  from: String!
+  to: String
+  value: BigInt!
+  gas: BigInt!
+  gasPrice: BigInt
+  maxFeePerGas: BigInt
+  maxPriorityFeePerGas: BigInt
+  input: Bytes!
+  type: TransactionType!
+  chainId: Int
+  v: String
+  r: String
+  s: String
+  transactionIndex: Int
+  accessList: [JSON]
+}
+
+"""Transaction execution receipt."""
+type TransactionReceipt {
+  transactionHash: String!
+  blockHash: String!
+  blockNumber: BigInt!
+  from: String!
+  to: String
+  contractAddress: String
+  gasUsed: BigInt!
+  effectiveGasPrice: BigInt!
+  cumulativeGasUsed: BigInt!
+  logs: [Log!]!
+  logsBloom: Bytes!
+  status: Int!
+  type: Int!
+}
+
+# ---------------------------------------------------------------------------
+# Log
+# ---------------------------------------------------------------------------
+
+"""An EVM event log."""
+type Log {
+  address: String!
+  topics: [LogTopic!]!
+  data: LogData!
+  details: LogDetails
+}
+
+"""Extended log metadata."""
+type LogDetails {
+  blockHash: String!
+  blockNumber: BigInt!
+  transactionHash: String!
+  transactionIndex: Int!
+  logIndex: Int!
+  removed: Boolean!
+}
+
+"""A 32-byte log topic (indexed parameter)."""
+type LogTopic {
+  value: String!
+  hex: String!
+}
+
+"""The non-indexed ABI-encoded log payload."""
+type LogData {
+  raw: Bytes!
+  decoded: JSON
+}
+
+# ---------------------------------------------------------------------------
+# Address
+# ---------------------------------------------------------------------------
+
+"""An on-chain address."""
+type Address {
+  value: String!
+  details: AddressDetails
+  type: AddressType
+}
+
+"""Balance and nonce details for an address."""
+type AddressDetails {
+  balance: BigInt!
+  nonce: Int!
+  code: Bytes
+  isContract: Boolean!
+}
+
+# ---------------------------------------------------------------------------
+# Contract
+# ---------------------------------------------------------------------------
+
+"""A deployed smart contract."""
+type Contract {
+  address: String!
+  details: ContractDetails
+  abi: ContractABI
+}
+
+"""Contract creation and verification metadata."""
+type ContractDetails {
+  creatorAddress: String
+  creationTransactionHash: String
+  deployedBytecode: Bytes
+  isVerified: Boolean!
+  name: String
+  compilerVersion: String
+}
+
+"""Parsed ABI for a contract."""
+type ContractABI {
+  functions: [ABIFunction!]!
+  events: [ABIEvent!]!
+  raw: JSON!
+}
+
+"""A single ABI function or constructor entry."""
+type ABIFunction {
+  name: String
+  type: ABIFunctionType!
+  stateMutability: ABIStateMutability!
+  inputs: [ABIInput!]!
+  outputs: [ABIOutput!]!
+}
+
+"""A single ABI event entry."""
+type ABIEvent {
+  name: String!
+  anonymous: Boolean!
+  inputs: [ABIInput!]!
+}
+
+"""An ABI function/event input parameter."""
+type ABIInput {
+  name: String!
+  type: String!
+  indexed: Boolean
+  components: [ABIInput!]
+}
+
+"""An ABI function output parameter."""
+type ABIOutput {
+  name: String!
+  type: String!
+  components: [ABIOutput!]
+}
+
+# ---------------------------------------------------------------------------
+# Token
+# ---------------------------------------------------------------------------
+
+"""An ERC-20, ERC-721, ERC-1155, or native token."""
+type Token {
+  contractAddress: String!
+  tokenType: TokenType!
+  details: TokenDetails
+  metadata: TokenMetadata
+}
+
+"""Core token details."""
+type TokenDetails {
+  name: String
+  symbol: String
+  decimals: Int
+  totalSupply: BigInt
+  deployedAt: DateTime
+}
+
+"""Rich token metadata including logo and links."""
+type TokenMetadata {
+  logo: String
+  thumbnail: String
+  website: String
+  description: String
+  twitterHandle: String
+}
+
+"""An ERC-20 token balance for a wallet address."""
+type TokenBalance {
+  contractAddress: String!
+  tokenBalance: BigInt!
+  error: String
+}
+
+"""A historical or live token transfer event."""
+type TokenTransfer {
+  from: String!
+  to: String!
+  contractAddress: String!
+  tokenId: String
+  value: BigInt
+  tokenType: TokenType!
+  blockNumber: BigInt!
+  transactionHash: String!
+  logIndex: Int!
+}
+
+"""Spot or historical token price."""
+type TokenPrice {
+  symbol: String!
+  currency: String!
+  value: String!
+  lastUpdatedAt: DateTime!
+  error: String
+}
+
+# ---------------------------------------------------------------------------
+# NFT
+# ---------------------------------------------------------------------------
+
+"""An ERC-721 or ERC-1155 non-fungible token."""
+type NFT {
+  contractAddress: String!
+  tokenId: String!
+  tokenType: TokenType!
+  details: NFTDetails
+  metadata: NFTMetadata
+  media: [NFTMedia!]
+  collection: NFTCollection
+}
+
+"""NFT ownership and supply details."""
+type NFTDetails {
+  title: String
+  description: String
+  timeLastUpdated: DateTime
+  balance: String
+  tokenUri: String
+  spamInfo: JSON
+  acquiredAt: DateTime
+}
+
+"""NFT metadata from on-chain or off-chain source."""
+type NFTMetadata {
+  name: String
+  description: String
+  image: String
+  externalUrl: String
+  animationUrl: String
+  backgroundColor: String
+  attributes: [NFTAttribute!]
+  raw: JSON
+}
+
+"""An NFT media asset (image, animation, etc.)."""
+type NFTMedia {
+  gateway: String!
+  thumbnail: String
+  raw: String!
+  format: String
+  bytes: Int
+}
+
+"""A single trait/attribute on an NFT."""
+type NFTAttribute {
+  traitType: String
+  value: String
+  displayType: String
+  maxValue: String
+}
+
+"""An NFT collection (contract-level)."""
+type NFTCollection {
+  contractAddress: String!
+  details: CollectionDetails
+  floorPrice: FloorPrice
+}
+
+"""Collection-level metadata."""
+type CollectionDetails {
+  name: String
+  symbol: String
+  tokenType: TokenType!
+  contractDeployer: String
+  deployedBlockNumber: BigInt
+  openSeaMetadata: JSON
+  isSpam: Boolean
+  totalSupply: String
+}
+
+"""Floor price data for an NFT collection."""
+type FloorPrice {
+  marketplace: String
+  floorPrice: Float
+  priceCurrency: String
+  collectionUrl: String
+  retrievedAt: DateTime
+  error: String
+}
+
+"""Ownership record for an NFT."""
+type Ownership {
+  ownerAddress: String!
+  tokenBalances: [OwnedNFT!]!
+  pageKey: String
+}
+
+"""A single NFT owned by a wallet."""
+type OwnedNFT {
+  contractAddress: String!
+  tokenId: String!
+  balance: String!
+  nft: NFT
+}
+
+# ---------------------------------------------------------------------------
+# Transfers
+# ---------------------------------------------------------------------------
+
+"""A paginated asset transfer record."""
+type Transfer {
+  uniqueId: String!
+  category: String!
+  blockNum: String!
+  from: String!
+  to: String!
+  value: Float
+  erc721TokenId: String
+  erc1155Metadata: [JSON]
+  tokenId: String
+  asset: String
+  hash: String!
+  rawContract: JSON
+  metadata: JSON
+}
+
+# ---------------------------------------------------------------------------
+# Portfolio
+# ---------------------------------------------------------------------------
+
+"""Aggregated multi-chain wallet view."""
+type Portfolio {
+  walletAddress: String!
+  chains: [ChainAssets!]!
+}
+
+"""Per-chain asset breakdown within a portfolio."""
+type ChainAssets {
+  network: NetworkName!
+  nativeBalance: BigInt!
+  tokenBalances: [TokenBalance!]!
+  nfts: [OwnedNFT!]!
+}
+
+# ---------------------------------------------------------------------------
+# Prices
+# ---------------------------------------------------------------------------
+
+"""Current and historical price data for a token."""
+type PriceData {
+  symbol: String!
+  address: String
+  prices: [TokenPrice!]!
+}
+
+"""A single historical price entry."""
+type PriceHistory {
+  timestamp: DateTime!
+  value: String!
+  currency: String!
+}
+
+# ---------------------------------------------------------------------------
+# Gas
+# ---------------------------------------------------------------------------
+
+"""Current network gas price data."""
+type GasPrice {
+  fast: FeeEstimate!
+  standard: FeeEstimate!
+  slow: FeeEstimate!
+  baseFee: BaseFee!
+  blockNumber: BigInt!
+}
+
+"""A single fee tier estimate."""
+type FeeEstimate {
+  maxFeePerGas: BigInt!
+  maxPriorityFeePerGas: BigInt!
+  gasPrice: BigInt
+  estimatedWait: Int
+}
+
+"""The EIP-1559 base fee for the pending block."""
+type BaseFee {
+  value: BigInt!
+  trend: String
+}
+
+"""The EIP-1559 priority fee suggestion."""
+type PriorityFee {
+  low: BigInt!
+  medium: BigInt!
+  high: BigInt!
+}
+
+# ---------------------------------------------------------------------------
+# Simulation
+# ---------------------------------------------------------------------------
+
+"""A transaction simulation request result."""
+type TransactionSimulation {
+  transactionHash: String
+  result: SimulationResult!
+  error: String
+}
+
+"""The outcome of a simulated transaction."""
+type SimulationResult {
+  gasUsed: BigInt!
+  status: Int!
+  output: Bytes
+  assetChanges: [AssetChange!]!
+  logs: [Log!]!
+  error: String
+}
+
+"""An asset change produced by a simulation."""
+type AssetChange {
+  assetType: AssetChangeType!
+  from: String!
+  to: String!
+  value: String
+  tokenId: String
+  contractAddress: String
+  symbol: String
+  decimals: Int
+  logo: String
+}
+
+# ---------------------------------------------------------------------------
+# Webhooks / Notify
+# ---------------------------------------------------------------------------
+
+"""A configured Alchemy webhook subscription."""
+type Webhook {
+  id: String!
+  appId: String!
+  network: NetworkName!
+  webhookType: WebhookType!
+  webhookUrl: String!
+  details: WebhookDetails
+  isActive: Boolean!
+  signingKey: String
+  createdAt: DateTime!
+}
+
+"""Extended webhook configuration."""
+type WebhookDetails {
+  addresses: [String!]
+  nftFilters: [NFTFilter!]
+  nftMetadataFilters: [NFTFilter!]
+  version: String!
+}
+
+"""An NFT filter used in webhook subscriptions."""
+type NFTFilter {
+  contractAddress: String!
+  tokenId: String
+}
+
+"""A webhook delivery event payload."""
+type WebhookEvent {
+  webhookId: String!
+  id: String!
+  createdAt: DateTime!
+  type: WebhookType!
+  event: JSON!
+}
+
+"""A notification emitted by Alchemy's notify system."""
+type Notification {
+  id: String!
+  webhookId: String!
+  event: WebhookEvent!
+  deliveredAt: DateTime
+  retryCount: Int!
+}
+
+# ---------------------------------------------------------------------------
+# Filters (eth_newFilter / eth_newBlockFilter)
+# ---------------------------------------------------------------------------
+
+"""An installed eth filter."""
+type Filter {
+  filterId: String!
+  filterType: FilterType!
+  details: FilterDetails
+}
+
+"""Parameters for a log filter."""
+type FilterDetails {
+  fromBlock: String
+  toBlock: String
+  address: [String!]
+  topics: [String]
+}
+
+# ---------------------------------------------------------------------------
+# Subscriptions (WebSocket / alchemy_subscribe)
+# ---------------------------------------------------------------------------
+
+"""A WebSocket subscription handle."""
+type Subscribe {
+  subscriptionId: String!
+  details: SubscriptionDetails!
+}
+
+"""Parameters for a WebSocket subscription."""
+type SubscriptionDetails {
+  method: String!
+  params: JSON
+  network: NetworkName!
+  createdAt: DateTime!
+}
+
+# ---------------------------------------------------------------------------
+# ERC-4337 / Bundler
+# ---------------------------------------------------------------------------
+
+"""An ERC-4337 user operation."""
+type UserOperation {
+  sender: String!
+  nonce: BigInt!
+  initCode: Bytes!
+  callData: Bytes!
+  callGasLimit: BigInt!
+  verificationGasLimit: BigInt!
+  preVerificationGas: BigInt!
+  maxFeePerGas: BigInt!
+  maxPriorityFeePerGas: BigInt!
+  paymasterAndData: Bytes!
+  signature: Bytes!
+}
+
+"""Receipt for a submitted user operation."""
+type UserOperationReceipt {
+  userOpHash: String!
+  entryPoint: String!
+  sender: String!
+  nonce: BigInt!
+  paymaster: String
+  actualGasCost: BigInt!
+  actualGasUsed: BigInt!
+  success: Boolean!
+  reason: String
+  logs: [Log!]!
+  receipt: TransactionReceipt!
+}
+
+"""ERC-4337 v0.7 packed user operation format."""
+type PackedUserOperation {
+  sender: String!
+  nonce: BigInt!
+  initCode: Bytes
+  callData: Bytes!
+  accountGasLimits: Bytes!
+  preVerificationGas: BigInt!
+  gasFees: Bytes!
+  paymasterAndData: Bytes
+  signature: Bytes!
+}
+
+# ---------------------------------------------------------------------------
+# Gas Manager / Paymaster
+# ---------------------------------------------------------------------------
+
+"""An Alchemy Gas Manager policy."""
+type GasPolicy {
+  policyId: String!
+  appId: String!
+  details: GasPolicyDetails!
+  isActive: Boolean!
+  createdAt: DateTime!
+}
+
+"""Configuration for a gas sponsorship policy."""
+type GasPolicyDetails {
+  maxSpendPerSender: BigInt
+  maxSpendGlobal: BigInt
+  sponsorshipExpiry: DateTime
+  allowlist: [String!]
+  denylist: [String!]
+  network: NetworkName!
+}
+
+"""Paymaster context returned for a sponsored user operation."""
+type Paymaster {
+  paymasterAndData: Bytes!
+  preVerificationGas: BigInt!
+  verificationGasLimit: BigInt!
+  callGasLimit: BigInt!
+}
+
+# ---------------------------------------------------------------------------
+# Auth / Keys
+# ---------------------------------------------------------------------------
+
+"""An Alchemy API key (app-level)."""
+type APIKey {
+  id: String!
+  name: String!
+  key: AccessKey!
+  networks: [NetworkName!]!
+  createdAt: DateTime!
+  isActive: Boolean!
+}
+
+"""The raw access credential for an API key."""
+type AccessKey {
+  key: String!
+  httpUrl: String!
+  websocketUrl: String!
+}
+
+# ---------------------------------------------------------------------------
+# Query Root
+# ---------------------------------------------------------------------------
+
+type Query {
+  """Get details about a supported network."""
+  network(name: NetworkName!): Network
+
+  """Get all supported networks."""
+  networks: [Network!]!
+
+  """Fetch a block by hash or number."""
+  block(network: NetworkName!, hashOrNumber: String!): Block
+
+  """Fetch the latest block."""
+  latestBlock(network: NetworkName!): Block
+
+  """Fetch a transaction by hash."""
+  transaction(network: NetworkName!, hash: String!): Transaction
+
+  """Fetch all NFTs owned by an address."""
+  nftsForOwner(network: NetworkName!, address: String!, pageKey: String): [OwnedNFT!]!
+
+  """Fetch metadata for a specific NFT."""
+  nft(network: NetworkName!, contractAddress: String!, tokenId: String!): NFT
+
+  """Fetch collection metadata."""
+  collection(network: NetworkName!, contractAddress: String!): NFTCollection
+
+  """Fetch NFT floor price."""
+  floorPrice(network: NetworkName!, contractAddress: String!): FloorPrice
+
+  """Fetch ERC-20 balances for an address."""
+  tokenBalances(network: NetworkName!, address: String!): [TokenBalance!]!
+
+  """Fetch metadata for an ERC-20 token."""
+  tokenMetadata(network: NetworkName!, contractAddress: String!): Token
+
+  """Fetch asset transfers for an address."""
+  transfers(network: NetworkName!, address: String!, category: [String!], pageKey: String): [Transfer!]!
+
+  """Fetch a multi-chain portfolio for a wallet."""
+  portfolio(address: String!): Portfolio
+
+  """Fetch current gas prices for a network."""
+  gasPrice(network: NetworkName!): GasPrice
+
+  """Fetch token price by symbol."""
+  tokenPrice(symbol: String!, currency: String): TokenPrice
+
+  """Fetch historical prices for a token."""
+  priceHistory(symbol: String!, startTime: DateTime!, endTime: DateTime): [PriceHistory!]!
+
+  """List configured webhooks for an app."""
+  webhooks(appId: String!): [Webhook!]!
+
+  """Get a specific webhook."""
+  webhook(webhookId: String!): Webhook
+
+  """Simulate a transaction."""
+  simulateTransaction(network: NetworkName!, from: String!, to: String!, data: String, value: String): TransactionSimulation
+
+  """Get API keys for the authenticated account."""
+  apiKeys: [APIKey!]!
+
+  """Get gas manager policies."""
+  gasPolicies(appId: String!): [GasPolicy!]!
+}
+
+# ---------------------------------------------------------------------------
+# Mutation Root
+# ---------------------------------------------------------------------------
+
+type Mutation {
+  """Create a new webhook subscription."""
+  createWebhook(
+    appId: String!
+    network: NetworkName!
+    webhookType: WebhookType!
+    webhookUrl: String!
+    addresses: [String!]
+  ): Webhook
+
+  """Update an existing webhook."""
+  updateWebhook(webhookId: String!, isActive: Boolean, addresses: [String!]): Webhook
+
+  """Delete a webhook."""
+  deleteWebhook(webhookId: String!): Boolean!
+
+  """Submit a signed transaction."""
+  sendRawTransaction(network: NetworkName!, signedTransaction: String!): String!
+
+  """Submit an ERC-4337 user operation."""
+  sendUserOperation(network: NetworkName!, userOperation: JSON!, entryPoint: String!): String!
+
+  """Create a new API key."""
+  createAPIKey(name: String!, networks: [NetworkName!]!): APIKey
+
+  """Deactivate an API key."""
+  deleteAPIKey(keyId: String!): Boolean!
+
+  """Create a gas sponsorship policy."""
+  createGasPolicy(appId: String!, network: NetworkName!, details: JSON!): GasPolicy
+
+  """Install an eth_newFilter."""
+  createFilter(network: NetworkName!, filterType: FilterType!, params: JSON): Filter
+
+  """Remove a filter."""
+  deleteFilter(network: NetworkName!, filterId: String!): Boolean!
+}
+
+# ---------------------------------------------------------------------------
+# Subscription Root (WebSocket)
+# ---------------------------------------------------------------------------
+
+type Subscription {
+  """Subscribe to new block headers."""
+  newBlockHeaders(network: NetworkName!): Block
+
+  """Subscribe to pending transactions."""
+  pendingTransactions(network: NetworkName!, fromAddress: String, toAddress: String): Transaction
+
+  """Subscribe to mined transactions for an address."""
+  minedTransactions(network: NetworkName!, addresses: [String!]!): Transaction
+
+  """Subscribe to NFT activity for a contract."""
+  nftActivity(network: NetworkName!, contractAddress: String!): TokenTransfer
+
+  """Subscribe to address activity (transfers in/out)."""
+  addressActivity(network: NetworkName!, addresses: [String!]!): Transfer
+}
