@@ -1,0 +1,817 @@
+{
+  "item": [
+    {
+      "id": "ecc97d26-d7d6-4ba8-952a-e3334960a720",
+      "name": "Policies",
+      "description": {
+        "content": "Create and manage gas sponsorship policies.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3693de27-be91-467a-9979-8516f506d260",
+          "name": "Alchemy Gas Manager List Policies",
+          "request": {
+            "name": "Alchemy Gas Manager List Policies",
+            "description": {
+              "content": "Returns all gas manager sponsorship policies for the authenticated application. Policies define rules for which user operations to sponsor, including allowlists, spend limits, and expiry windows.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "gasManager",
+                "policy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "40ed98f0-31d5-4bf6-9e54-414a1fcb7653",
+              "name": "Policies retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"policies\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"name\": \"Default Sponsorship Policy\",\n      \"status\": \"active\",\n      \"network\": \"eth-mainnet\",\n      \"maxSpendPerUser\": 1,\n      \"maxSpendTotal\": 1000\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e22500d7-64cc-4b5a-a7cd-9f6b090ba512",
+              "name": "Unauthorized - invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e13a06af-5720-4336-a967-2747d6b226a2",
+          "name": "Alchemy Gas Manager Create Policy",
+          "request": {
+            "name": "Alchemy Gas Manager Create Policy",
+            "description": {
+              "content": "Creates a new gas sponsorship policy defining rules for which user operations to sponsor. Policies support per-user spend limits, total spend caps, allowlisted contracts, and time-based expiry.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "gasManager",
+                "policy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"network\": \"<string>\",\n  \"maxSpendPerUser\": \"<double>\",\n  \"maxSpendTotal\": \"<double>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "764f14c3-1d5a-4821-bd14-85bee4c0574c",
+              "name": "Policy created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My Sponsorship Policy\",\n  \"network\": \"eth-mainnet\",\n  \"maxSpendPerUser\": 1,\n  \"maxSpendTotal\": 500\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"policyId\": \"pol-xyz789\",\n  \"name\": \"My Sponsorship Policy\",\n  \"status\": \"active\",\n  \"network\": \"eth-mainnet\",\n  \"maxSpendPerUser\": 1,\n  \"maxSpendTotal\": 500\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "669b744d-1cbd-4a73-83c5-7e05bda17eb9",
+              "name": "Bad request - invalid policy parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My Sponsorship Policy\",\n  \"network\": \"eth-mainnet\",\n  \"maxSpendPerUser\": 1,\n  \"maxSpendTotal\": 500\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7c2c5e7c-f9bb-4849-8513-ed2b1d5527fb",
+              "name": "Unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My Sponsorship Policy\",\n  \"network\": \"eth-mainnet\",\n  \"maxSpendPerUser\": 1,\n  \"maxSpendTotal\": 500\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "40c4229b-ada3-440a-8496-1d1ebbb309c9",
+          "name": "Alchemy Gas Manager Get Policy",
+          "request": {
+            "name": "Alchemy Gas Manager Get Policy",
+            "description": {
+              "content": "Retrieves details for a specific gas sponsorship policy by its unique identifier, including spend limits, network, and current status.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "gasManager",
+                "policy",
+                ":policyId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "policyId",
+                  "description": "(Required) Unique identifier of the gas manager policy."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4c677c4f-8a85-4273-a648-35a76f90e3c8",
+              "name": "Policy retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy",
+                    ":policyId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "policyId",
+                      "description": "(Required) Unique identifier of the gas manager policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"policyId\": \"pol-abc123\",\n  \"name\": \"Default Sponsorship Policy\",\n  \"status\": \"active\",\n  \"network\": \"eth-mainnet\",\n  \"maxSpendPerUser\": 1,\n  \"maxSpendTotal\": 1000\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f63ad698-7416-411d-80c9-874b5f4024cc",
+              "name": "Unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy",
+                    ":policyId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "policyId",
+                      "description": "(Required) Unique identifier of the gas manager policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85162738-8c53-472f-8988-f283a332826a",
+              "name": "Policy not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "gasManager",
+                    "policy",
+                    ":policyId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "policyId",
+                      "description": "(Required) Unique identifier of the gas manager policy."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "7386e280-bec8-4ca8-b9af-c2a32525e901",
+      "name": "Paymaster",
+      "description": {
+        "content": "Sponsor user operations via ERC-4337 paymaster endpoints.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3d503dae-22c9-4d35-bbc7-696642da0679",
+          "name": "Alchemy Gas Manager Sponsor User Operation",
+          "request": {
+            "name": "Alchemy Gas Manager Sponsor User Operation",
+            "description": {
+              "content": "Submits a user operation for gas sponsorship via the ERC-4337 paymaster. Returns a signed paymaster response that the bundler uses to cover gas fees on behalf of the user, enabling gasless transactions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sponsorUserOperation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Alchemy-Token"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<integer>\",\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4856002c-6558-44bc-b807-d1e32afed55f",
+              "name": "User operation sponsored successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sponsorUserOperation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_requestGasAndPaymasterAndData\",\n  \"params\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"entryPoint\": \"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789\",\n      \"userOperation\": {\n        \"sender\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"nonce\": \"0x0\",\n        \"initCode\": \"0x\",\n        \"callData\": \"0x\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"result\": {\n    \"paymasterAndData\": \"0xabc123paymaster\",\n    \"preVerificationGas\": \"0x5208\",\n    \"verificationGasLimit\": \"0x15f90\",\n    \"callGasLimit\": \"0x9c40\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "86ebd557-6f8d-4122-9506-92f8b2292462",
+              "name": "Bad request - operation rejected by policy.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sponsorUserOperation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_requestGasAndPaymasterAndData\",\n  \"params\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"entryPoint\": \"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789\",\n      \"userOperation\": {\n        \"sender\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"nonce\": \"0x0\",\n        \"initCode\": \"0x\",\n        \"callData\": \"0x\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bff18f9b-7904-4d62-97e7-2f68b7b59049",
+              "name": "Unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sponsorUserOperation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_requestGasAndPaymasterAndData\",\n  \"params\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"entryPoint\": \"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789\",\n      \"userOperation\": {\n        \"sender\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"nonce\": \"0x0\",\n        \"initCode\": \"0x\",\n        \"callData\": \"0x\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://manage.g.alchemy.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "6557327c-7463-4509-a6f3-248c1e08c6cc",
+    "name": "Alchemy Gas Manager API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.\n\nContact Support:\n Name: Alchemy Support",
+      "type": "text/plain"
+    }
+  }
+}

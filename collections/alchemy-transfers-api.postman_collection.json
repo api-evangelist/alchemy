@@ -1,0 +1,170 @@
+{
+  "item": [
+    {
+      "id": "7919bbf5-f663-4a7d-b520-dd46620791d8",
+      "name": "Transfers",
+      "description": {
+        "content": "Query historical asset transfer data across EVM networks.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f66c0a7a-6546-466f-9f50-839e1a246619",
+          "name": "Alchemy Get Asset Transfers",
+          "request": {
+            "name": "Alchemy Get Asset Transfers",
+            "description": {
+              "content": "Returns an array of asset transfers based on the specified filters. Supports querying ETH transfers, ERC-20 token transfers, ERC-721 NFT transfers, ERC-1155 multi-token transfers, and internal contract transfers across supported EVM networks.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Your Alchemy API key.",
+                  "type": "any",
+                  "value": "{{apiKey}}",
+                  "key": "apiKey"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Alchemy-Token"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<integer>\",\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\",\n  \"params\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5a39c051-4c2e-495d-b6f9-c71bf1281c11",
+              "name": "Asset transfers retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Your Alchemy API key.",
+                      "type": "any",
+                      "value": "{{apiKey}}",
+                      "key": "apiKey"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_getAssetTransfers\",\n  \"params\": [\n    {\n      \"fromAddress\": \"0x0000000000000000000000000000000000000000\",\n      \"fromBlock\": \"0xfda53c\",\n      \"toBlock\": \"latest\",\n      \"category\": [\n        \"erc721\",\n        \"erc1155\"\n      ],\n      \"withMetadata\": true,\n      \"excludeZeroValue\": true,\n      \"maxCount\": \"0x10\",\n      \"order\": \"desc\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"result\": {\n    \"transfers\": [\n      {\n        \"blockNum\": \"0xfda53c\",\n        \"hash\": \"0xabc123def456\",\n        \"from\": \"0x0000000000000000000000000000000000000000\",\n        \"to\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"value\": 1,\n        \"asset\": \"ETH\",\n        \"category\": \"external\",\n        \"metadata\": {\n          \"blockTimestamp\": \"2026-04-19T10:00:00Z\"\n        }\n      }\n    ],\n    \"pageKey\": \"abc123nextpage\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "Your Alchemy API key.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "your-api-key",
+      "key": "apiKey"
+    },
+    {
+      "type": "string",
+      "value": "https://eth-mainnet.g.alchemy.com/v2/{{apiKey}}",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d494f900-1e12-4087-8303-b15e5fe1b220",
+    "name": "Alchemy Transfers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Alchemy Transfers API provides access to historical on-chain transfer data across EVM-compatible networks. Developers can query asset transfers by address, block range, and transfer category (ETH, ERC-20, ERC-721, ERC-1155, and internal transfers), enabling wallet activity tracking, portfolio history, and transaction auditing.\n\nContact Support:\n Name: Alchemy Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Alchemy Gas Manager API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Policies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alchemy Gas Manager List Policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://manage.g.alchemy.com/api/gasManager/policy",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns all gas manager sponsorship policies for the authenticated application. Policies define rules for which user operations to sponsor, including allowlists, spend limits, and expiry windows."
+        },
+        {
+          "info": {
+            "name": "Alchemy Gas Manager Create Policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://manage.g.alchemy.com/api/gasManager/policy",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new gas sponsorship policy defining rules for which user operations to sponsor. Policies support per-user spend limits, total spend caps, allowlisted contracts, and time-based expiry."
+        },
+        {
+          "info": {
+            "name": "Alchemy Gas Manager Get Policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://manage.g.alchemy.com/api/gasManager/policy/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "pol-abc123",
+                "type": "path",
+                "description": "Unique identifier of the gas manager policy."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves details for a specific gas sponsorship policy by its unique identifier, including spend limits, network, and current status."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Paymaster",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alchemy Gas Manager Sponsor User Operation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://manage.g.alchemy.com/api/sponsorUserOperation",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Alchemy-Token",
+              "value": "{{X-Alchemy-Token}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Submits a user operation for gas sponsorship via the ERC-4337 paymaster. Returns a signed paymaster response that the bundler uses to cover gas fees on behalf of the user, enabling gasless transactions."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

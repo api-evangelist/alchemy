@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Alchemy Transfers API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transfers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alchemy Get Asset Transfers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://eth-mainnet.g.alchemy.com/v2/{apiKey}/",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Alchemy-Token",
+              "value": "{{X-Alchemy-Token}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns an array of asset transfers based on the specified filters. Supports querying ETH transfers, ERC-20 token transfers, ERC-721 NFT transfers, ERC-1155 multi-token transfers, and internal contract transfers across supported EVM networks."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

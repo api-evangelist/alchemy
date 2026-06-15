@@ -1,0 +1,68 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Alchemy Token API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Token Balances",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alchemy Get Token Balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://eth-mainnet.g.alchemy.com/v2/{apiKey}/getTokenBalances",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Alchemy-Token",
+              "value": "{{X-Alchemy-Token}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns ERC-20 token balances for a specified wallet address across all tokens or a specified list of token contract addresses. Supports both paginated full-portfolio queries and targeted balance lookups."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Token Metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alchemy Get Token Metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://eth-mainnet.g.alchemy.com/v2/{apiKey}/getTokenMetadata",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Alchemy-Token",
+              "value": "{{X-Alchemy-Token}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns metadata (name, symbol, decimals, logo) for a given ERC-20 token contract address. Useful for displaying token information in wallets and portfolio applications without needing to call the token contract directly."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
