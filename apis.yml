@@ -6,7 +6,7 @@ description: Alchemy is a Web3 developer platform offering blockchain JSON-RPC, 
   APIs (NFT, Token, Transfers, Portfolio, Prices, Webhooks/Notify, Simulation), Smart
   Wallets / Account Abstraction (Bundler, Gas Manager), and dedicated Rollup infrastructure
   across 50+ chains including Ethereum, Polygon, Arbitrum, Optimism, Base, and Solana.
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Web3
 - Blockchain
