@@ -166,7 +166,7 @@ common:
   url: finops/alchemy-finops.yml
 - type: Integrations
   url: https://www.alchemy.com/integrations
-- type: LLMsTxt
+- type: LlmsText
   url: https://alchemy.com/llms.txt
 integrations:
 - name: Alchemy
