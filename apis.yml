@@ -152,6 +152,16 @@ apis:
   - type: Documentation
     url: https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart
 common:
+- type: TrustCenter
+  url: security/alchemy-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/alchemy-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/alchemy-domain-security.yml
+- type: Authentication
+  url: authentication/alchemy-authentication.yml
+- url: https://www.alchemy.com/blog
+  type: Blog
 - type: GitHubOrganization
   url: https://github.com/alchemyplatform
 - type: LinkedIn

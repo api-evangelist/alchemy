@@ -1,0 +1,26 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/alchemy-gas-manager-api-openapi.yml, openapi/alchemy-token-api-openapi.yml,
+  openapi/alchemy-transfers-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: Bearer token for Gas Manager Management API authentication.
+  sources:
+  - openapi/alchemy-gas-manager-api-openapi.yml
+- name: apiKeyHeader
+  type: apiKey
+  in: header
+  parameter: X-Alchemy-Token
+  description: Alchemy API key for RPC endpoint authentication.
+  sources:
+  - openapi/alchemy-gas-manager-api-openapi.yml
+  - openapi/alchemy-token-api-openapi.yml
+  - openapi/alchemy-transfers-api-openapi.yml

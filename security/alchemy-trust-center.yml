@@ -1,0 +1,12 @@
+generated: '2026-07-11'
+method: searched
+probe: true
+source: https://www.alchemy.com/security
+url: https://www.alchemy.com/security
+certifications:
+- SOC 2
+evidence:
+- source: https://www.alchemy.com/security
+  keywords:
+  - soc 2
+  - trust center
