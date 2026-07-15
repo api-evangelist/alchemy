@@ -152,6 +152,8 @@ apis:
   - type: Documentation
     url: https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart
 common:
+- type: AgenticAccess
+  url: agentic-access/alchemy-agentic-access.yml
 - type: TrustCenter
   url: security/alchemy-trust-center.yml
 - type: VulnerabilityDisclosure
