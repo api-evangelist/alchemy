@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: Alchemy Gas Manager Paymaster Token Balances API
+  description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
+  version: '1.0'
+  contact:
+    name: Alchemy Support
+    url: https://www.alchemy.com/support
+  x-generated-from: documentation
+servers:
+- url: https://manage.g.alchemy.com/api
+  description: Alchemy Gas Manager Management API
+- url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+  description: Ethereum Mainnet RPC
+  variables:
+    apiKey:
+      default: your-api-key
+      description: Your Alchemy API key.
+tags:
+- name: Token Balances
+  description: Retrieve ERC-20 token balances for wallet addresses.
+paths:
+  /getTokenBalances:
+    post:
+      operationId: getTokenBalances
+      summary: Alchemy Get Token Balances
+      description: Returns ERC-20 token balances for a specified wallet address across all tokens or a specified list of token contract addresses. Supports both paginated full-portfolio queries and targeted balance lookups.
+      tags:
+      - Token Balances
+      security:
+      - apiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonRpcRequest'
+            examples:
+              GetTokenBalancesRequestExample:
+                summary: Default getTokenBalances request
+                x-microcks-default: true
+                value:
+                  id: 1
+                  jsonrpc: '2.0'
+                  method: alchemy_getTokenBalances
+                  params:
+                  - address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+                    tokenType: erc20
+      responses:
+        '200':
+          description: Token balances retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenBalancesResponse'
+              examples:
+                GetTokenBalances200Example:
+                  summary: Default getTokenBalances 200 response
+                  x-microcks-default: true
+                  value:
+                    id: 1
+                    jsonrpc: '2.0'
+                    result:
+                      address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+                      tokenBalances:
+                      - contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+                        tokenBalance: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
+                        error: null
+                      pageKey: null
+        '400':
+          description: Bad request - invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonRpcErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    JsonRpcRequest:
+      type: object
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
+      required:
+      - id
+      - jsonrpc
+      - method
+      - params
+      properties:
+        id:
+          type: integer
+          description: Request identifier for response correlation.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC protocol version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy or Ethereum JSON-RPC method name.
+          example: alchemy_getTokenBalances
+        params:
+          type: array
+          description: Method-specific parameters array.
+          items: {}
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
+    TokenBalancesResponse:
+      type: object
+      title: Token Balances Response
+      description: JSON-RPC response containing token balance results.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenBalancesResult'
+    TokenBalancesResult:
+      type: object
+      title: Token Balances Result
+      description: Result payload for token balance queries.
+      properties:
+        address:
+          type: string
+          description: Wallet address queried.
+          example: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+        tokenBalances:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenBalance'
+          description: List of token balances for the wallet.
+        pageKey:
+          type: string
+          nullable: true
+          description: Pagination key for fetching the next page.
+          example: null
+    TokenBalance:
+      type: object
+      title: Token Balance
+      description: ERC-20 token balance entry for a wallet address.
+      properties:
+        contractAddress:
+          type: string
+          description: Token contract address.
+          example: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+        tokenBalance:
+          type: string
+          description: Token balance in hexadecimal (raw units, divide by 10^decimals).
+          example: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
+        error:
+          type: string
+          nullable: true
+          description: Error message if the balance could not be retrieved.
+          example: null
+    JsonRpcErrorResponse:
+      type: object
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        error:
+          $ref: '#/components/schemas/JsonRpcError'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for Gas Manager Management API authentication.
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Alchemy-Token
+      description: Alchemy API key for RPC endpoint authentication.

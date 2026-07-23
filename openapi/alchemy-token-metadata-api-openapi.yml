@@ -1,0 +1,174 @@
+openapi: 3.0.3
+info:
+  title: Alchemy Gas Manager Paymaster Token Metadata API
+  description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
+  version: '1.0'
+  contact:
+    name: Alchemy Support
+    url: https://www.alchemy.com/support
+  x-generated-from: documentation
+servers:
+- url: https://manage.g.alchemy.com/api
+  description: Alchemy Gas Manager Management API
+- url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+  description: Ethereum Mainnet RPC
+  variables:
+    apiKey:
+      default: your-api-key
+      description: Your Alchemy API key.
+tags:
+- name: Token Metadata
+  description: Retrieve metadata for ERC-20 tokens.
+paths:
+  /getTokenMetadata:
+    post:
+      operationId: getTokenMetadata
+      summary: Alchemy Get Token Metadata
+      description: Returns metadata (name, symbol, decimals, logo) for a given ERC-20 token contract address. Useful for displaying token information in wallets and portfolio applications without needing to call the token contract directly.
+      tags:
+      - Token Metadata
+      security:
+      - apiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonRpcRequest'
+            examples:
+              GetTokenMetadataRequestExample:
+                summary: Default getTokenMetadata request
+                x-microcks-default: true
+                value:
+                  id: 1
+                  jsonrpc: '2.0'
+                  method: alchemy_getTokenMetadata
+                  params:
+                  - contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+      responses:
+        '200':
+          description: Token metadata retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenMetadataResponse'
+              examples:
+                GetTokenMetadata200Example:
+                  summary: Default getTokenMetadata 200 response
+                  x-microcks-default: true
+                  value:
+                    id: 1
+                    jsonrpc: '2.0'
+                    result:
+                      name: USD Coin
+                      symbol: USDC
+                      decimals: 6
+                      logo: https://static.alchemyapi.io/images/assets/3408.png
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonRpcErrorResponse'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    JsonRpcRequest:
+      type: object
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
+      required:
+      - id
+      - jsonrpc
+      - method
+      - params
+      properties:
+        id:
+          type: integer
+          description: Request identifier for response correlation.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC protocol version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy or Ethereum JSON-RPC method name.
+          example: alchemy_getTokenBalances
+        params:
+          type: array
+          description: Method-specific parameters array.
+          items: {}
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
+    TokenMetadata:
+      type: object
+      title: Token Metadata
+      description: ERC-20 token metadata including name, symbol, decimals, and logo.
+      properties:
+        name:
+          type: string
+          description: Full token name.
+          example: USD Coin
+        symbol:
+          type: string
+          description: Token ticker symbol.
+          example: USDC
+        decimals:
+          type: integer
+          description: Number of decimal places for the token.
+          example: 6
+        logo:
+          type: string
+          format: uri
+          description: URL of the token logo image.
+          example: https://static.alchemyapi.io/images/assets/3408.png
+    TokenMetadataResponse:
+      type: object
+      title: Token Metadata Response
+      description: JSON-RPC response containing token metadata.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenMetadata'
+    JsonRpcErrorResponse:
+      type: object
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        error:
+          $ref: '#/components/schemas/JsonRpcError'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for Gas Manager Management API authentication.
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Alchemy-Token
+      description: Alchemy API key for RPC endpoint authentication.

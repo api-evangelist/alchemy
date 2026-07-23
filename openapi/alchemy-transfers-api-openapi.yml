@@ -1,45 +1,32 @@
 openapi: 3.0.3
 info:
-  title: Alchemy Transfers API
-  description: >-
-    The Alchemy Transfers API provides access to historical on-chain transfer
-    data across EVM-compatible networks. Developers can query asset transfers
-    by address, block range, and transfer category (ETH, ERC-20, ERC-721,
-    ERC-1155, and internal transfers), enabling wallet activity tracking,
-    portfolio history, and transaction auditing.
+  title: Alchemy Gas Manager Paymaster Transfers API
+  description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
   version: '1.0'
   contact:
     name: Alchemy Support
     url: https://www.alchemy.com/support
   x-generated-from: documentation
 servers:
-  - url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
-    description: Ethereum Mainnet
-    variables:
-      apiKey:
-        default: your-api-key
-        description: Your Alchemy API key.
-  - url: https://polygon-mainnet.g.alchemy.com/v2/{apiKey}
-    description: Polygon Mainnet
-    variables:
-      apiKey:
-        default: your-api-key
-        description: Your Alchemy API key.
+- url: https://manage.g.alchemy.com/api
+  description: Alchemy Gas Manager Management API
+- url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
+  description: Ethereum Mainnet RPC
+  variables:
+    apiKey:
+      default: your-api-key
+      description: Your Alchemy API key.
 tags:
-  - name: Transfers
-    description: Query historical asset transfer data across EVM networks.
+- name: Transfers
+  description: Query historical asset transfer data across EVM networks.
 paths:
   /:
     post:
       operationId: getAssetTransfers
       summary: Alchemy Get Asset Transfers
-      description: >-
-        Returns an array of asset transfers based on the specified filters.
-        Supports querying ETH transfers, ERC-20 token transfers, ERC-721 NFT
-        transfers, ERC-1155 multi-token transfers, and internal contract
-        transfers across supported EVM networks.
+      description: Returns an array of asset transfers based on the specified filters. Supports querying ETH transfers, ERC-20 token transfers, ERC-721 NFT transfers, ERC-1155 multi-token transfers, and internal contract transfers across supported EVM networks.
       tags:
-        - Transfers
+      - Transfers
       requestBody:
         required: true
         content:
@@ -55,20 +42,19 @@ paths:
                   jsonrpc: '2.0'
                   method: alchemy_getAssetTransfers
                   params:
-                    - fromAddress: '0x0000000000000000000000000000000000000000'
-                      fromBlock: '0xfda53c'
-                      toBlock: latest
-                      category:
-                        - erc721
-                        - erc1155
-                      withMetadata: true
-                      excludeZeroValue: true
-                      maxCount: '0x10'
-                      order: desc
+                  - fromAddress: '0x0000000000000000000000000000000000000000'
+                    fromBlock: '0xfda53c'
+                    toBlock: latest
+                    category:
+                    - erc721
+                    - erc1155
+                    withMetadata: true
+                    excludeZeroValue: true
+                    maxCount: '0x10'
+                    order: desc
       security:
-        - apiKeyPath: []
+      - apiKeyPath: []
       responses:
-
         '200':
           description: Asset transfers retrieved successfully.
           content:
@@ -84,36 +70,30 @@ paths:
                     jsonrpc: '2.0'
                     result:
                       transfers:
-                        - blockNum: '0xfda53c'
-                          hash: '0xabc123def456'
-                          from: '0x0000000000000000000000000000000000000000'
-                          to: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
-                          value: 1.0
-                          asset: ETH
-                          category: external
-                          metadata:
-                            blockTimestamp: '2026-04-19T10:00:00Z'
+                      - blockNum: '0xfda53c'
+                        hash: '0xabc123def456'
+                        from: '0x0000000000000000000000000000000000000000'
+                        to: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+                        value: 1.0
+                        asset: ETH
+                        category: external
+                        metadata:
+                          blockTimestamp: '2026-04-19T10:00:00Z'
                       pageKey: abc123nextpage
       x-microcks-operation:
         delay: 0
         dispatcher: FALLBACK
 components:
-  securitySchemes:
-    apiKeyPath:
-      type: apiKey
-      in: header
-      name: X-Alchemy-Token
-      description: Alchemy API key passed as a header. The API key is also embedded in the server URL path.
   schemas:
     JsonRpcRequest:
       type: object
       title: JSON-RPC Request
       description: Standard JSON-RPC 2.0 request format for Alchemy API calls.
       required:
-        - id
-        - jsonrpc
-        - method
-        - params
+      - id
+      - jsonrpc
+      - method
+      - params
       properties:
         id:
           type: integer
@@ -131,6 +111,31 @@ components:
           type: array
           description: Parameters for the method call.
           items: {}
+    AssetTransfersResponse:
+      type: object
+      title: Asset Transfers Response
+      description: JSON-RPC response for getAssetTransfers requests.
+      properties:
+        id:
+          type: integer
+          description: Matches the request ID.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC version.
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/AssetTransfersResult'
+    TransferMetadata:
+      type: object
+      title: Transfer Metadata
+      description: Additional metadata for an asset transfer.
+      properties:
+        blockTimestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the block.
+          example: '2026-04-19T10:00:00Z'
     AssetTransfer:
       type: object
       title: Asset Transfer
@@ -164,24 +169,14 @@ components:
           type: string
           description: Transfer category (external, internal, erc20, erc721, erc1155).
           enum:
-            - external
-            - internal
-            - erc20
-            - erc721
-            - erc1155
+          - external
+          - internal
+          - erc20
+          - erc721
+          - erc1155
           example: external
         metadata:
           $ref: '#/components/schemas/TransferMetadata'
-    TransferMetadata:
-      type: object
-      title: Transfer Metadata
-      description: Additional metadata for an asset transfer.
-      properties:
-        blockTimestamp:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp of the block.
-          example: '2026-04-19T10:00:00Z'
     AssetTransfersResult:
       type: object
       title: Asset Transfers Result
@@ -196,18 +191,13 @@ components:
           type: string
           description: Pagination key for retrieving the next page of results.
           example: abc123nextpage
-    AssetTransfersResponse:
-      type: object
-      title: Asset Transfers Response
-      description: JSON-RPC response for getAssetTransfers requests.
-      properties:
-        id:
-          type: integer
-          description: Matches the request ID.
-          example: 1
-        jsonrpc:
-          type: string
-          description: JSON-RPC version.
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/AssetTransfersResult'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for Gas Manager Management API authentication.
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-Alchemy-Token
+      description: Alchemy API key for RPC endpoint authentication.
