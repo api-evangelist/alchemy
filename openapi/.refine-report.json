@@ -1,0 +1,22 @@
+{
+  "provider": "alchemy",
+  "sources": [
+    "alchemy-paymaster-api-openapi.yml",
+    "alchemy-policies-api-openapi.yml",
+    "alchemy-token-balances-api-openapi.yml",
+    "alchemy-token-metadata-api-openapi.yml",
+    "alchemy-transfers-api-openapi.yml"
+  ],
+  "outputs": [
+    "alchemy-paymaster-api-openapi.yml",
+    "alchemy-policies-api-openapi.yml",
+    "alchemy-token-balances-api-openapi.yml",
+    "alchemy-token-metadata-api-openapi.yml",
+    "alchemy-transfers-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
