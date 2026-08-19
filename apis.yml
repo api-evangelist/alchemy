@@ -29,7 +29,7 @@ tags:
 - Account Abstraction
 created: '2026-05-08'
 modified: '2026-08-07'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: alchemy:node-rpc
   name: Alchemy Node API (JSON-RPC)
