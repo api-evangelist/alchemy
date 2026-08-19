@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Alchemy Gas Manager Paymaster Token Balances API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Token Balances",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Alchemy Get Token Balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://manage.g.alchemy.com/api/getTokenBalances",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Alchemy-Token",
+              "value": "{{X-Alchemy-Token}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns ERC-20 token balances for a specified wallet address across all tokens or a specified list of token contract addresses. Supports both paginated full-portfolio queries and targeted balance lookups."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

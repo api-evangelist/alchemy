@@ -1,0 +1,198 @@
+{
+  "item": [
+    {
+      "id": "474d195a-2069-4877-ab63-90ef23330b9a",
+      "name": "Token Metadata",
+      "description": {
+        "content": "Retrieve metadata for ERC-20 tokens.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "183f11db-a67d-485b-935c-85b6f1e444e7",
+          "name": "Alchemy Get Token Metadata",
+          "request": {
+            "name": "Alchemy Get Token Metadata",
+            "description": {
+              "content": "Returns metadata (name, symbol, decimals, logo) for a given ERC-20 token contract address. Useful for displaying token information in wallets and portfolio applications without needing to call the token contract directly.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "getTokenMetadata"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Alchemy-Token"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<integer>\",\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\",\n  \"params\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "48fa1c9a-26f5-4f4b-ab35-f0d52bf1667a",
+              "name": "Token metadata retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "getTokenMetadata"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_getTokenMetadata\",\n  \"params\": [\n    {\n      \"contractAddress\": \"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"result\": {\n    \"name\": \"USD Coin\",\n    \"symbol\": \"USDC\",\n    \"decimals\": 6,\n    \"logo\": \"https://static.alchemyapi.io/images/assets/3408.png\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5435eb9e-5d77-4901-9b00-51f9fe2fc242",
+              "name": "Bad request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "getTokenMetadata"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_getTokenMetadata\",\n  \"params\": [\n    {\n      \"contractAddress\": \"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"error\": {\n    \"code\": -32602,\n    \"message\": \"Invalid params\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://manage.g.alchemy.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b3a74195-5df8-4c06-8daa-c995a218bce3",
+    "name": "Alchemy Gas Manager Paymaster Token Metadata API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.\n\nContact Support:\n Name: Alchemy Support",
+      "type": "text/plain"
+    }
+  }
+}

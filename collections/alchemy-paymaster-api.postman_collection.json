@@ -1,0 +1,249 @@
+{
+  "item": [
+    {
+      "id": "cab1501f-409a-4be5-90c0-240f2d39f163",
+      "name": "Paymaster",
+      "description": {
+        "content": "Sponsor user operations via ERC-4337 paymaster endpoints.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b3440acc-a424-4c2e-ba7f-c035375d5373",
+          "name": "Alchemy Gas Manager Sponsor User Operation",
+          "request": {
+            "name": "Alchemy Gas Manager Sponsor User Operation",
+            "description": {
+              "content": "Submits a user operation for gas sponsorship via the ERC-4337 paymaster. Returns a signed paymaster response that the bundler uses to cover gas fees on behalf of the user, enabling gasless transactions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sponsorUserOperation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Alchemy-Token"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<integer>\",\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5c76b88e-3e89-4d73-ad40-e86900a3feaa",
+              "name": "User operation sponsored successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sponsorUserOperation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_requestGasAndPaymasterAndData\",\n  \"params\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"entryPoint\": \"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789\",\n      \"userOperation\": {\n        \"sender\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"nonce\": \"0x0\",\n        \"initCode\": \"0x\",\n        \"callData\": \"0x\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"result\": {\n    \"paymasterAndData\": \"0xabc123paymaster\",\n    \"preVerificationGas\": \"0x5208\",\n    \"verificationGasLimit\": \"0x15f90\",\n    \"callGasLimit\": \"0x9c40\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82e94a52-1ffd-405c-a8f3-502305ebaab3",
+              "name": "Bad request - operation rejected by policy.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sponsorUserOperation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_requestGasAndPaymasterAndData\",\n  \"params\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"entryPoint\": \"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789\",\n      \"userOperation\": {\n        \"sender\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"nonce\": \"0x0\",\n        \"initCode\": \"0x\",\n        \"callData\": \"0x\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2dec5671-a172-4474-a5ca-21e3fad03b8e",
+              "name": "Unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sponsorUserOperation"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_requestGasAndPaymasterAndData\",\n  \"params\": [\n    {\n      \"policyId\": \"pol-abc123\",\n      \"entryPoint\": \"0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789\",\n      \"userOperation\": {\n        \"sender\": \"0xd8da6bf26964af9d7eed9e03e53415d37aa96045\",\n        \"nonce\": \"0x0\",\n        \"initCode\": \"0x\",\n        \"callData\": \"0x\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"UNAUTHORIZED\",\n  \"message\": \"Invalid API key.\",\n  \"statusCode\": 401\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://manage.g.alchemy.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "561fe06b-5dac-40d2-ba46-9974dcfe71ac",
+    "name": "Alchemy Gas Manager Paymaster API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.\n\nContact Support:\n Name: Alchemy Support",
+      "type": "text/plain"
+    }
+  }
+}

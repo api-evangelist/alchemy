@@ -1,7 +1,7 @@
 {
   "item": [
     {
-      "id": "7919bbf5-f663-4a7d-b520-dd46620791d8",
+      "id": "026f4698-e6c4-4b0a-a090-0f42806c2949",
       "name": "Transfers",
       "description": {
         "content": "Query historical asset transfer data across EVM networks.",
@@ -9,7 +9,7 @@
       },
       "item": [
         {
-          "id": "f66c0a7a-6546-466f-9f50-839e1a246619",
+          "id": "a9433f8e-d2fc-4a0a-9a9b-48151b8bb928",
           "name": "Alchemy Get Asset Transfers",
           "request": {
             "name": "Alchemy Get Asset Transfers",
@@ -25,14 +25,7 @@
                 "{{baseUrl}}"
               ],
               "query": [],
-              "variable": [
-                {
-                  "description": "Your Alchemy API key.",
-                  "type": "any",
-                  "value": "{{apiKey}}",
-                  "key": "apiKey"
-                }
-              ]
+              "variable": []
             },
             "header": [
               {
@@ -45,23 +38,6 @@
               }
             ],
             "method": "POST",
-            "auth": {
-              "type": "apikey",
-              "apikey": [
-                {
-                  "key": "key",
-                  "value": "X-Alchemy-Token"
-                },
-                {
-                  "key": "value",
-                  "value": "{{apiKey}}"
-                },
-                {
-                  "key": "in",
-                  "value": "header"
-                }
-              ]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"id\": \"<integer>\",\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\",\n  \"params\": []\n}",
@@ -74,7 +50,7 @@
           },
           "response": [
             {
-              "id": "5a39c051-4c2e-495d-b6f9-c71bf1281c11",
+              "id": "337b6aec-cf0e-4d31-a6f5-549a9d16611b",
               "name": "Asset transfers retrieved successfully.",
               "originalRequest": {
                 "url": {
@@ -85,24 +61,9 @@
                     "{{baseUrl}}"
                   ],
                   "query": [],
-                  "variable": [
-                    {
-                      "description": "Your Alchemy API key.",
-                      "type": "any",
-                      "value": "{{apiKey}}",
-                      "key": "apiKey"
-                    }
-                  ]
+                  "variable": []
                 },
                 "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: apikey",
-                      "type": "text/plain"
-                    },
-                    "key": "X-Alchemy-Token",
-                    "value": "<API Key>"
-                  },
                   {
                     "key": "Accept",
                     "value": "application/json"
@@ -144,26 +105,17 @@
   "event": [],
   "variable": [
     {
-      "description": {
-        "content": "Your Alchemy API key.",
-        "type": "text/plain"
-      },
-      "type": "any",
-      "value": "your-api-key",
-      "key": "apiKey"
-    },
-    {
       "type": "string",
-      "value": "https://eth-mainnet.g.alchemy.com/v2/{{apiKey}}",
+      "value": "https://manage.g.alchemy.com/api",
       "key": "baseUrl"
     }
   ],
   "info": {
-    "_postman_id": "d494f900-1e12-4087-8303-b15e5fe1b220",
-    "name": "Alchemy Transfers API",
+    "_postman_id": "3bf0f3d0-1c63-4a18-a9f2-83688ea31b1f",
+    "name": "Alchemy Gas Manager Paymaster Transfers API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
-      "content": "The Alchemy Transfers API provides access to historical on-chain transfer data across EVM-compatible networks. Developers can query asset transfers by address, block range, and transfer category (ETH, ERC-20, ERC-721, ERC-1155, and internal transfers), enabling wallet activity tracking, portfolio history, and transaction auditing.\n\nContact Support:\n Name: Alchemy Support",
+      "content": "The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.\n\nContact Support:\n Name: Alchemy Support",
       "type": "text/plain"
     }
   }

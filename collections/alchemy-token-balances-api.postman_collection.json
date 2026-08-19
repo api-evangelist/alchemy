@@ -1,0 +1,198 @@
+{
+  "item": [
+    {
+      "id": "6a5524b0-0746-44db-aa71-b49c413afc31",
+      "name": "Token Balances",
+      "description": {
+        "content": "Retrieve ERC-20 token balances for wallet addresses.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7ed23269-6522-49f7-9073-ab7cc2af5e29",
+          "name": "Alchemy Get Token Balances",
+          "request": {
+            "name": "Alchemy Get Token Balances",
+            "description": {
+              "content": "Returns ERC-20 token balances for a specified wallet address across all tokens or a specified list of token contract addresses. Supports both paginated full-portfolio queries and targeted balance lookups.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "getTokenBalances"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Alchemy-Token"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<integer>\",\n  \"jsonrpc\": \"<string>\",\n  \"method\": \"<string>\",\n  \"params\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "638ceb09-9e76-4ace-bbe4-c4ce95c6d20b",
+              "name": "Token balances retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "getTokenBalances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_getTokenBalances\",\n  \"params\": [\n    {\n      \"address\": \"0x2791bca1f2de4661ed88a30c99a7a9449aa84174\",\n      \"tokenType\": \"erc20\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"result\": {\n    \"address\": \"0x2791bca1f2de4661ed88a30c99a7a9449aa84174\",\n    \"tokenBalances\": [\n      {\n        \"contractAddress\": \"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\",\n        \"tokenBalance\": \"0x0000000000000000000000000000000000000000000000000de0b6b3a7640000\",\n        \"error\": null\n      }\n    ],\n    \"pageKey\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c78c459-8f1f-4c14-8bf5-2a04c76c0f6b",
+              "name": "Bad request - invalid parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "getTokenBalances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Alchemy-Token",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"alchemy_getTokenBalances\",\n  \"params\": [\n    {\n      \"address\": \"0x2791bca1f2de4661ed88a30c99a7a9449aa84174\",\n      \"tokenType\": \"erc20\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"jsonrpc\": \"2.0\",\n  \"error\": {\n    \"code\": -32602,\n    \"message\": \"Invalid params\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://manage.g.alchemy.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "38ce30dc-145b-4b60-add7-4a499ff6d941",
+    "name": "Alchemy Gas Manager Paymaster Token Balances API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.\n\nContact Support:\n Name: Alchemy Support",
+      "type": "text/plain"
+    }
+  }
+}
