@@ -40,6 +40,10 @@ apis:
   tags:
   - JSON-RPC
   - WebSocket
+  - Multi-Chain
+  tags_raw:
+  - JSON-RPC
+  - WebSocket
   - Multi-chain
   properties:
   - type: Documentation
@@ -103,6 +107,9 @@ apis:
   humanURL: https://www.alchemy.com/docs/reference/notify-api-quickstart
   baseURL: https://dashboard.alchemy.com/api
   tags:
+  - REST
+  - Webhook
+  tags_raw:
   - REST
   - Webhooks
   properties:
