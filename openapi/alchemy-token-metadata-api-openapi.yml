@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Alchemy Gas Manager Paymaster Token Metadata API
   description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
@@ -75,6 +75,54 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    TokenMetadata:
+      type: object
+      title: Token Metadata
+      description: ERC-20 token metadata including name, symbol, decimals, and logo.
+      properties:
+        name:
+          type: string
+          description: Full token name.
+          example: USD Coin
+        symbol:
+          type: string
+          description: Token ticker symbol.
+          example: USDC
+        decimals:
+          type: integer
+          description: Number of decimal places for the token.
+          example: 6
+        logo:
+          type: string
+          format: uri
+          description: URL of the token logo image.
+          example: https://static.alchemyapi.io/images/assets/3408.png
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
+    TokenMetadataResponse:
+      type: object
+      title: Token Metadata Response
+      description: JSON-RPC response containing token metadata.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenMetadata'
     JsonRpcRequest:
       type: object
       title: JSON-RPC Request
@@ -101,54 +149,6 @@ components:
           type: array
           description: Method-specific parameters array.
           items: {}
-    JsonRpcError:
-      type: object
-      title: JSON-RPC Error
-      description: Error object for a failed JSON-RPC response.
-      properties:
-        code:
-          type: integer
-          description: JSON-RPC error code.
-          example: -32602
-        message:
-          type: string
-          description: Human-readable error description.
-          example: Invalid params
-    TokenMetadata:
-      type: object
-      title: Token Metadata
-      description: ERC-20 token metadata including name, symbol, decimals, and logo.
-      properties:
-        name:
-          type: string
-          description: Full token name.
-          example: USD Coin
-        symbol:
-          type: string
-          description: Token ticker symbol.
-          example: USDC
-        decimals:
-          type: integer
-          description: Number of decimal places for the token.
-          example: 6
-        logo:
-          type: string
-          format: uri
-          description: URL of the token logo image.
-          example: https://static.alchemyapi.io/images/assets/3408.png
-    TokenMetadataResponse:
-      type: object
-      title: Token Metadata Response
-      description: JSON-RPC response containing token metadata.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/TokenMetadata'
     JsonRpcErrorResponse:
       type: object
       title: JSON-RPC Error Response

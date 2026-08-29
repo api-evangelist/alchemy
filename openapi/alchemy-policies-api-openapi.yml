@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Alchemy Gas Manager Paymaster Policies API
   description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
@@ -182,6 +182,16 @@ components:
           type: integer
           description: HTTP status code.
           example: 401
+    PolicyListResponse:
+      type: object
+      title: Policy List Response
+      description: List of gas manager policies.
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+          description: Array of policy objects.
     CreatePolicyRequest:
       type: object
       title: Create Policy Request
@@ -243,16 +253,6 @@ components:
           format: double
           description: Maximum total ETH spend across all users for this policy.
           example: 1000.0
-    PolicyListResponse:
-      type: object
-      title: Policy List Response
-      description: List of gas manager policies.
-      properties:
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/Policy'
-          description: Array of policy objects.
   securitySchemes:
     bearerAuth:
       type: http

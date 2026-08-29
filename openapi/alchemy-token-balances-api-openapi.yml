@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Alchemy Gas Manager Paymaster Token Balances API
   description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
@@ -78,32 +78,25 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    JsonRpcRequest:
+    TokenBalance:
       type: object
-      title: JSON-RPC Request
-      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
-      required:
-      - id
-      - jsonrpc
-      - method
-      - params
+      title: Token Balance
+      description: ERC-20 token balance entry for a wallet address.
       properties:
-        id:
-          type: integer
-          description: Request identifier for response correlation.
-          example: 1
-        jsonrpc:
+        contractAddress:
           type: string
-          description: JSON-RPC protocol version.
-          example: '2.0'
-        method:
+          description: Token contract address.
+          example: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+        tokenBalance:
           type: string
-          description: Alchemy or Ethereum JSON-RPC method name.
-          example: alchemy_getTokenBalances
-        params:
-          type: array
-          description: Method-specific parameters array.
-          items: {}
+          description: Token balance in hexadecimal (raw units, divide by 10^decimals).
+          example: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
+        error:
+          type:
+          - string
+          - 'null'
+          description: Error message if the balance could not be retrieved.
+          example: null
     JsonRpcError:
       type: object
       title: JSON-RPC Error
@@ -130,6 +123,32 @@ components:
           example: '2.0'
         result:
           $ref: '#/components/schemas/TokenBalancesResult'
+    JsonRpcRequest:
+      type: object
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
+      required:
+      - id
+      - jsonrpc
+      - method
+      - params
+      properties:
+        id:
+          type: integer
+          description: Request identifier for response correlation.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC protocol version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy or Ethereum JSON-RPC method name.
+          example: alchemy_getTokenBalances
+        params:
+          type: array
+          description: Method-specific parameters array.
+          items: {}
     TokenBalancesResult:
       type: object
       title: Token Balances Result
@@ -145,27 +164,10 @@ components:
             $ref: '#/components/schemas/TokenBalance'
           description: List of token balances for the wallet.
         pageKey:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: Pagination key for fetching the next page.
-          example: null
-    TokenBalance:
-      type: object
-      title: Token Balance
-      description: ERC-20 token balance entry for a wallet address.
-      properties:
-        contractAddress:
-          type: string
-          description: Token contract address.
-          example: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
-        tokenBalance:
-          type: string
-          description: Token balance in hexadecimal (raw units, divide by 10^decimals).
-          example: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
-        error:
-          type: string
-          nullable: true
-          description: Error message if the balance could not be retrieved.
           example: null
     JsonRpcErrorResponse:
       type: object

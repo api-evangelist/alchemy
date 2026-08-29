@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Alchemy Gas Manager Paymaster Transfers API
   description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
@@ -111,6 +111,20 @@ components:
           type: array
           description: Parameters for the method call.
           items: {}
+    AssetTransfersResult:
+      type: object
+      title: Asset Transfers Result
+      description: Result payload containing the list of asset transfers.
+      properties:
+        transfers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetTransfer'
+          description: List of asset transfer events matching the query.
+        pageKey:
+          type: string
+          description: Pagination key for retrieving the next page of results.
+          example: abc123nextpage
     AssetTransfersResponse:
       type: object
       title: Asset Transfers Response
@@ -126,16 +140,6 @@ components:
           example: '2.0'
         result:
           $ref: '#/components/schemas/AssetTransfersResult'
-    TransferMetadata:
-      type: object
-      title: Transfer Metadata
-      description: Additional metadata for an asset transfer.
-      properties:
-        blockTimestamp:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp of the block.
-          example: '2026-04-19T10:00:00Z'
     AssetTransfer:
       type: object
       title: Asset Transfer
@@ -177,20 +181,16 @@ components:
           example: external
         metadata:
           $ref: '#/components/schemas/TransferMetadata'
-    AssetTransfersResult:
+    TransferMetadata:
       type: object
-      title: Asset Transfers Result
-      description: Result payload containing the list of asset transfers.
+      title: Transfer Metadata
+      description: Additional metadata for an asset transfer.
       properties:
-        transfers:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetTransfer'
-          description: List of asset transfer events matching the query.
-        pageKey:
+        blockTimestamp:
           type: string
-          description: Pagination key for retrieving the next page of results.
-          example: abc123nextpage
+          format: date-time
+          description: ISO 8601 timestamp of the block.
+          example: '2026-04-19T10:00:00Z'
   securitySchemes:
     bearerAuth:
       type: http

@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Alchemy Gas Manager Paymaster API
   description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
@@ -125,19 +125,6 @@ components:
           type: array
           description: Sponsorship parameters array.
           items: {}
-    SponsorUserOperationResponse:
-      type: object
-      title: Sponsor User Operation Response
-      description: JSON-RPC response for sponsored user operation requests.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/SponsorUserOperationResult'
     SponsorUserOperationResult:
       type: object
       title: Sponsor User Operation Result
@@ -159,6 +146,19 @@ components:
           type: string
           description: Call gas limit in hexadecimal.
           example: '0x9c40'
+    SponsorUserOperationResponse:
+      type: object
+      title: Sponsor User Operation Response
+      description: JSON-RPC response for sponsored user operation requests.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/SponsorUserOperationResult'
   securitySchemes:
     bearerAuth:
       type: http
