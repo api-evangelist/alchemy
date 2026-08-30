@@ -52,7 +52,7 @@ apis:
   tags:
   - JSON-RPC
   - WebSocket
-  - Multi-Chain
+  - Multi-chain
   tags_raw:
   - JSON-RPC
   - WebSocket
