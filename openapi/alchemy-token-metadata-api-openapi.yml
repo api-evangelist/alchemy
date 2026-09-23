@@ -1,17 +1,21 @@
 openapi: 3.2.0
 info:
-  title: Alchemy Gas Manager Paymaster Token Metadata API
-  description: The Alchemy Gas Manager API enables developers to sponsor gas fees for end users via the ERC-4337 Account Abstraction standard. Using a Gas Manager policy, developers can define rules for which transactions to sponsor, covering ETH gas fees so users never need to hold native tokens to interact with dApps. Supports gasless transactions, ERC-20 gas payments, and policy-based sponsorship controls.
+  title: Alchemy Token Token Metadata API
+  description: The Alchemy Token API provides comprehensive access to ERC-20 token data across EVM-compatible networks. Developers can retrieve token balances by wallet address, token metadata (name, symbol, decimals, logo), and real-time pricing data. The API supports multi-chain queries and returns standardized responses for easy integration into wallets, portfolio trackers, and DeFi applications.
   version: '1.0'
   contact:
     name: Alchemy Support
     url: https://www.alchemy.com/support
   x-generated-from: documentation
 servers:
-- url: https://manage.g.alchemy.com/api
-  description: Alchemy Gas Manager Management API
 - url: https://eth-mainnet.g.alchemy.com/v2/{apiKey}
-  description: Ethereum Mainnet RPC
+  description: Ethereum Mainnet
+  variables:
+    apiKey:
+      default: your-api-key
+      description: Your Alchemy API key.
+- url: https://polygon-mainnet.g.alchemy.com/v2/{apiKey}
+  description: Polygon Mainnet
   variables:
     apiKey:
       default: your-api-key
@@ -75,6 +79,45 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    TokenMetadataResponse:
+      type: object
+      title: Token Metadata Response
+      description: JSON-RPC response containing token metadata.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenMetadata'
+    JsonRpcErrorResponse:
+      type: object
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        error:
+          $ref: '#/components/schemas/JsonRpcError'
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
     TokenMetadata:
       type: object
       title: Token Metadata
@@ -97,32 +140,6 @@ components:
           format: uri
           description: URL of the token logo image.
           example: https://static.alchemyapi.io/images/assets/3408.png
-    JsonRpcError:
-      type: object
-      title: JSON-RPC Error
-      description: Error object for a failed JSON-RPC response.
-      properties:
-        code:
-          type: integer
-          description: JSON-RPC error code.
-          example: -32602
-        message:
-          type: string
-          description: Human-readable error description.
-          example: Invalid params
-    TokenMetadataResponse:
-      type: object
-      title: Token Metadata Response
-      description: JSON-RPC response containing token metadata.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/TokenMetadata'
     JsonRpcRequest:
       type: object
       title: JSON-RPC Request
@@ -149,26 +166,9 @@ components:
           type: array
           description: Method-specific parameters array.
           items: {}
-    JsonRpcErrorResponse:
-      type: object
-      title: JSON-RPC Error Response
-      description: JSON-RPC error response envelope.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        error:
-          $ref: '#/components/schemas/JsonRpcError'
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      description: Bearer token for Gas Manager Management API authentication.
     apiKeyHeader:
       type: apiKey
       in: header
       name: X-Alchemy-Token
-      description: Alchemy API key for RPC endpoint authentication.
+      description: Alchemy API key. Also embedded in server URL path variable.
