@@ -40,6 +40,8 @@ tags:
 - NFT
 - Indexing
 - Account Abstraction
+- Real-Time
+- Ethereum
 created: '2026-05-08'
 modified: '2026-08-07'
 specificationVersion: '0.23'
@@ -63,8 +65,6 @@ apis:
     url: https://www.alchemy.com/docs/reference/api-overview
   - type: AsyncAPI
     url: asyncapi/alchemy-asyncapi.yml
-  - url: graphql/alchemy-graphql.md
-    type: GraphQL
 - aid: alchemy:nft-api
   name: Alchemy NFT API
   description: REST endpoints for NFT ownership, metadata, floor price, sales, contract metadata, and
