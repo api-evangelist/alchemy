@@ -85,35 +85,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    AssetTransfersResult:
-      type: object
-      title: Asset Transfers Result
-      description: Result payload containing the list of asset transfers.
-      properties:
-        transfers:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetTransfer'
-          description: List of asset transfer events matching the query.
-        pageKey:
-          type: string
-          description: Pagination key for retrieving the next page of results.
-          example: abc123nextpage
-    AssetTransfersResponse:
-      type: object
-      title: Asset Transfers Response
-      description: JSON-RPC response for getAssetTransfers requests.
-      properties:
-        id:
-          type: integer
-          description: Matches the request ID.
-          example: 1
-        jsonrpc:
-          type: string
-          description: JSON-RPC version.
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/AssetTransfersResult'
     AssetTransfer:
       type: object
       title: Asset Transfer
@@ -155,6 +126,21 @@ components:
           example: external
         metadata:
           $ref: '#/components/schemas/TransferMetadata'
+    AssetTransfersResponse:
+      type: object
+      title: Asset Transfers Response
+      description: JSON-RPC response for getAssetTransfers requests.
+      properties:
+        id:
+          type: integer
+          description: Matches the request ID.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC version.
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/AssetTransfersResult'
     TransferMetadata:
       type: object
       title: Transfer Metadata
@@ -191,6 +177,20 @@ components:
           type: array
           description: Parameters for the method call.
           items: {}
+    AssetTransfersResult:
+      type: object
+      title: Asset Transfers Result
+      description: Result payload containing the list of asset transfers.
+      properties:
+        transfers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetTransfer'
+          description: List of asset transfer events matching the query.
+        pageKey:
+          type: string
+          description: Pagination key for retrieving the next page of results.
+          example: abc123nextpage
   securitySchemes:
     bearerAuth:
       type: http

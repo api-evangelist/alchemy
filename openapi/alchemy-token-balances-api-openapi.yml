@@ -82,6 +82,78 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    JsonRpcRequest:
+      type: object
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
+      required:
+      - id
+      - jsonrpc
+      - method
+      - params
+      properties:
+        id:
+          type: integer
+          description: Request identifier for response correlation.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC protocol version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy or Ethereum JSON-RPC method name.
+          example: alchemy_getTokenBalances
+        params:
+          type: array
+          description: Method-specific parameters array.
+          items: {}
+    TokenBalancesResult:
+      type: object
+      title: Token Balances Result
+      description: Result payload for token balance queries.
+      properties:
+        address:
+          type: string
+          description: Wallet address queried.
+          example: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+        tokenBalances:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenBalance'
+          description: List of token balances for the wallet.
+        pageKey:
+          type:
+          - string
+          - 'null'
+          description: Pagination key for fetching the next page.
+          example: null
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
+    TokenBalancesResponse:
+      type: object
+      title: Token Balances Response
+      description: JSON-RPC response containing token balance results.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenBalancesResult'
     TokenBalance:
       type: object
       title: Token Balance
@@ -114,78 +186,6 @@ components:
           example: '2.0'
         error:
           $ref: '#/components/schemas/JsonRpcError'
-    JsonRpcError:
-      type: object
-      title: JSON-RPC Error
-      description: Error object for a failed JSON-RPC response.
-      properties:
-        code:
-          type: integer
-          description: JSON-RPC error code.
-          example: -32602
-        message:
-          type: string
-          description: Human-readable error description.
-          example: Invalid params
-    TokenBalancesResult:
-      type: object
-      title: Token Balances Result
-      description: Result payload for token balance queries.
-      properties:
-        address:
-          type: string
-          description: Wallet address queried.
-          example: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
-        tokenBalances:
-          type: array
-          items:
-            $ref: '#/components/schemas/TokenBalance'
-          description: List of token balances for the wallet.
-        pageKey:
-          type:
-          - string
-          - 'null'
-          description: Pagination key for fetching the next page.
-          example: null
-    JsonRpcRequest:
-      type: object
-      title: JSON-RPC Request
-      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
-      required:
-      - id
-      - jsonrpc
-      - method
-      - params
-      properties:
-        id:
-          type: integer
-          description: Request identifier for response correlation.
-          example: 1
-        jsonrpc:
-          type: string
-          description: JSON-RPC protocol version.
-          example: '2.0'
-        method:
-          type: string
-          description: Alchemy or Ethereum JSON-RPC method name.
-          example: alchemy_getTokenBalances
-        params:
-          type: array
-          description: Method-specific parameters array.
-          items: {}
-    TokenBalancesResponse:
-      type: object
-      title: Token Balances Response
-      description: JSON-RPC response containing token balance results.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/TokenBalancesResult'
   securitySchemes:
     apiKeyHeader:
       type: apiKey

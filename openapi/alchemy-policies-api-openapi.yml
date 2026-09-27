@@ -165,6 +165,42 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    PolicyListResponse:
+      type: object
+      title: Policy List Response
+      description: List of gas manager policies.
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+          description: Array of policy objects.
+    CreatePolicyRequest:
+      type: object
+      title: Create Policy Request
+      description: Request body for creating a new gas manager policy.
+      required:
+      - name
+      - network
+      properties:
+        name:
+          type: string
+          description: Display name for the new policy.
+          example: My Sponsorship Policy
+        network:
+          type: string
+          description: Blockchain network for the policy.
+          example: eth-mainnet
+        maxSpendPerUser:
+          type: number
+          format: double
+          description: Maximum ETH spend per user (optional).
+          example: 1.0
+        maxSpendTotal:
+          type: number
+          format: double
+          description: Maximum total ETH spend across all users (optional).
+          example: 500.0
     Policy:
       type: object
       title: Gas Manager Policy
@@ -200,32 +236,6 @@ components:
           format: double
           description: Maximum total ETH spend across all users for this policy.
           example: 1000.0
-    CreatePolicyRequest:
-      type: object
-      title: Create Policy Request
-      description: Request body for creating a new gas manager policy.
-      required:
-      - name
-      - network
-      properties:
-        name:
-          type: string
-          description: Display name for the new policy.
-          example: My Sponsorship Policy
-        network:
-          type: string
-          description: Blockchain network for the policy.
-          example: eth-mainnet
-        maxSpendPerUser:
-          type: number
-          format: double
-          description: Maximum ETH spend per user (optional).
-          example: 1.0
-        maxSpendTotal:
-          type: number
-          format: double
-          description: Maximum total ETH spend across all users (optional).
-          example: 500.0
     ErrorResponse:
       type: object
       title: Error Response
@@ -243,16 +253,6 @@ components:
           type: integer
           description: HTTP status code.
           example: 401
-    PolicyListResponse:
-      type: object
-      title: Policy List Response
-      description: List of gas manager policies.
-      properties:
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/Policy'
-          description: Array of policy objects.
   securitySchemes:
     bearerAuth:
       type: http

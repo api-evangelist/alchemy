@@ -79,32 +79,32 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    TokenMetadataResponse:
+    JsonRpcRequest:
       type: object
-      title: Token Metadata Response
-      description: JSON-RPC response containing token metadata.
+      title: JSON-RPC Request
+      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
+      required:
+      - id
+      - jsonrpc
+      - method
+      - params
       properties:
         id:
           type: integer
+          description: Request identifier for response correlation.
           example: 1
         jsonrpc:
           type: string
+          description: JSON-RPC protocol version.
           example: '2.0'
-        result:
-          $ref: '#/components/schemas/TokenMetadata'
-    JsonRpcErrorResponse:
-      type: object
-      title: JSON-RPC Error Response
-      description: JSON-RPC error response envelope.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
+        method:
           type: string
-          example: '2.0'
-        error:
-          $ref: '#/components/schemas/JsonRpcError'
+          description: Alchemy or Ethereum JSON-RPC method name.
+          example: alchemy_getTokenBalances
+        params:
+          type: array
+          description: Method-specific parameters array.
+          items: {}
     JsonRpcError:
       type: object
       title: JSON-RPC Error
@@ -140,32 +140,32 @@ components:
           format: uri
           description: URL of the token logo image.
           example: https://static.alchemyapi.io/images/assets/3408.png
-    JsonRpcRequest:
+    JsonRpcErrorResponse:
       type: object
-      title: JSON-RPC Request
-      description: Standard JSON-RPC 2.0 request envelope for Alchemy API methods.
-      required:
-      - id
-      - jsonrpc
-      - method
-      - params
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
       properties:
         id:
           type: integer
-          description: Request identifier for response correlation.
           example: 1
         jsonrpc:
           type: string
-          description: JSON-RPC protocol version.
           example: '2.0'
-        method:
+        error:
+          $ref: '#/components/schemas/JsonRpcError'
+    TokenMetadataResponse:
+      type: object
+      title: Token Metadata Response
+      description: JSON-RPC response containing token metadata.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
           type: string
-          description: Alchemy or Ethereum JSON-RPC method name.
-          example: alchemy_getTokenBalances
-        params:
-          type: array
-          description: Method-specific parameters array.
-          items: {}
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenMetadata'
   securitySchemes:
     apiKeyHeader:
       type: apiKey
