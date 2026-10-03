@@ -121,6 +121,23 @@ components:
           type: string
           description: Call gas limit in hexadecimal.
           example: '0x9c40'
+    ErrorResponse:
+      type: object
+      title: Error Response
+      description: Standard error response.
+      properties:
+        error:
+          type: string
+          description: Error code.
+          example: UNAUTHORIZED
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid API key.
+        statusCode:
+          type: integer
+          description: HTTP status code.
+          example: 401
     SponsorUserOperationRequest:
       type: object
       title: Sponsor User Operation Request
@@ -142,23 +159,6 @@ components:
           type: array
           description: Sponsorship parameters array.
           items: {}
-    ErrorResponse:
-      type: object
-      title: Error Response
-      description: Standard error response.
-      properties:
-        error:
-          type: string
-          description: Error code.
-          example: UNAUTHORIZED
-        message:
-          type: string
-          description: Human-readable error message.
-          example: Invalid API key.
-        statusCode:
-          type: integer
-          description: HTTP status code.
-          example: 401
   securitySchemes:
     bearerAuth:
       type: http

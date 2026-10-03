@@ -175,32 +175,23 @@ components:
           items:
             $ref: '#/components/schemas/Policy'
           description: Array of policy objects.
-    CreatePolicyRequest:
+    ErrorResponse:
       type: object
-      title: Create Policy Request
-      description: Request body for creating a new gas manager policy.
-      required:
-      - name
-      - network
+      title: Error Response
+      description: Standard error response.
       properties:
-        name:
+        error:
           type: string
-          description: Display name for the new policy.
-          example: My Sponsorship Policy
-        network:
+          description: Error code.
+          example: UNAUTHORIZED
+        message:
           type: string
-          description: Blockchain network for the policy.
-          example: eth-mainnet
-        maxSpendPerUser:
-          type: number
-          format: double
-          description: Maximum ETH spend per user (optional).
-          example: 1.0
-        maxSpendTotal:
-          type: number
-          format: double
-          description: Maximum total ETH spend across all users (optional).
-          example: 500.0
+          description: Human-readable error message.
+          example: Invalid API key.
+        statusCode:
+          type: integer
+          description: HTTP status code.
+          example: 401
     Policy:
       type: object
       title: Gas Manager Policy
@@ -236,23 +227,32 @@ components:
           format: double
           description: Maximum total ETH spend across all users for this policy.
           example: 1000.0
-    ErrorResponse:
+    CreatePolicyRequest:
       type: object
-      title: Error Response
-      description: Standard error response.
+      title: Create Policy Request
+      description: Request body for creating a new gas manager policy.
+      required:
+      - name
+      - network
       properties:
-        error:
+        name:
           type: string
-          description: Error code.
-          example: UNAUTHORIZED
-        message:
+          description: Display name for the new policy.
+          example: My Sponsorship Policy
+        network:
           type: string
-          description: Human-readable error message.
-          example: Invalid API key.
-        statusCode:
-          type: integer
-          description: HTTP status code.
-          example: 401
+          description: Blockchain network for the policy.
+          example: eth-mainnet
+        maxSpendPerUser:
+          type: number
+          format: double
+          description: Maximum ETH spend per user (optional).
+          example: 1.0
+        maxSpendTotal:
+          type: number
+          format: double
+          description: Maximum total ETH spend across all users (optional).
+          example: 500.0
   securitySchemes:
     bearerAuth:
       type: http
