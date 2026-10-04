@@ -165,33 +165,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    PolicyListResponse:
-      type: object
-      title: Policy List Response
-      description: List of gas manager policies.
-      properties:
-        policies:
-          type: array
-          items:
-            $ref: '#/components/schemas/Policy'
-          description: Array of policy objects.
-    ErrorResponse:
-      type: object
-      title: Error Response
-      description: Standard error response.
-      properties:
-        error:
-          type: string
-          description: Error code.
-          example: UNAUTHORIZED
-        message:
-          type: string
-          description: Human-readable error message.
-          example: Invalid API key.
-        statusCode:
-          type: integer
-          description: HTTP status code.
-          example: 401
     Policy:
       type: object
       title: Gas Manager Policy
@@ -253,6 +226,33 @@ components:
           format: double
           description: Maximum total ETH spend across all users (optional).
           example: 500.0
+    ErrorResponse:
+      type: object
+      title: Error Response
+      description: Standard error response.
+      properties:
+        error:
+          type: string
+          description: Error code.
+          example: UNAUTHORIZED
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid API key.
+        statusCode:
+          type: integer
+          description: HTTP status code.
+          example: 401
+    PolicyListResponse:
+      type: object
+      title: Policy List Response
+      description: List of gas manager policies.
+      properties:
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+          description: Array of policy objects.
   securitySchemes:
     bearerAuth:
       type: http

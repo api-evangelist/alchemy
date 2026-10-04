@@ -79,19 +79,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    TokenMetadataResponse:
-      type: object
-      title: Token Metadata Response
-      description: JSON-RPC response containing token metadata.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/TokenMetadata'
     JsonRpcError:
       type: object
       title: JSON-RPC Error
@@ -105,19 +92,6 @@ components:
           type: string
           description: Human-readable error description.
           example: Invalid params
-    JsonRpcErrorResponse:
-      type: object
-      title: JSON-RPC Error Response
-      description: JSON-RPC error response envelope.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        error:
-          $ref: '#/components/schemas/JsonRpcError'
     JsonRpcRequest:
       type: object
       title: JSON-RPC Request
@@ -144,6 +118,19 @@ components:
           type: array
           description: Method-specific parameters array.
           items: {}
+    TokenMetadataResponse:
+      type: object
+      title: Token Metadata Response
+      description: JSON-RPC response containing token metadata.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenMetadata'
     TokenMetadata:
       type: object
       title: Token Metadata
@@ -166,6 +153,19 @@ components:
           format: uri
           description: URL of the token logo image.
           example: https://static.alchemyapi.io/images/assets/3408.png
+    JsonRpcErrorResponse:
+      type: object
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        error:
+          $ref: '#/components/schemas/JsonRpcError'
   securitySchemes:
     apiKeyHeader:
       type: apiKey

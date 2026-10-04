@@ -87,57 +87,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    SponsorUserOperationResponse:
-      type: object
-      title: Sponsor User Operation Response
-      description: JSON-RPC response for sponsored user operation requests.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/SponsorUserOperationResult'
-    SponsorUserOperationResult:
-      type: object
-      title: Sponsor User Operation Result
-      description: Paymaster response data for a sponsored user operation.
-      properties:
-        paymasterAndData:
-          type: string
-          description: Encoded paymaster address and data for the user operation.
-          example: 0xabc123paymaster
-        preVerificationGas:
-          type: string
-          description: Pre-verification gas estimate in hexadecimal.
-          example: '0x5208'
-        verificationGasLimit:
-          type: string
-          description: Verification gas limit in hexadecimal.
-          example: '0x15f90'
-        callGasLimit:
-          type: string
-          description: Call gas limit in hexadecimal.
-          example: '0x9c40'
-    ErrorResponse:
-      type: object
-      title: Error Response
-      description: Standard error response.
-      properties:
-        error:
-          type: string
-          description: Error code.
-          example: UNAUTHORIZED
-        message:
-          type: string
-          description: Human-readable error message.
-          example: Invalid API key.
-        statusCode:
-          type: integer
-          description: HTTP status code.
-          example: 401
     SponsorUserOperationRequest:
       type: object
       title: Sponsor User Operation Request
@@ -159,6 +108,57 @@ components:
           type: array
           description: Sponsorship parameters array.
           items: {}
+    SponsorUserOperationResult:
+      type: object
+      title: Sponsor User Operation Result
+      description: Paymaster response data for a sponsored user operation.
+      properties:
+        paymasterAndData:
+          type: string
+          description: Encoded paymaster address and data for the user operation.
+          example: 0xabc123paymaster
+        preVerificationGas:
+          type: string
+          description: Pre-verification gas estimate in hexadecimal.
+          example: '0x5208'
+        verificationGasLimit:
+          type: string
+          description: Verification gas limit in hexadecimal.
+          example: '0x15f90'
+        callGasLimit:
+          type: string
+          description: Call gas limit in hexadecimal.
+          example: '0x9c40'
+    SponsorUserOperationResponse:
+      type: object
+      title: Sponsor User Operation Response
+      description: JSON-RPC response for sponsored user operation requests.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/SponsorUserOperationResult'
+    ErrorResponse:
+      type: object
+      title: Error Response
+      description: Standard error response.
+      properties:
+        error:
+          type: string
+          description: Error code.
+          example: UNAUTHORIZED
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid API key.
+        statusCode:
+          type: integer
+          description: HTTP status code.
+          example: 401
   securitySchemes:
     bearerAuth:
       type: http
