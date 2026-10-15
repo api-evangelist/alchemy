@@ -57,7 +57,7 @@
     app_slug: alchemy
     beta: false
     builder: unknown (not in the directory record)
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
 - slug: alchemy-pipedream
   label: Pipedream
@@ -83,5 +83,5 @@
     actions: false
     sources: true
     builder: Pipedream repo (component)
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
