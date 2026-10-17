@@ -85,16 +85,35 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    TransferMetadata:
+    AssetTransfersResponse:
       type: object
-      title: Transfer Metadata
-      description: Additional metadata for an asset transfer.
+      title: Asset Transfers Response
+      description: JSON-RPC response for getAssetTransfers requests.
       properties:
-        blockTimestamp:
+        id:
+          type: integer
+          description: Matches the request ID.
+          example: 1
+        jsonrpc:
           type: string
-          format: date-time
-          description: ISO 8601 timestamp of the block.
-          example: '2026-04-19T10:00:00Z'
+          description: JSON-RPC version.
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/AssetTransfersResult'
+    AssetTransfersResult:
+      type: object
+      title: Asset Transfers Result
+      description: Result payload containing the list of asset transfers.
+      properties:
+        transfers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetTransfer'
+          description: List of asset transfer events matching the query.
+        pageKey:
+          type: string
+          description: Pagination key for retrieving the next page of results.
+          example: abc123nextpage
     AssetTransfer:
       type: object
       title: Asset Transfer
@@ -136,35 +155,16 @@ components:
           example: external
         metadata:
           $ref: '#/components/schemas/TransferMetadata'
-    AssetTransfersResult:
+    TransferMetadata:
       type: object
-      title: Asset Transfers Result
-      description: Result payload containing the list of asset transfers.
+      title: Transfer Metadata
+      description: Additional metadata for an asset transfer.
       properties:
-        transfers:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetTransfer'
-          description: List of asset transfer events matching the query.
-        pageKey:
+        blockTimestamp:
           type: string
-          description: Pagination key for retrieving the next page of results.
-          example: abc123nextpage
-    AssetTransfersResponse:
-      type: object
-      title: Asset Transfers Response
-      description: JSON-RPC response for getAssetTransfers requests.
-      properties:
-        id:
-          type: integer
-          description: Matches the request ID.
-          example: 1
-        jsonrpc:
-          type: string
-          description: JSON-RPC version.
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/AssetTransfersResult'
+          format: date-time
+          description: ISO 8601 timestamp of the block.
+          example: '2026-04-19T10:00:00Z'
     JsonRpcRequest:
       type: object
       title: JSON-RPC Request

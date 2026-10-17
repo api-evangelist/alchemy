@@ -87,27 +87,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    SponsorUserOperationRequest:
-      type: object
-      title: Sponsor User Operation Request
-      description: JSON-RPC request to sponsor a user operation via the Gas Manager paymaster.
-      properties:
-        id:
-          type: integer
-          description: Request ID.
-          example: 1
-        jsonrpc:
-          type: string
-          description: JSON-RPC version.
-          example: '2.0'
-        method:
-          type: string
-          description: Alchemy paymaster method.
-          example: alchemy_requestGasAndPaymasterAndData
-        params:
-          type: array
-          description: Sponsorship parameters array.
-          items: {}
     SponsorUserOperationResult:
       type: object
       title: Sponsor User Operation Result
@@ -129,19 +108,6 @@ components:
           type: string
           description: Call gas limit in hexadecimal.
           example: '0x9c40'
-    SponsorUserOperationResponse:
-      type: object
-      title: Sponsor User Operation Response
-      description: JSON-RPC response for sponsored user operation requests.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/SponsorUserOperationResult'
     ErrorResponse:
       type: object
       title: Error Response
@@ -159,6 +125,40 @@ components:
           type: integer
           description: HTTP status code.
           example: 401
+    SponsorUserOperationResponse:
+      type: object
+      title: Sponsor User Operation Response
+      description: JSON-RPC response for sponsored user operation requests.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/SponsorUserOperationResult'
+    SponsorUserOperationRequest:
+      type: object
+      title: Sponsor User Operation Request
+      description: JSON-RPC request to sponsor a user operation via the Gas Manager paymaster.
+      properties:
+        id:
+          type: integer
+          description: Request ID.
+          example: 1
+        jsonrpc:
+          type: string
+          description: JSON-RPC version.
+          example: '2.0'
+        method:
+          type: string
+          description: Alchemy paymaster method.
+          example: alchemy_requestGasAndPaymasterAndData
+        params:
+          type: array
+          description: Sponsorship parameters array.
+          items: {}
   securitySchemes:
     bearerAuth:
       type: http
