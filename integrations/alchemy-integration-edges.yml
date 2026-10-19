@@ -2,7 +2,10 @@ generated: '2026-10-13'
 method: searched
 checked:
 - https://aws.amazon.com/marketplace/
+- https://chainid.network/chains.json
+- https://github.com/DefiLlama/chainlist/blob/main/constants/extraRpcs.js
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
+- https://github.com/cosmos/chain-registry
 - https://registry.modelcontextprotocol.io/v0/servers
 - https://zapier.com/api/v4/apps/
 marketplace_apps: []
@@ -105,6 +108,113 @@ edges:
     builder: Pipedream repo (component)
   detected_by: sweep-workflow-automation.py
   first_seen: '2026-10-15'
+- partner_name: DefiLlama Chainlist (extraRpcs.js)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://github.com/DefiLlama/chainlist/blob/main/constants/extraRpcs.js
+  category: Public JSON-RPC node endpoint
+  contract_reference:
+    register: DefiLlama Chainlist (extraRpcs.js)
+    standard: JSON-RPC node endpoint listing
+    spec_file: null
+    role: public-rpc-operator
+    registered_name: alchemy
+    name_source: register
+    register_id: alchemy.com
+    matched_domain: alchemy.com
+    matched_by: domain
+    domain_source: rpc host
+    endpoints_sample:
+    - https://eth-mainnet.g.alchemy.com/v2/demo
+    - https://polygon-mumbai.g.alchemy.com/v2/demo
+    - https://eth-goerli.g.alchemy.com/v2/demo
+    chains_sample:
+    - Arbitrum Goerli
+    - Arbitrum Nova
+    - Arbitrum One
+    - Astar
+    - Ethereum Mainnet
+    - Ethereum Sepolia
+    - Goerli
+    - Lens
+    signal_note: 'listing only: per-chain entries are context, never counted; breadth is not credit; the register
+      certifies nothing, so no certified_products'
+    detected_by: sweep-blockchain-rpc.py
+    detected: '2026-10-18'
+    tracking_labels:
+    - 'yes'
+  detected_by: sweep-blockchain-rpc.py
+  first_seen: '2026-10-18'
+- partner_name: ethereum-lists/chains (chainid.network)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://chainid.network/chains.json
+  category: Public JSON-RPC node endpoint
+  contract_reference:
+    register: ethereum-lists/chains (chainid.network)
+    standard: JSON-RPC node endpoint listing
+    spec_file: null
+    role: public-rpc-operator
+    registered_name: alchemy
+    name_source: host label
+    register_id: alchemy.com
+    matched_domain: alchemy.com
+    matched_by: domain
+    domain_source: rpc host
+    endpoints_sample:
+    - https://shape-mainnet.g.alchemy.com/public
+    - https://worldchain-mainnet.g.alchemy.com/public
+    - https://worldmobilechain-mainnet.g.alchemy.com/public
+    chains_sample:
+    - Arbitrum One
+    - Edge
+    - Edge Testnet
+    - Ethereum Sepolia
+    - Geist Mainnet
+    - Gensyn Mainnet
+    - Gensyn Testnet
+    - Humanity
+    signal_note: 'listing only: per-chain entries are context, never counted; breadth is not credit; the register
+      certifies nothing, so no certified_products'
+    detected_by: sweep-blockchain-rpc.py
+    detected: '2026-10-18'
+  detected_by: sweep-blockchain-rpc.py
+  first_seen: '2026-10-18'
+- partner_name: Ethereum JSON-RPC (execution-apis)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: compatible
+  shape: ethereum-json-rpc
+  degree: listed
+  evidence_kind: register-listing
+  report_only: true
+  direction: partner-built
+  evidence: https://github.com/DefiLlama/chainlist/blob/main/constants/extraRpcs.js
+  note: an EVM chain's public RPC list carries this provider's endpoint; a listing, not a conformance test. REPORT
+    ONLY (compatible edges are never in depth or position)
+  contract_reference:
+    register: Chainlist / ethereum-lists EVM RPC listings
+    spec_file: https://github.com/ethereum/execution-apis
+    role: evm-json-rpc-endpoint
+    matched_domain: alchemy.com
+    endpoints_sample:
+    - https://eth-mainnet.g.alchemy.com/v2/demo
+    - https://polygon-mumbai.g.alchemy.com/v2/demo
+    signal_note: report only
+    detected_by: sweep-blockchain-rpc.py
+    detected: '2026-10-18'
+  detected_by: sweep-blockchain-rpc.py
+  first_seen: '2026-10-18'
 source:
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
 - https://zapier.com/api/v4/apps/
