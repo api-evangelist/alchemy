@@ -1,11 +1,15 @@
 {
   "provider": "alchemy",
   "sources": [
+    "_original/alchemy-openapi.json",
     "_ae-authored/alchemy-gas-manager-api-openapi.yml",
     "_ae-authored/alchemy-token-api-openapi.yml",
     "alchemy-transfers-api-openapi.yml"
   ],
   "outputs": [
+    "alchemy-content-api-openapi.yml",
+    "alchemy-faucets-api-openapi.yml",
+    "alchemy-site-api-openapi.yml",
     "alchemy-paymaster-api-openapi.yml",
     "alchemy-policies-api-openapi.yml",
     "alchemy-token-balances-api-openapi.yml",
@@ -18,10 +22,11 @@
     "alchemy-transfers-api-openapi.yml: previously refined output kept for 1 operation(s) no archived document covers (e.g. / post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth."
   ],
   "notes": [
-    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "alchemy-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "alchemy-gas-manager-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
     "alchemy-token-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "apis.yml register: written (+3 apis, 15 total)"
   ],
   "skipped": [
     "alchemy-paymaster-api-openapi.yml: previously refined output, superseded by openapi/_original/",

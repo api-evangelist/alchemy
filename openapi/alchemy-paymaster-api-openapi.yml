@@ -87,6 +87,19 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    SponsorUserOperationResponse:
+      type: object
+      title: Sponsor User Operation Response
+      description: JSON-RPC response for sponsored user operation requests.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/SponsorUserOperationResult'
     SponsorUserOperationResult:
       type: object
       title: Sponsor User Operation Result
@@ -125,19 +138,6 @@ components:
           type: integer
           description: HTTP status code.
           example: 401
-    SponsorUserOperationResponse:
-      type: object
-      title: Sponsor User Operation Response
-      description: JSON-RPC response for sponsored user operation requests.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/SponsorUserOperationResult'
     SponsorUserOperationRequest:
       type: object
       title: Sponsor User Operation Request

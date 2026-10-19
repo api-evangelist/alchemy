@@ -1,0 +1,299 @@
+openapi: 3.2.0
+info:
+  title: Alchemy website Faucets API
+  version: 1.0.0
+  summary: Public endpoints and markdown representations served by www.alchemy.com.
+  description: 'Public HTTP surface of www.alchemy.com, plus the rules for reading the site as markdown instead of HTML.
+
+
+    ## Reading the site as markdown
+
+
+    Every page under `/blog/`, `/overviews/`, `/case-studies/`, `/support/`, `/terms-conditions/`, `/rpc/` has a markdown twin, and so does the homepage. Reach it either way:
+
+
+    - **Append `.md`** to the path — `/blog/some-post.md`. One request, `200`, `text/markdown`.
+
+    - **Send `Accept: text/markdown`** to the HTML URL. The response is a `307` to the `.md` URL and carries `Vary: Accept`.
+
+
+    Curated indexes for crawling the whole site live at `/llms.txt` (grouped, one line per page) and `/llms-full.txt` (every page body in one file). Per-section indexes are at `//llms.txt`.
+
+
+    ## Errors
+
+
+    Endpoints under `/api/` answer with JSON on failure. Paths that match nothing return `404` with an `Error` body: a stable `code` to branch on, a human `message`, and a `hint` naming the next step. Older faucet endpoints additionally carry the legacy `error` and `statusCode` fields described on each operation; both shapes are stable.
+
+
+    ## Rate limits
+
+
+    The faucet endpoints are CAPTCHA-gated and rate limited per address and per network. Everything else described here is a read, most of it prerendered and served from the CDN, with no documented per-caller limit; cache it rather than re-fetching.'
+  termsOfService: https://legal.alchemy.com/
+  contact:
+    name: Alchemy support
+    url: https://www.alchemy.com/support
+servers:
+- url: https://www.alchemy.com
+  description: Production
+security: []
+tags:
+- name: Faucets
+  description: 'Testnet faucet: request funds and follow the resulting transaction.'
+paths:
+  /api/faucets/{faucetId}/send:
+    post:
+      operationId: sendFaucetFunds
+      summary: Request testnet funds
+      description: 'Sends the network''s drip amount to `address`. Requires a Cloudflare Turnstile token obtained from the faucet page for that network (`https://www.alchemy.com/faucets/{faucetId}`); there is no server-to-server credential for this endpoint.
+
+
+        Requests are rate limited per address per network, and are subject to anti-sybil checks against mainnet balance and activity. A rejection is not retryable until the stated condition changes: read `statusCode` rather than the message text.
+
+
+        Errors carry the legacy shape `{ "error": string, "statusCode": string }`, where `statusCode` is one of `missing_address`, `missing_turnstile`, `turnstile_failed`, `unsupported_faucet`, `invalid_request_body`, `invalid_address`, `insufficient_mainnet_balance`, `insufficient_mainnet_activity`, `max_balance_exceeded`, `rate_limit_exceeded`, `insufficient_faucet_balance`, `insufficient_faucet_balance_tx`, `nonce_conflict`, or `faucet_request_failed`. Validation failures additionally carry a `hint`.'
+      tags:
+      - Faucets
+      parameters:
+      - name: faucetId
+        in: path
+        description: 'Network to draw from. Deprecated and no longer funded: `syndicate-risa`, `starknet-sepolia`.'
+        required: true
+        schema:
+          type: string
+          enum:
+          - ethereum-sepolia
+          - arbitrum-sepolia
+          - base-sepolia
+          - optimism-sepolia
+          - polygon-amoy
+          - zksync-sepolia
+          - worldchain-sepolia
+          - soneium-minato
+          - hyperliquid-testnet
+          - monad-testnet
+          - shape-sepolia
+          - abstract-testnet
+          - crossfi-testnet
+          - lens-sepolia
+          - syndicate-risa
+          - gensyn-testnet
+          - humanity-testnet
+          - worldl3-devnet
+          - stable-testnet
+          - starknet-sepolia
+          - unichain-sepolia
+          - ink-sepolia
+          - robinhood-testnet
+          - giwa-sepolia
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaucetSendRequest'
+      responses:
+        '200':
+          description: Transaction submitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetSendSuccess'
+        '400':
+          description: Missing or malformed `address`, missing `turnstileToken`, unknown `faucetId`, or an unparseable body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+        '403':
+          description: CAPTCHA rejected, or the address failed an anti-sybil check.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+        '409':
+          description: Nonce conflict while broadcasting. Retry after a few seconds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+        '429':
+          description: Rate limit for this address on this network. `resetAt` says when it lifts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+        '500':
+          description: The broadcast failed for a reason the endpoint could not classify, returned with `faucet_request_failed`. Retryable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+        '503':
+          description: The faucet wallet is out of funds. Not caller-fixable; try a different network.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+  /api/faucets/{faucetId}/status:
+    get:
+      operationId: getFaucetTransactionStatus
+      summary: Check a faucet transaction
+      description: 'Looks up the receipt for a transaction hash returned by `sendFaucetFunds`. A hash the node has not seen yet reports `status: "pending"` with HTTP `200` — poll rather than treating it as an error.'
+      tags:
+      - Faucets
+      parameters:
+      - name: faucetId
+        in: path
+        description: Network the transaction was submitted to.
+        required: true
+        schema:
+          type: string
+          enum:
+          - ethereum-sepolia
+          - arbitrum-sepolia
+          - base-sepolia
+          - optimism-sepolia
+          - polygon-amoy
+          - zksync-sepolia
+          - worldchain-sepolia
+          - soneium-minato
+          - hyperliquid-testnet
+          - monad-testnet
+          - shape-sepolia
+          - abstract-testnet
+          - crossfi-testnet
+          - lens-sepolia
+          - syndicate-risa
+          - gensyn-testnet
+          - humanity-testnet
+          - worldl3-devnet
+          - stable-testnet
+          - starknet-sepolia
+          - unichain-sepolia
+          - ink-sepolia
+          - robinhood-testnet
+          - giwa-sepolia
+      - name: transactionHash
+        in: query
+        description: 32-byte transaction hash, `0x`-prefixed.
+        required: true
+        schema:
+          type: string
+          pattern: ^0x[a-fA-F0-9]{64}$
+      responses:
+        '200':
+          description: Current state of the transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetTransactionStatus'
+        '400':
+          description: '`transactionHash` missing or not a 32-byte hex hash, or unknown `faucetId`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+        '500':
+          description: The status check itself failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaucetError'
+components:
+  schemas:
+    FaucetError:
+      type: object
+      description: Faucet failure. `statusCode` is the stable code to branch on; `error` is human-readable.
+      properties:
+        error:
+          type: string
+          description: Human-readable reason.
+        message:
+          type: string
+          description: 'Present on the unexpected-failure paths: extra detail, or advice to retry.'
+        hint:
+          type: string
+          description: 'Present on validation failures: the concrete next step.'
+        statusCode:
+          type: string
+          description: Stable, machine-readable failure code.
+        supportedChains:
+          type: array
+          description: Present when `faucetId` is unknown.
+          items:
+            type: string
+        resetAt:
+          type: string
+          format: date-time
+          description: Present on `rate_limit_exceeded`.
+        details:
+          type: string
+          description: Present on `turnstile_failed`.
+      required:
+      - error
+    FaucetSendRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Recipient address, `0x`-prefixed and 20 bytes.
+          pattern: ^0x[a-fA-F0-9]{40}$
+        turnstileToken:
+          type: string
+          description: Cloudflare Turnstile token from the faucet page for this network.
+      required:
+      - address
+      - turnstileToken
+    FaucetSendSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+        transactionHash:
+          type: string
+          description: Hash to pass to `getFaucetTransactionStatus`.
+        amount:
+          type: string
+          description: Amount sent, in the network's native unit.
+        recipient:
+          type: string
+        explorerUrl:
+          type: string
+          description: Block explorer link, when the network has one.
+        statusCode:
+          type: string
+          enum:
+          - success
+      required:
+      - success
+      - transactionHash
+      - statusCode
+    FaucetTransactionStatus:
+      type: object
+      description: 'Either a mined receipt (`mined: true`) or a pending poll result.'
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - failed
+          - pending
+          description: '`pending` means the node has no receipt yet.'
+        mined:
+          type: boolean
+          description: Present and `true` once a receipt exists.
+        success:
+          type: boolean
+          description: Present on the pending response.
+        transactionHash:
+          type: string
+        chainId:
+          type: integer
+        chainName:
+          type: string
+        explorerUrl:
+          type: string
+      required:
+      - status

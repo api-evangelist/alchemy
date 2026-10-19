@@ -1,0 +1,1023 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Alchemy website API",
+    "version": "1.0.0",
+    "summary": "Public endpoints and markdown representations served by www.alchemy.com.",
+    "description": "Public HTTP surface of www.alchemy.com, plus the rules for reading the site as markdown instead of HTML.\n\n## Reading the site as markdown\n\nEvery page under `/blog/`, `/overviews/`, `/case-studies/`, `/support/`, `/terms-conditions/`, `/rpc/` has a markdown twin, and so does the homepage. Reach it either way:\n\n- **Append `.md`** to the path — `/blog/some-post.md`. One request, `200`, `text/markdown`.\n- **Send `Accept: text/markdown`** to the HTML URL. The response is a `307` to the `.md` URL and carries `Vary: Accept`.\n\nCurated indexes for crawling the whole site live at `/llms.txt` (grouped, one line per page) and `/llms-full.txt` (every page body in one file). Per-section indexes are at `/<section>/llms.txt`.\n\n## Errors\n\nEndpoints under `/api/` answer with JSON on failure. Paths that match nothing return `404` with an `Error` body: a stable `code` to branch on, a human `message`, and a `hint` naming the next step. Older faucet endpoints additionally carry the legacy `error` and `statusCode` fields described on each operation; both shapes are stable.\n\n## Rate limits\n\nThe faucet endpoints are CAPTCHA-gated and rate limited per address and per network. Everything else described here is a read, most of it prerendered and served from the CDN, with no documented per-caller limit; cache it rather than re-fetching.",
+    "termsOfService": "https://legal.alchemy.com/",
+    "contact": {
+      "name": "Alchemy support",
+      "url": "https://www.alchemy.com/support"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://www.alchemy.com",
+      "description": "Production"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "Faucets",
+      "description": "Testnet faucet: request funds and follow the resulting transaction."
+    },
+    {
+      "name": "Site",
+      "description": "Endpoints backing the website itself."
+    },
+    {
+      "name": "Content",
+      "description": "Markdown twins and machine-readable indexes of the site's content."
+    }
+  ],
+  "paths": {
+    "/api/faucets/{faucetId}/send": {
+      "post": {
+        "operationId": "sendFaucetFunds",
+        "summary": "Request testnet funds",
+        "description": "Sends the network's drip amount to `address`. Requires a Cloudflare Turnstile token obtained from the faucet page for that network (`https://www.alchemy.com/faucets/{faucetId}`); there is no server-to-server credential for this endpoint.\n\nRequests are rate limited per address per network, and are subject to anti-sybil checks against mainnet balance and activity. A rejection is not retryable until the stated condition changes: read `statusCode` rather than the message text.\n\nErrors carry the legacy shape `{ \"error\": string, \"statusCode\": string }`, where `statusCode` is one of `missing_address`, `missing_turnstile`, `turnstile_failed`, `unsupported_faucet`, `invalid_request_body`, `invalid_address`, `insufficient_mainnet_balance`, `insufficient_mainnet_activity`, `max_balance_exceeded`, `rate_limit_exceeded`, `insufficient_faucet_balance`, `insufficient_faucet_balance_tx`, `nonce_conflict`, or `faucet_request_failed`. Validation failures additionally carry a `hint`.",
+        "tags": [
+          "Faucets"
+        ],
+        "parameters": [
+          {
+            "name": "faucetId",
+            "in": "path",
+            "description": "Network to draw from. Deprecated and no longer funded: `syndicate-risa`, `starknet-sepolia`.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ethereum-sepolia",
+                "arbitrum-sepolia",
+                "base-sepolia",
+                "optimism-sepolia",
+                "polygon-amoy",
+                "zksync-sepolia",
+                "worldchain-sepolia",
+                "soneium-minato",
+                "hyperliquid-testnet",
+                "monad-testnet",
+                "shape-sepolia",
+                "abstract-testnet",
+                "crossfi-testnet",
+                "lens-sepolia",
+                "syndicate-risa",
+                "gensyn-testnet",
+                "humanity-testnet",
+                "worldl3-devnet",
+                "stable-testnet",
+                "starknet-sepolia",
+                "unichain-sepolia",
+                "ink-sepolia",
+                "robinhood-testnet",
+                "giwa-sepolia"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FaucetSendRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transaction submitted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetSendSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or malformed `address`, missing `turnstileToken`, unknown `faucetId`, or an unparseable body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "CAPTCHA rejected, or the address failed an anti-sybil check.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Nonce conflict while broadcasting. Retry after a few seconds.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit for this address on this network. `resetAt` says when it lifts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The broadcast failed for a reason the endpoint could not classify, returned with `faucet_request_failed`. Retryable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The faucet wallet is out of funds. Not caller-fixable; try a different network.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/faucets/{faucetId}/status": {
+      "get": {
+        "operationId": "getFaucetTransactionStatus",
+        "summary": "Check a faucet transaction",
+        "description": "Looks up the receipt for a transaction hash returned by `sendFaucetFunds`. A hash the node has not seen yet reports `status: \"pending\"` with HTTP `200` — poll rather than treating it as an error.",
+        "tags": [
+          "Faucets"
+        ],
+        "parameters": [
+          {
+            "name": "faucetId",
+            "in": "path",
+            "description": "Network the transaction was submitted to.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ethereum-sepolia",
+                "arbitrum-sepolia",
+                "base-sepolia",
+                "optimism-sepolia",
+                "polygon-amoy",
+                "zksync-sepolia",
+                "worldchain-sepolia",
+                "soneium-minato",
+                "hyperliquid-testnet",
+                "monad-testnet",
+                "shape-sepolia",
+                "abstract-testnet",
+                "crossfi-testnet",
+                "lens-sepolia",
+                "syndicate-risa",
+                "gensyn-testnet",
+                "humanity-testnet",
+                "worldl3-devnet",
+                "stable-testnet",
+                "starknet-sepolia",
+                "unichain-sepolia",
+                "ink-sepolia",
+                "robinhood-testnet",
+                "giwa-sepolia"
+              ]
+            }
+          },
+          {
+            "name": "transactionHash",
+            "in": "query",
+            "description": "32-byte transaction hash, `0x`-prefixed.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current state of the transaction.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetTransactionStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`transactionHash` missing or not a 32-byte hex hash, or unknown `faucetId`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The status check itself failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaucetError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search/{locale}": {
+      "get": {
+        "operationId": "getSiteSearchIndex",
+        "summary": "Site search index",
+        "description": "The full command-palette index for a locale: blog posts, guides, case studies and dapp listings, each with a title, description and URL. Prebuilt at deploy time and served from the CDN, so it is cheap to fetch whole and filter client-side. For a text index of the same content, prefer `/llms.txt`.",
+        "tags": [
+          "Site"
+        ],
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "path",
+            "description": "Content locale. The index is prerendered per locale, so only the listed values are served; anything else is a 404, not a fallback to English.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "ja",
+                "es",
+                "ko",
+                "zh-Hans",
+                "zh-Hant",
+                "pt-BR"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Groups of search entries. Empty groups are omitted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SearchGroup"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not one of the locales this index is built for."
+          }
+        }
+      }
+    },
+    "/api/ip": {
+      "get": {
+        "operationId": "getClientIp",
+        "summary": "Echo the caller's IP",
+        "description": "Returns the IP address the CDN saw for this request. `null` when the edge did not supply one.",
+        "tags": [
+          "Site"
+        ],
+        "responses": {
+          "200": {
+            "description": "The caller's IP address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ipAddress": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Client IP, or `null` if unavailable."
+                    }
+                  },
+                  "required": [
+                    "ipAddress"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "getOpenApiDocument",
+        "summary": "This document",
+        "description": "The OpenAPI description of this API. Also served at `/api/openapi.json`.",
+        "tags": [
+          "Site"
+        ],
+        "responses": {
+          "200": {
+            "description": "An OpenAPI 3.1 document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/{unmatchedPath}": {
+      "get": {
+        "operationId": "getUnmatchedApiPath",
+        "summary": "Any /api path that does not exist",
+        "description": "Not an endpoint. Listed so the failure shape is discoverable: every request under `/api/` that matches no operation above answers `404` with an `Error` body rather than an HTML page, for any method. Read `error.code` to branch and `error.hint` for the next step.",
+        "tags": [
+          "Site"
+        ],
+        "parameters": [
+          {
+            "name": "unmatchedPath",
+            "in": "path",
+            "description": "Any path under `/api/` with no operation.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No such endpoint.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/index.md": {
+      "get": {
+        "operationId": "getHomepageMarkdown",
+        "summary": "Homepage as markdown",
+        "description": "The homepage rendered as markdown: what Alchemy is, the products and chains it supports, and who builds on it. Equivalent to requesting `/` with `Accept: text/markdown`.",
+        "tags": [
+          "Content"
+        ],
+        "responses": {
+          "200": {
+            "description": "Homepage, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blog/{slug}.md": {
+      "get": {
+        "operationId": "getBlogMarkdown",
+        "summary": "A /blog/ page as markdown",
+        "description": "The markdown twin of a page under `/blog/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/blog/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/blog/llms.txt`.",
+        "tags": [
+          "Content"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug, without the `.md` suffix.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The page, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such page. The body is markdown pointing at the site indexes.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/overviews/{slug}.md": {
+      "get": {
+        "operationId": "getOverviewsMarkdown",
+        "summary": "A /overviews/ page as markdown",
+        "description": "The markdown twin of a page under `/overviews/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/overviews/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/overviews/llms.txt`.",
+        "tags": [
+          "Content"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug, without the `.md` suffix.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The page, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such page. The body is markdown pointing at the site indexes.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/case-studies/{slug}.md": {
+      "get": {
+        "operationId": "getCaseStudiesMarkdown",
+        "summary": "A /case-studies/ page as markdown",
+        "description": "The markdown twin of a page under `/case-studies/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/case-studies/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/case-studies/llms.txt`.",
+        "tags": [
+          "Content"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug, without the `.md` suffix.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The page, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such page. The body is markdown pointing at the site indexes.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/support/{slug}.md": {
+      "get": {
+        "operationId": "getSupportMarkdown",
+        "summary": "A /support/ page as markdown",
+        "description": "The markdown twin of a page under `/support/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/support/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/support/llms.txt`.",
+        "tags": [
+          "Content"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug, without the `.md` suffix.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The page, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such page. The body is markdown pointing at the site indexes.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/terms-conditions/{slug}.md": {
+      "get": {
+        "operationId": "getTermsConditionsMarkdown",
+        "summary": "A /terms-conditions/ page as markdown",
+        "description": "The markdown twin of a page under `/terms-conditions/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/terms-conditions/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/llms-full.txt`.",
+        "tags": [
+          "Content"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug, without the `.md` suffix.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The page, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such page. The body is markdown pointing at the site indexes.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rpc/{slug}.md": {
+      "get": {
+        "operationId": "getRpcMarkdown",
+        "summary": "A /rpc/ page as markdown",
+        "description": "The markdown twin of a page under `/rpc/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/rpc/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/rpc/llms.txt`.",
+        "tags": [
+          "Content"
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Page slug, without the `.md` suffix.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The page, as markdown.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Points at the HTML representation with `rel=\"canonical\"`, so the markdown copy never competes with it in an index.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such page. The body is markdown pointing at the site indexes.",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "operationId": "getLlmsTxt",
+        "summary": "Curated site index",
+        "description": "Every page on the site, grouped by section, one line each with a title, URL and one-sentence description. Long sections are split into `/<section>/llms.txt` files linked from here. Follows the llmstxt.org convention.",
+        "tags": [
+          "Content"
+        ],
+        "responses": {
+          "200": {
+            "description": "The index.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/llms-full.txt": {
+      "get": {
+        "operationId": "getLlmsFullTxt",
+        "summary": "Whole site in one file",
+        "description": "Every page body concatenated into a single file. Large; prefer `/llms.txt` plus per-page `.md` fetches unless you genuinely want everything.",
+        "tags": [
+          "Content"
+        ],
+        "responses": {
+          "200": {
+            "description": "The full text dump.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sitemap.xml": {
+      "get": {
+        "operationId": "getSitemap",
+        "summary": "Sitemap",
+        "description": "Every indexable URL, as a standard XML sitemap index.",
+        "tags": [
+          "Content"
+        ],
+        "responses": {
+          "200": {
+            "description": "A sitemap index.",
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Structured failure. Branch on `error.code`; show `error.message`; act on `error.hint`.",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Stable, machine-readable failure code.",
+                "enum": [
+                  "not_found",
+                  "method_not_allowed",
+                  "bad_request",
+                  "internal_error"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "What went wrong, in one sentence."
+              },
+              "hint": {
+                "type": "string",
+                "description": "The concrete next step for the caller."
+              },
+              "status": {
+                "type": "integer",
+                "description": "HTTP status, repeated for convenience."
+              },
+              "documentation_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Where the callable surface is described."
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "hint",
+              "status",
+              "documentation_url"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "FaucetError": {
+        "type": "object",
+        "description": "Faucet failure. `statusCode` is the stable code to branch on; `error` is human-readable.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable reason."
+          },
+          "message": {
+            "type": "string",
+            "description": "Present on the unexpected-failure paths: extra detail, or advice to retry."
+          },
+          "hint": {
+            "type": "string",
+            "description": "Present on validation failures: the concrete next step."
+          },
+          "statusCode": {
+            "type": "string",
+            "description": "Stable, machine-readable failure code."
+          },
+          "supportedChains": {
+            "type": "array",
+            "description": "Present when `faucetId` is unknown.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resetAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Present on `rate_limit_exceeded`."
+          },
+          "details": {
+            "type": "string",
+            "description": "Present on `turnstile_failed`."
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "FaucetSendRequest": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Recipient address, `0x`-prefixed and 20 bytes.",
+            "pattern": "^0x[a-fA-F0-9]{40}$"
+          },
+          "turnstileToken": {
+            "type": "string",
+            "description": "Cloudflare Turnstile token from the faucet page for this network."
+          }
+        },
+        "required": [
+          "address",
+          "turnstileToken"
+        ]
+      },
+      "FaucetSendSuccess": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "transactionHash": {
+            "type": "string",
+            "description": "Hash to pass to `getFaucetTransactionStatus`."
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount sent, in the network's native unit."
+          },
+          "recipient": {
+            "type": "string"
+          },
+          "explorerUrl": {
+            "type": "string",
+            "description": "Block explorer link, when the network has one."
+          },
+          "statusCode": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        },
+        "required": [
+          "success",
+          "transactionHash",
+          "statusCode"
+        ]
+      },
+      "FaucetTransactionStatus": {
+        "type": "object",
+        "description": "Either a mined receipt (`mined: true`) or a pending poll result.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "failed",
+              "pending"
+            ],
+            "description": "`pending` means the node has no receipt yet."
+          },
+          "mined": {
+            "type": "boolean",
+            "description": "Present and `true` once a receipt exists."
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Present on the pending response."
+          },
+          "transactionHash": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "integer"
+          },
+          "chainName": {
+            "type": "string"
+          },
+          "explorerUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "SearchGroup": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Group heading, e.g. `Blog Posts`, `Guides`, `Case Studies`, `Apps`."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchItem"
+            }
+          }
+        },
+        "required": [
+          "label",
+          "items"
+        ]
+      },
+      "SearchItem": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "description": "Site-relative for pages on this domain, absolute for dapp listings."
+          },
+          "icon": {
+            "type": "string",
+            "description": "Logo URL, when there is one."
+          },
+          "external": {
+            "type": "boolean",
+            "description": "`true` when `url` leaves this domain."
+          }
+        },
+        "required": [
+          "title",
+          "url"
+        ]
+      }
+    }
+  }
+}

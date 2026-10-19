@@ -82,84 +82,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    TokenBalance:
-      type: object
-      title: Token Balance
-      description: ERC-20 token balance entry for a wallet address.
-      properties:
-        contractAddress:
-          type: string
-          description: Token contract address.
-          example: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
-        tokenBalance:
-          type: string
-          description: Token balance in hexadecimal (raw units, divide by 10^decimals).
-          example: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
-        error:
-          type:
-          - string
-          - 'null'
-          description: Error message if the balance could not be retrieved.
-          example: null
-    TokenBalancesResponse:
-      type: object
-      title: Token Balances Response
-      description: JSON-RPC response containing token balance results.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        result:
-          $ref: '#/components/schemas/TokenBalancesResult'
-    JsonRpcErrorResponse:
-      type: object
-      title: JSON-RPC Error Response
-      description: JSON-RPC error response envelope.
-      properties:
-        id:
-          type: integer
-          example: 1
-        jsonrpc:
-          type: string
-          example: '2.0'
-        error:
-          $ref: '#/components/schemas/JsonRpcError'
-    TokenBalancesResult:
-      type: object
-      title: Token Balances Result
-      description: Result payload for token balance queries.
-      properties:
-        address:
-          type: string
-          description: Wallet address queried.
-          example: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
-        tokenBalances:
-          type: array
-          items:
-            $ref: '#/components/schemas/TokenBalance'
-          description: List of token balances for the wallet.
-        pageKey:
-          type:
-          - string
-          - 'null'
-          description: Pagination key for fetching the next page.
-          example: null
-    JsonRpcError:
-      type: object
-      title: JSON-RPC Error
-      description: Error object for a failed JSON-RPC response.
-      properties:
-        code:
-          type: integer
-          description: JSON-RPC error code.
-          example: -32602
-        message:
-          type: string
-          description: Human-readable error description.
-          example: Invalid params
     JsonRpcRequest:
       type: object
       title: JSON-RPC Request
@@ -186,6 +108,84 @@ components:
           type: array
           description: Method-specific parameters array.
           items: {}
+    TokenBalancesResponse:
+      type: object
+      title: Token Balances Response
+      description: JSON-RPC response containing token balance results.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        result:
+          $ref: '#/components/schemas/TokenBalancesResult'
+    TokenBalance:
+      type: object
+      title: Token Balance
+      description: ERC-20 token balance entry for a wallet address.
+      properties:
+        contractAddress:
+          type: string
+          description: Token contract address.
+          example: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+        tokenBalance:
+          type: string
+          description: Token balance in hexadecimal (raw units, divide by 10^decimals).
+          example: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
+        error:
+          type:
+          - string
+          - 'null'
+          description: Error message if the balance could not be retrieved.
+          example: null
+    TokenBalancesResult:
+      type: object
+      title: Token Balances Result
+      description: Result payload for token balance queries.
+      properties:
+        address:
+          type: string
+          description: Wallet address queried.
+          example: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+        tokenBalances:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenBalance'
+          description: List of token balances for the wallet.
+        pageKey:
+          type:
+          - string
+          - 'null'
+          description: Pagination key for fetching the next page.
+          example: null
+    JsonRpcErrorResponse:
+      type: object
+      title: JSON-RPC Error Response
+      description: JSON-RPC error response envelope.
+      properties:
+        id:
+          type: integer
+          example: 1
+        jsonrpc:
+          type: string
+          example: '2.0'
+        error:
+          $ref: '#/components/schemas/JsonRpcError'
+    JsonRpcError:
+      type: object
+      title: JSON-RPC Error
+      description: Error object for a failed JSON-RPC response.
+      properties:
+        code:
+          type: integer
+          description: JSON-RPC error code.
+          example: -32602
+        message:
+          type: string
+          description: Human-readable error description.
+          example: Invalid params
   securitySchemes:
     apiKeyHeader:
       type: apiKey

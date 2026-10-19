@@ -1,0 +1,297 @@
+openapi: 3.2.0
+info:
+  title: Alchemy website Content API
+  version: 1.0.0
+  summary: Public endpoints and markdown representations served by www.alchemy.com.
+  description: 'Public HTTP surface of www.alchemy.com, plus the rules for reading the site as markdown instead of HTML.
+
+
+    ## Reading the site as markdown
+
+
+    Every page under `/blog/`, `/overviews/`, `/case-studies/`, `/support/`, `/terms-conditions/`, `/rpc/` has a markdown twin, and so does the homepage. Reach it either way:
+
+
+    - **Append `.md`** to the path — `/blog/some-post.md`. One request, `200`, `text/markdown`.
+
+    - **Send `Accept: text/markdown`** to the HTML URL. The response is a `307` to the `.md` URL and carries `Vary: Accept`.
+
+
+    Curated indexes for crawling the whole site live at `/llms.txt` (grouped, one line per page) and `/llms-full.txt` (every page body in one file). Per-section indexes are at `//llms.txt`.
+
+
+    ## Errors
+
+
+    Endpoints under `/api/` answer with JSON on failure. Paths that match nothing return `404` with an `Error` body: a stable `code` to branch on, a human `message`, and a `hint` naming the next step. Older faucet endpoints additionally carry the legacy `error` and `statusCode` fields described on each operation; both shapes are stable.
+
+
+    ## Rate limits
+
+
+    The faucet endpoints are CAPTCHA-gated and rate limited per address and per network. Everything else described here is a read, most of it prerendered and served from the CDN, with no documented per-caller limit; cache it rather than re-fetching.'
+  termsOfService: https://legal.alchemy.com/
+  contact:
+    name: Alchemy support
+    url: https://www.alchemy.com/support
+servers:
+- url: https://www.alchemy.com
+  description: Production
+security: []
+tags:
+- name: Content
+  description: Markdown twins and machine-readable indexes of the site's content.
+paths:
+  /index.md:
+    get:
+      operationId: getHomepageMarkdown
+      summary: Homepage as markdown
+      description: 'The homepage rendered as markdown: what Alchemy is, the products and chains it supports, and who builds on it. Equivalent to requesting `/` with `Accept: text/markdown`.'
+      tags:
+      - Content
+      responses:
+        '200':
+          description: Homepage, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+  /blog/{slug}.md:
+    get:
+      operationId: getBlogMarkdown
+      summary: A /blog/ page as markdown
+      description: 'The markdown twin of a page under `/blog/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/blog/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/blog/llms.txt`.'
+      tags:
+      - Content
+      parameters:
+      - name: slug
+        in: path
+        description: Page slug, without the `.md` suffix.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The page, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+        '404':
+          description: No such page. The body is markdown pointing at the site indexes.
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /overviews/{slug}.md:
+    get:
+      operationId: getOverviewsMarkdown
+      summary: A /overviews/ page as markdown
+      description: 'The markdown twin of a page under `/overviews/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/overviews/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/overviews/llms.txt`.'
+      tags:
+      - Content
+      parameters:
+      - name: slug
+        in: path
+        description: Page slug, without the `.md` suffix.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The page, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+        '404':
+          description: No such page. The body is markdown pointing at the site indexes.
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /case-studies/{slug}.md:
+    get:
+      operationId: getCaseStudiesMarkdown
+      summary: A /case-studies/ page as markdown
+      description: 'The markdown twin of a page under `/case-studies/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/case-studies/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/case-studies/llms.txt`.'
+      tags:
+      - Content
+      parameters:
+      - name: slug
+        in: path
+        description: Page slug, without the `.md` suffix.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The page, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+        '404':
+          description: No such page. The body is markdown pointing at the site indexes.
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /support/{slug}.md:
+    get:
+      operationId: getSupportMarkdown
+      summary: A /support/ page as markdown
+      description: 'The markdown twin of a page under `/support/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/support/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/support/llms.txt`.'
+      tags:
+      - Content
+      parameters:
+      - name: slug
+        in: path
+        description: Page slug, without the `.md` suffix.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The page, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+        '404':
+          description: No such page. The body is markdown pointing at the site indexes.
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /terms-conditions/{slug}.md:
+    get:
+      operationId: getTermsConditionsMarkdown
+      summary: A /terms-conditions/ page as markdown
+      description: 'The markdown twin of a page under `/terms-conditions/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/terms-conditions/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/llms-full.txt`.'
+      tags:
+      - Content
+      parameters:
+      - name: slug
+        in: path
+        description: Page slug, without the `.md` suffix.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The page, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+        '404':
+          description: No such page. The body is markdown pointing at the site indexes.
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /rpc/{slug}.md:
+    get:
+      operationId: getRpcMarkdown
+      summary: A /rpc/ page as markdown
+      description: 'The markdown twin of a page under `/rpc/`: YAML frontmatter with `title` and `description`, then an H1 and the body. Equivalent to requesting `/rpc/{slug}` with `Accept: text/markdown`. The slugs that exist are listed in `/rpc/llms.txt`.'
+      tags:
+      - Content
+      parameters:
+      - name: slug
+        in: path
+        description: Page slug, without the `.md` suffix.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The page, as markdown.
+          content:
+            text/markdown:
+              schema:
+                type: string
+          headers:
+            Link:
+              description: Points at the HTML representation with `rel="canonical"`, so the markdown copy never competes with it in an index.
+              schema:
+                type: string
+        '404':
+          description: No such page. The body is markdown pointing at the site indexes.
+          content:
+            text/markdown:
+              schema:
+                type: string
+  /llms.txt:
+    get:
+      operationId: getLlmsTxt
+      summary: Curated site index
+      description: Every page on the site, grouped by section, one line each with a title, URL and one-sentence description. Long sections are split into `//llms.txt` files linked from here. Follows the llmstxt.org convention.
+      tags:
+      - Content
+      responses:
+        '200':
+          description: The index.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /llms-full.txt:
+    get:
+      operationId: getLlmsFullTxt
+      summary: Whole site in one file
+      description: Every page body concatenated into a single file. Large; prefer `/llms.txt` plus per-page `.md` fetches unless you genuinely want everything.
+      tags:
+      - Content
+      responses:
+        '200':
+          description: The full text dump.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /sitemap.xml:
+    get:
+      operationId: getSitemap
+      summary: Sitemap
+      description: Every indexable URL, as a standard XML sitemap index.
+      tags:
+      - Content
+      responses:
+        '200':
+          description: A sitemap index.
+          content:
+            application/xml:
+              schema:
+                type: string
