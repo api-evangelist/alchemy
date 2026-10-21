@@ -15,6 +15,22 @@ checked:
 - https://officialskills.sh/sitemap.xml
 - https://skillsmp.com/sitemap.xml
 - https://www.skills.sh/sitemap.xml
+- https://agentic.market
+- https://api.cdp.coinbase.com/platform/v2/x402/discovery/resources
+- https://app.ampersend.ai/discover
+- https://docs.cdp.coinbase.com/x402/
+- https://docs.x402.org/dev-tools/facilitators
+- https://pay.sh
+- https://www.x402.org/ecosystem
+- https://x402-list.com
+- https://x402.org/members/
+- https://x402scan.com
+- https://a16z.com/portfolio/
+- https://www.battery.com/company/
+- https://www.battery.com/wp-admin/admin-ajax.php
+- https://www.indexventures.com/companies/
+- https://www.sequoiacap.com/our-companies/
+- https://www.sequoiacap.com/sitemap.xml
 marketplace_apps: []
 edges:
 - partner_name: AWS Marketplace
@@ -323,6 +339,89 @@ edges:
     detected: '2026-10-20'
   detected_by: sweep-agent-skills.py
   first_seen: '2026-10-20'
+- partner_name: Coinbase CDP x402 Bazaar
+  partner: coinbase
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://api.cdp.coinbase.com/platform/v2/x402/discovery/resources?limit=1000
+  mirror_of: coinbase/integrations/coinbase-integration-edges.yml
+  apps:
+  - alchemy
+  resources: 3
+  detected: '2026-10-21'
+  detected_by: sweep-x402-micropayments.py
+- partner_name: x402 protocol (live 402 probe)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://agent-proxy.alchemy.com/v1/x402/86b0ec6d1d0b3dc0/swap-allowance-holder-price/
+  category: x402 pay-per-call conformance (observed)
+  contract_reference:
+    register: live x402 probe (unauthenticated request to a documented paid resource + negative control)
+    standard: x402
+    spec_file: null
+    role: x402-resource-server
+    matched_by: repo
+    certified_products:
+    - product: 'x402 resource server: payment challenge observed'
+      product_type: x402 resource server
+      lapsed: false
+      observed: '2026-10-21'
+      probe_url: https://agent-proxy.alchemy.com/v1/x402/86b0ec6d1d0b3dc0/swap-allowance-holder-price/
+      probe_method: GET
+      evidence:
+      - header:payment-required
+      - header:x-payment-required
+      - body:x402Version
+      - body:accepts[scheme,payTo,asset]
+      negative_control_status: null
+    probes:
+    - url: https://agent-proxy.alchemy.com/v1/x402/86b0ec6d1d0b3dc0/swap-allowance-holder-price/
+      method: GET
+      status: 402
+    signal_note: 'conformance OBSERVED, not certified by a body: 402 plus an x402 header or a complete accepts[]
+      body, and a negative control on the same host not challenged; one entry per product type'
+    detected_by: sweep-x402-micropayments.py
+    detected: '2026-10-21'
+  detected_by: sweep-x402-micropayments.py
+  first_seen: '2026-10-21'
+- partner_name: Andreessen Horowitz (a16z)
+  partner: a16z
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://a16z.com/companies/alchemy/
+  category: vc portfolio participation
+  contract_reference:
+    register: a16z portfolio (a16z.com/portfolio/, the page's own data-companies JSON)
+    standard: null
+    spec_file: null
+    role: vc-portfolio-company
+    registered_name: Alchemy
+    register_id: https://a16z.com/companies/alchemy/
+    register_country: null
+    register_website: https://alchemy.com
+    matched_domain: alchemy.com
+    matched_by: domain
+    signal_note: 'participation only: the venture firm''s own published portfolio lists the company (investment);
+      an ownership and participation record, not conformance or certification'
+    detected_by: sweep-vc-portfolios.py
+    detected: '2026-10-21'
+    year: '2021'
+    status: Active
+    sector: Crypto;Growth
+  detected_by: sweep-vc-portfolios.py
+  first_seen: '2026-10-21'
 source:
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
 - https://zapier.com/api/v4/apps/
