@@ -1,4 +1,4 @@
-# Alchemy (alchemy)
+# Alchemy
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,251 +66,242 @@
 
 Alchemy is a Web3 developer platform offering blockchain JSON-RPC, Data APIs (NFT, Token, Transfers, Portfolio, Prices, Webhooks/Notify, Simulation), Smart Wallets / Account Abstraction (Bundler, Gas Manager), and dedicated Rollup infrastructure across 50+ chains including Ethereum, Polygon, Arbitrum, Optimism, Base, and Solana.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/alchemy/refs/heads/main/apis.yml)
+**Areas:** Web3 · Blockchain · RPC · NFT · Indexing · Account Abstraction · Real-Time · Ethereum
 
-## Tags
+## Alchemy on APIs.io
 
-- Web3
-- Blockchain
-- RPC
-- NFT
-- Indexing
-- Account Abstraction
+Everything profiled for Alchemy is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/alchemy/](https://apis.io/providers/alchemy/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (12)
 
-- **Created:** 2026-05-08
-- **Modified:** 2026-05-29
+- [Alchemy Node API (JSON-RPC)](https://apis.io/apis/alchemy/node-rpc/) — Multi-chain JSON-RPC over HTTPS and WebSockets covering standard eth_*, solana, and other chain methods, plus Alchemy-enhanced subscriptions…
+- [Alchemy NFT API](https://apis.io/apis/alchemy/nft-api/) — REST endpoints for NFT ownership, metadata, floor price, sales, contract metadata, and transfers across EVM chains and Solana.
+- [Alchemy Transfers API](https://apis.io/apis/alchemy/transfers-api/) — REST endpoints for paginated address-level transfer history (external, internal, ERC-20, ERC-721, ERC-1155).
+- [Alchemy Portfolio API](https://apis.io/apis/alchemy/portfolio-api/) — REST endpoints aggregating multi-chain wallet balances, NFTs, and tokens in a single call.
+- [Alchemy Prices API](https://apis.io/apis/alchemy/prices-api/) — REST endpoints for token spot and historical pricing.
+- [Alchemy Webhooks (Notify)](https://apis.io/apis/alchemy/webhooks-notify/) — REST API for managing webhook subscriptions (mined / dropped transactions, address activity, NFT activity, custom).
+- [Alchemy Bundler API (ERC-4337)](https://apis.io/apis/alchemy/bundler/) — JSON-RPC bundler endpoints for ERC-4337 user operations (eth_sendUserOperation, eth_estimateUserOperationGas, alchemy_*).
+- [Alchemy Simulation API](https://apis.io/apis/alchemy/simulation-api/) — REST/JSON-RPC API for simulating transactions and asset changes before broadcasting.
+- [Alchemy Paymaster API](https://apis.io/apis/alchemy/alchemy-paymaster-api/) — Sponsor user operations via ERC-4337 paymaster endpoints.
+- [Alchemy Policies API](https://apis.io/apis/alchemy/alchemy-policies-api/) — Create and manage gas sponsorship policies.
+- [Alchemy Token Balances API](https://apis.io/apis/alchemy/alchemy-token-balances-api/) — Retrieve ERC-20 token balances for wallet addresses.
+- [Alchemy Token Metadata API](https://apis.io/apis/alchemy/alchemy-token-metadata-api/) — Retrieve metadata for ERC-20 tokens.
 
-## APIs
+### Published properties
 
-### Alchemy Node API (JSON-RPC)
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Multi-chain JSON-RPC over HTTPS and WebSockets covering standard eth_*, solana, and other chain methods, plus Alchemy-enhanced subscriptions (alchemy_minedTransactions, alchemy_pendingTransactions).
+#### AsyncAPI (1)
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/api-overview](https://www.alchemy.com/docs/reference/api-overview)
-- **Base URL:** `https://{network}.g.alchemy.com/v2/{apiKey}`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Alchemy WebSocket Subscription API](https://apis.io/asyncapis/alchemy/alchemy-asyncapi/)
 
-- JSON-RPC
-- WebSocket
-- Multi-chain
+#### Event channels (1)
 
-#### Properties
+Individual events and webhooks the provider emits.
 
-- [Documentation](https://www.alchemy.com/docs/reference/api-overview)
-- [AsyncAPI](asyncapi/alchemy-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [/](https://apis.io/channels/alchemy/untitled/)
 
-### Alchemy NFT API
+#### GraphQL (1)
 
-REST endpoints for NFT ownership, metadata, floor price, sales, contract metadata, and transfers across EVM chains and Solana.
+GraphQL schemas.
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/nft-api-quickstart](https://www.alchemy.com/docs/reference/nft-api-quickstart)
-- **Base URL:** `https://{network}.g.alchemy.com/nft/v3/{apiKey}`
+- [Moved to /providers/alchemy/](https://apis.io/graphqls/alchemy/alchemy-graphql/)
 
-#### Tags
+#### MCP servers (1)
 
-- REST
-- NFT
+Model Context Protocol servers that expose the API to agents.
 
-#### Properties
+- [alchemy](https://apis.io/servers/alchemy/alchemy/)
 
-- [Documentation](https://www.alchemy.com/docs/reference/nft-api-quickstart)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Agentic access (1)
 
-### Alchemy Token API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-REST endpoints for ERC-20 token balances, metadata, allowances, prices, and historical transfers.
+- [Alchemy Agentic Access](https://apis.io/agentic-access/alchemy/alchemy-agentic-access/)
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/token-api-quickstart](https://www.alchemy.com/docs/reference/token-api-quickstart)
-- **Base URL:** `https://{network}.g.alchemy.com/v2/{apiKey}`
+#### JSON Schema (15)
 
-#### Tags
+The data models the API reads and writes.
 
-- REST
-- Token
+- [Create Policy Request](https://apis.io/schemas/alchemy/alchemy-gas-manager-api-create-policy-request/)
+- [Gas Manager Policy](https://apis.io/schemas/alchemy/alchemy-gas-manager-api-policy/)
+- [Policy List Response](https://apis.io/schemas/alchemy/alchemy-gas-manager-api-policy-list-response/)
+- [Sponsor User Operation Request](https://apis.io/schemas/alchemy/alchemy-gas-manager-api-sponsor-user-operation-request/)
+- [Sponsor User Operation Response](https://apis.io/schemas/alchemy/alchemy-gas-manager-api-sponsor-user-operation-response/)
+- [Sponsor User Operation Result](https://apis.io/schemas/alchemy/alchemy-gas-manager-api-sponsor-user-operation-result/)
+- [Token Balance](https://apis.io/schemas/alchemy/alchemy-token-api-token-balance/)
+- [Token Balances Response](https://apis.io/schemas/alchemy/alchemy-token-api-token-balances-response/)
+- [Token Balances Result](https://apis.io/schemas/alchemy/alchemy-token-api-token-balances-result/)
+- [Token Metadata](https://apis.io/schemas/alchemy/alchemy-token-api-token-metadata/)
+- [Token Metadata Response](https://apis.io/schemas/alchemy/alchemy-token-api-token-metadata-response/)
+- [Asset Transfer](https://apis.io/schemas/alchemy/alchemy-transfers-api-asset-transfer/)
+- [Asset Transfers Response](https://apis.io/schemas/alchemy/alchemy-transfers-api-asset-transfers-response/)
+- [Asset Transfers Result](https://apis.io/schemas/alchemy/alchemy-transfers-api-asset-transfers-result/)
+- [Transfer Metadata](https://apis.io/schemas/alchemy/alchemy-transfers-api-transfer-metadata/)
 
-#### Properties
+#### JSON Structure (15)
 
-- [Documentation](https://www.alchemy.com/docs/reference/token-api-quickstart)
-- [OpenAPI](openapi/alchemy-token-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Data models expressed in JSON Structure.
 
-### Alchemy Transfers API
+- [Alchemy Gas Manager Api Create Policy Request Structure](https://apis.io/json-structure/alchemy/alchemy-gas-manager-api-create-policy-request-structure/)
+- [Alchemy Gas Manager Api Policy List Response Structure](https://apis.io/json-structure/alchemy/alchemy-gas-manager-api-policy-list-response-structure/)
+- [Alchemy Gas Manager Api Policy Structure](https://apis.io/json-structure/alchemy/alchemy-gas-manager-api-policy-structure/)
+- [Alchemy Gas Manager Api Sponsor User Operation Request Structure](https://apis.io/json-structure/alchemy/alchemy-gas-manager-api-sponsor-user-operation-request-structure/)
+- [Alchemy Gas Manager Api Sponsor User Operation Response Structure](https://apis.io/json-structure/alchemy/alchemy-gas-manager-api-sponsor-user-operation-response-structure/)
+- [Alchemy Gas Manager Api Sponsor User Operation Result Structure](https://apis.io/json-structure/alchemy/alchemy-gas-manager-api-sponsor-user-operation-result-structure/)
+- [Alchemy Token Api Token Balance Structure](https://apis.io/json-structure/alchemy/alchemy-token-api-token-balance-structure/)
+- [Alchemy Token Api Token Balances Response Structure](https://apis.io/json-structure/alchemy/alchemy-token-api-token-balances-response-structure/)
+- [Alchemy Token Api Token Balances Result Structure](https://apis.io/json-structure/alchemy/alchemy-token-api-token-balances-result-structure/)
+- [Alchemy Token Api Token Metadata Response Structure](https://apis.io/json-structure/alchemy/alchemy-token-api-token-metadata-response-structure/)
+- [Alchemy Token Api Token Metadata Structure](https://apis.io/json-structure/alchemy/alchemy-token-api-token-metadata-structure/)
+- [Alchemy Transfers Api Asset Transfer Structure](https://apis.io/json-structure/alchemy/alchemy-transfers-api-asset-transfer-structure/)
+- [Alchemy Transfers Api Asset Transfers Response Structure](https://apis.io/json-structure/alchemy/alchemy-transfers-api-asset-transfers-response-structure/)
+- [Alchemy Transfers Api Asset Transfers Result Structure](https://apis.io/json-structure/alchemy/alchemy-transfers-api-asset-transfers-result-structure/)
+- [Alchemy Transfers Api Transfer Metadata Structure](https://apis.io/json-structure/alchemy/alchemy-transfers-api-transfer-metadata-structure/)
 
-REST endpoints for paginated address-level transfer history (external, internal, ERC-20, ERC-721, ERC-1155).
+#### JSON-LD (3)
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/transfers-api-quickstart](https://www.alchemy.com/docs/reference/transfers-api-quickstart)
-- **Base URL:** `https://{network}.g.alchemy.com/v2/{apiKey}`
+Linked-data contexts for the provider's vocabulary.
 
-#### Tags
+- [Alchemy Gas Manager Api Context](https://apis.io/jsonld/alchemy/alchemy-gas-manager-api-context/)
+- [Alchemy Token Api Context](https://apis.io/jsonld/alchemy/alchemy-token-api-context/)
+- [Alchemy Transfers Api Context](https://apis.io/jsonld/alchemy/alchemy-transfers-api-context/)
 
-- REST
-- Transfers
+#### Vocabulary (1)
 
-#### Properties
+The provider's domain terms, defined.
 
-- [Documentation](https://www.alchemy.com/docs/reference/transfers-api-quickstart)
-- [OpenAPI](openapi/alchemy-transfers-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Alchemy Vocabulary](https://apis.io/vocabularies/alchemy/alchemy-vocabulary/)
 
-### Alchemy Portfolio API
+#### Examples (15)
 
-REST endpoints aggregating multi-chain wallet balances, NFTs, and tokens in a single call.
+Example requests and responses.
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/portfolio-api-quickstart](https://www.alchemy.com/docs/reference/portfolio-api-quickstart)
-- **Base URL:** `https://api.g.alchemy.com/data/v1/{apiKey}`
+- [Alchemy Gas Manager Api Create Policy Request Example](https://apis.io/examples/alchemy/alchemy-gas-manager-api-create-policy-request-example/)
+- [Alchemy Gas Manager Api Policy Example](https://apis.io/examples/alchemy/alchemy-gas-manager-api-policy-example/)
+- [Alchemy Gas Manager Api Policy List Response Example](https://apis.io/examples/alchemy/alchemy-gas-manager-api-policy-list-response-example/)
+- [Alchemy Gas Manager Api Sponsor User Operation Request Example](https://apis.io/examples/alchemy/alchemy-gas-manager-api-sponsor-user-operation-request-example/)
+- [Alchemy Gas Manager Api Sponsor User Operation Response Example](https://apis.io/examples/alchemy/alchemy-gas-manager-api-sponsor-user-operation-response-example/)
+- [Alchemy Gas Manager Api Sponsor User Operation Result Example](https://apis.io/examples/alchemy/alchemy-gas-manager-api-sponsor-user-operation-result-example/)
+- [Alchemy Token Api Token Balance Example](https://apis.io/examples/alchemy/alchemy-token-api-token-balance-example/)
+- [Alchemy Token Api Token Balances Response Example](https://apis.io/examples/alchemy/alchemy-token-api-token-balances-response-example/)
+- [Alchemy Token Api Token Balances Result Example](https://apis.io/examples/alchemy/alchemy-token-api-token-balances-result-example/)
+- [Alchemy Token Api Token Metadata Example](https://apis.io/examples/alchemy/alchemy-token-api-token-metadata-example/)
+- [Alchemy Token Api Token Metadata Response Example](https://apis.io/examples/alchemy/alchemy-token-api-token-metadata-response-example/)
+- [Alchemy Transfers Api Asset Transfer Example](https://apis.io/examples/alchemy/alchemy-transfers-api-asset-transfer-example/)
+- [Alchemy Transfers Api Asset Transfers Response Example](https://apis.io/examples/alchemy/alchemy-transfers-api-asset-transfers-response-example/)
+- [Alchemy Transfers Api Asset Transfers Result Example](https://apis.io/examples/alchemy/alchemy-transfers-api-asset-transfers-result-example/)
+- [Alchemy Transfers Api Transfer Metadata Example](https://apis.io/examples/alchemy/alchemy-transfers-api-transfer-metadata-example/)
 
-#### Tags
+#### Collections (7)
 
-- REST
-- Portfolio
+Postman and Open Collection request collections.
 
-#### Properties
+- [Alchemy Gas Manager API](https://apis.io/collections/alchemy/open-alchemy-gas-manager-api/)
+- [Alchemy Gas Manager Paymaster API](https://apis.io/collections/alchemy/open-alchemy-paymaster-api/)
+- [Alchemy Gas Manager Paymaster Policies API](https://apis.io/collections/alchemy/open-alchemy-policies-api/)
+- [Alchemy Token API](https://apis.io/collections/alchemy/open-alchemy-token-api/)
+- [Alchemy Gas Manager Paymaster Token Balances API](https://apis.io/collections/alchemy/open-alchemy-token-balances-api/)
+- [Alchemy Gas Manager Paymaster Token Metadata API](https://apis.io/collections/alchemy/open-alchemy-token-metadata-api/)
+- [Alchemy Gas Manager Paymaster Transfers API](https://apis.io/collections/alchemy/open-alchemy-transfers-api/)
 
-- [Documentation](https://www.alchemy.com/docs/reference/portfolio-api-quickstart)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Governance rules (3)
 
-### Alchemy Prices API
+Spectral rulesets for the provider's contracts.
 
-REST endpoints for token spot and historical pricing.
+- [Alchemy — asyncapi rules](https://apis.io/rules/alchemy/alchemy-asyncapi-spectral-rules/)
+- [Alchemy — jsonschema rules](https://apis.io/rules/alchemy/alchemy-jsonschema-spectral-rules/)
+- [Alchemy API Rules](https://apis.io/rules/alchemy/alchemy-spectral-rules/)
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/prices-api-quickstart](https://www.alchemy.com/docs/reference/prices-api-quickstart)
-- **Base URL:** `https://api.g.alchemy.com/prices/v1/{apiKey}`
+#### Security (4)
 
-#### Tags
+Authentication, trust centre, and vulnerability disclosure.
 
-- REST
-- Prices
+- [Alchemy Authentication](https://apis.io/security/alchemy/alchemy-authentication/)
+- [Alchemy Domain Security](https://apis.io/security/alchemy/alchemy-domain-security/)
+- [Alchemy Trust Center](https://apis.io/security/alchemy/alchemy-trust-center/)
+- [Alchemy Vulnerability Disclosure](https://apis.io/security/alchemy/alchemy-vulnerability-disclosure/)
 
-#### Properties
+#### Plans and pricing (1)
 
-- [Documentation](https://www.alchemy.com/docs/reference/prices-api-quickstart)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Published plans, tiers and prices.
 
-### Alchemy Webhooks (Notify)
+- [Alchemy Plans Pricing](https://apis.io/plans/alchemy/alchemy-plans-pricing/)
 
-REST API for managing webhook subscriptions (mined / dropped transactions, address activity, NFT activity, custom).
+#### Rate limits (1)
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/notify-api-quickstart](https://www.alchemy.com/docs/reference/notify-api-quickstart)
-- **Base URL:** `https://dashboard.alchemy.com/api`
+Published request limits.
 
-#### Tags
+- [Alchemy Rate Limits](https://apis.io/rate-limits/alchemy/alchemy-rate-limits/)
 
-- REST
-- Webhooks
+#### FinOps (1)
 
-#### Properties
+What the API costs to run, by operation.
 
-- [Documentation](https://www.alchemy.com/docs/reference/notify-api-quickstart)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Alchemy Finops](https://apis.io/finops/alchemy/alchemy-finops/)
 
-### Alchemy Bundler API (ERC-4337)
+## Where to find this API
 
-JSON-RPC bundler endpoints for ERC-4337 user operations (eth_sendUserOperation, eth_estimateUserOperationGas, alchemy_*).
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- **Human URL:** [https://www.alchemy.com/docs/reference/bundler-api-quickstart](https://www.alchemy.com/docs/reference/bundler-api-quickstart)
-- **Base URL:** `https://{network}.g.alchemy.com/v2/{apiKey}`
-
-#### Tags
-
-- JSON-RPC
-- ERC-4337
-- Account Abstraction
-
-#### Properties
-
-- [Documentation](https://www.alchemy.com/docs/reference/bundler-api-quickstart)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Alchemy Gas Manager API
-
-JSON-RPC paymaster API for sponsoring ERC-4337 user operations with policy-based gas funding.
-
-- **Human URL:** [https://www.alchemy.com/docs/reference/gas-manager-api-quickstart](https://www.alchemy.com/docs/reference/gas-manager-api-quickstart)
-- **Base URL:** `https://manage.g.alchemy.com/api/gasManager/policy`
-
-#### Tags
-
-- JSON-RPC
-- Paymaster
-- Account Abstraction
-
-#### Properties
-
-- [Documentation](https://www.alchemy.com/docs/reference/gas-manager-api-quickstart)
-- [OpenAPI](openapi/alchemy-gas-manager-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Alchemy Simulation API
-
-REST/JSON-RPC API for simulating transactions and asset changes before broadcasting.
-
-- **Human URL:** [https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart](https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart)
-- **Base URL:** `https://{network}.g.alchemy.com/v2/{apiKey}`
-
-#### Tags
-
-- JSON-RPC
-- Simulation
-
-#### Properties
-
-- [Documentation](https://www.alchemy.com/docs/reference/transaction-simulation-api-quickstart)
-- [Postman Collection](collections/alchemy-gas-manager-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-gas-manager-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-token-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-token-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/alchemy-transfers-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/alchemy-transfers-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/alchemyplatform)
-- [LinkedIn](https://www.linkedin.com/company/alchemyinc)
 - [Website](https://www.alchemy.com/)
-- [Plans](plans/alchemy-plans-pricing.yml)
-- [Rate Limits](rate-limits/alchemy-rate-limits.yml)
-- [Fin Ops](finops/alchemy-finops.yml)
-- [Integrations](https://www.alchemy.com/integrations)
-- [L L Ms Txt](https://alchemy.com/llms.txt)
+- [Documentation](https://docs.alchemy.com/)
+- [Blog](https://www.alchemy.com/blog)
+- [GitHub](https://github.com/alchemyplatform)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 30.0** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.0 |
+| Contract quality | 34.1 |
+| Contract governance | 13.6 |
+| Operational transparency | 21.1 |
+| Developer ergonomics | 23.8 |
+| Access clarity | 15.8 |
+
+**Agent readiness 43.2** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 27.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/alchemy/](https://apis.io/providers/alchemy/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Alchemy: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/alchemy/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
