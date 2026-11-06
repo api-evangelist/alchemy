@@ -139,12 +139,14 @@ maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - free
+  - hybrid
   - subscription
   units:
+  - compute
   - negotiated
   - period
   plans:
@@ -153,15 +155,15 @@ x-canonical:
     model: free
     model_how: derived
     units:
-    - other
+    - compute
     periods:
     - month
   - name: Growth
     access: paid
-    model: subscription
+    model: hybrid
     model_how: derived
     units:
-    - other
+    - compute
     - period
     periods:
     - month
@@ -170,7 +172,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - compute
     - period
     periods:
     - month
